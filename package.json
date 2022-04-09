@@ -1,0 +1,11 @@
+{
+  "name": "ring-grillz-shared",
+  "version": "1.0.0",
+  "description": "Shared components between Ring Kingz and Dr Grillz",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "META IIII",
+  "license": "ISC"
+}
