@@ -1,9 +1,10 @@
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import fetcher from 'shared/utils/axiosFetcher';
 import useSWR from 'swr';
 import { UserResponse } from 'types/apiResponses';
+
+import fetcher from '../shared/utils/axiosFetcher';
 
 const useUser = () => {
   const { data: sessionData } = useSession();

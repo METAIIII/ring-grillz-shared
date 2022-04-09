@@ -4,7 +4,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { FaCheck, FaSquare } from 'react-icons/fa';
 import { useSWRConfig } from 'swr';
-import { OrderResponse } from 'types/apiResponses';
+
+import { OrderResponse } from '../../../types/apiResponses';
 
 interface Props {
   order: Order;
