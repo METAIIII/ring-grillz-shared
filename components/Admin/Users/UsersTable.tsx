@@ -1,0 +1,76 @@
+import { Badge, Button, Icon } from '@chakra-ui/react';
+import { User } from '@prisma/client';
+import PaginatedTable from 'components/UI/Table';
+import _ from 'lodash';
+import Link from 'next/link';
+import { useMemo } from 'react';
+import { CgExternal } from 'react-icons/cg';
+import { FaCheck, FaTimes } from 'react-icons/fa';
+import { Column } from 'react-table';
+import fetcher from 'shared/utils/axiosFetcher';
+import useSWR from 'swr';
+import { UsersResponse } from 'types/apiResponses';
+
+/* eslint-disable react/jsx-key */
+const Customers = () => {
+  const { data } = useSWR<UsersResponse>(`/api/user`, fetcher);
+
+  const userData = useMemo(() => {
+    if (data?.data) {
+      return data.data;
+    } else {
+      return [];
+    }
+  }, [data]);
+
+  const columns = useMemo<Column<User>[]>(
+    () => [
+      {
+        Header: "Email",
+        accessor: "email",
+      },
+      {
+        Header: "Verified",
+        accessor: "emailVerified",
+        Cell: ({ value }) => <Icon as={value ? FaCheck : FaTimes} />,
+      },
+      {
+        Header: "Name",
+        accessor: "name",
+      },
+      {
+        Header: "Role",
+        accessor: "role",
+        Cell: ({ value }) => (
+          <Badge colorScheme={value === "ADMIN" ? "red" : "gray"}>
+            {value}
+          </Badge>
+        ),
+      },
+      {
+        Header: "",
+        accessor: "id",
+        Cell: ({ value }) => (
+          <Link href={`/admin/user/${value}`} passHref>
+            <Button
+              as="a"
+              size="sm"
+              colorScheme="red"
+              variant="outline"
+              rightIcon={<Icon as={CgExternal} />}
+            >
+              Details
+            </Button>
+          </Link>
+        ),
+      },
+    ],
+    []
+  );
+
+  return _.isArray(userData) ? (
+    <PaginatedTable<User> columns={columns} data={userData} colorScheme="red" />
+  ) : null;
+};
+
+export default Customers;

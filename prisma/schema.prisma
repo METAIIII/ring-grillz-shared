@@ -1,0 +1,221 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+// Shared Models
+model Account {
+  id                 String  @id @default(cuid())
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String?
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id            String     @id @default(cuid())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  name          String?
+  email         String?    @unique
+  emailVerified DateTime?
+  street        String?
+  street2       String?
+  suburb        String?
+  state         StateEnum?
+  postcode      String?
+  image         String?
+  role          UserRole   @default(CUSTOMER)
+  orders        Order[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+enum StateEnum {
+  WA
+  NT
+  SA
+  QLD
+  NSW
+  VIC
+  TAS
+  ACT
+}
+
+model Order {
+  id                  String            @id @default(cuid())
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  customerNotes       String?           @db.Text
+  items               LineItem[]
+  total               Int
+  status              OrderStatus
+  type                OrderType
+  paymentType         OrderPaymentType?
+  email               String
+  hasSentOrderEmail   Boolean?
+  hasSentReceiptEmail Boolean?
+  expressShipping     Boolean?
+  stripeId            String?
+  user                User?             @relation(fields: [userId], references: [id])
+  userId              String?
+}
+
+enum OrderType {
+  GRILLZ
+  RING
+}
+
+enum OrderPaymentType {
+  DEPOSIT
+  FULL_PAYMENT
+  PARTIAL_PAYMENT
+}
+
+enum OrderStatus {
+  UNPAID
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELED
+}
+
+model LineItem {
+  id       String @id @default(cuid())
+  amount   Int
+  metadata String @db.MediumText
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId  String
+}
+
+// Ring Kingz Specific
+model RingShape {
+  id           String             @id @default(cuid())
+  order        Int                @default(0)
+  name         String             @unique
+  previewImage String             @db.VarChar(512)
+  variants     RingShapeVariant[]
+}
+
+model RingShapeVariant {
+  id           String         @id @default(cuid())
+  name         String         @unique
+  modelUrl     String
+  previewImage String         @db.VarChar(512)
+  materials    RingMaterial[]
+  hasEngraving Boolean        @default(true)
+  hasJewels    Boolean        @default(false)
+  jewels       RingJewel[]
+  price        Int
+  baseShape    RingShape      @relation(fields: [baseShapeId], references: [id], onDelete: Cascade)
+  baseShapeId  String
+}
+
+model RingMaterial {
+  id               String             @id @default(cuid())
+  name             String             @unique
+  ambientOcclusion String?
+  baseColor        String?
+  metallic         String?
+  roughness        String?
+  normal           String?
+  emissive         String?
+  previewImage     String?            @db.VarChar(512)
+  shapes           RingShapeVariant[]
+  price            Int
+}
+
+model RingEngraving {
+  id         String            @id @default(cuid())
+  type       RingEngravingType
+  imageUrl   String?           @db.VarChar(512)
+  canvasData String?           @db.MediumText
+  text       String?
+  fontFamily String?
+}
+
+enum RingEngravingType {
+  TEXT
+  IMAGE
+}
+
+model RingJewel {
+  id           String             @id @default(cuid())
+  name         String             @unique
+  modelUrl     String
+  previewImage String             @db.VarChar(512)
+  price        Int
+  shapes       RingShapeVariant[]
+}
+
+// Dr Grillz Specific
+model TeethMaterial {
+  id             String                 @id @default(cuid())
+  name           String                 @unique
+  variants       TeethMaterialVariant[]
+  hasOptions     Boolean                @default(false)
+  labourCost     Int
+  options        TeethMaterialOption[]
+  optionsHeading String?
+}
+
+model TeethMaterialVariant {
+  id             String        @id @default(cuid())
+  name           String
+  previewImage   String        @db.VarChar(512)
+  price          Int
+  singleRowOnly  Boolean       @default(false)
+  toothBgImage   String?       @db.VarChar(512)
+  baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
+  baseMaterialId String
+}
+
+model TeethMaterialOption {
+  id             String        @id @default(cuid())
+  name           String
+  previewImage   String        @db.VarChar(512)
+  price          Int
+  baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
+  baseMaterialId String
+}
