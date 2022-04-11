@@ -19,17 +19,17 @@ const ResendEmail: React.FC<Props> = ({ orderId, checkoutId }) => {
       await axios.post(`/api/order/mail`, { orderId, checkoutId });
       mutate(`/api/order/${orderId}`);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   };
 
   return (
     <Button
-      size='sm'
       isLoading={loading}
-      onClick={handleClick}
       leftIcon={<Icon as={FaEnvelope} />}
+      size='sm'
+      onClick={handleClick}
     >
       Send Receipt Email
     </Button>

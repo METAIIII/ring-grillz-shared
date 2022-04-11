@@ -2,6 +2,7 @@ import { Box, Button, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr } from '@ch
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { Column, useTable } from 'react-table';
@@ -14,31 +15,31 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const columns = useMemo<Column[]>(
     () => [
       {
-        Header: "Date",
-        accessor: "createdAt", // accessor is the "key" in the data
-        Cell: ({ value }) => dayjs(value).format("L"),
+        Header: 'Date',
+        accessor: 'createdAt', // accessor is the "key" in the data
+        Cell: ({ value }) => <>{dayjs(value).format('L')}</>,
       },
       {
-        Header: "Amount",
-        accessor: "total",
-        Cell: ({ value }) => formatAmountForDisplay(value),
+        Header: 'Amount',
+        accessor: 'total',
+        Cell: ({ value }) => <>{formatAmountForDisplay(value)}</>,
       },
       {
-        Header: "Status",
-        accessor: "status",
+        Header: 'Status',
+        accessor: 'status',
         Cell: ({ value }) => <OrderStatusBadge orderStatus={value} />,
       },
       {
-        Header: "",
-        accessor: "id",
+        Header: '',
+        accessor: 'id',
         Cell: ({ value }) => (
-          <Link href={`/receipt?order_id=${value}`} passHref>
+          <Link legacyBehavior passHref href={`/receipt?order_id=${value}`}>
             <Button
-              as="a"
-              size="sm"
-              variant="outline"
-              colorScheme="yellow"
+              as='a'
+              colorScheme='yellow'
               rightIcon={<Icon as={CgExternal} />}
+              size='sm'
+              variant='outline'
             >
               Details
             </Button>
@@ -52,10 +53,15 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data: orders });
 
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes('admin');
+
   return (
-    <Box p={4} borderWidth={1}>
-      <Heading size="md">My Orders</Heading>
-      <Table {...getTableProps()} colorScheme="yellow">
+    <Box borderWidth={1} p={4}>
+      <Heading size={{ base: 'sm', md: 'md' }}>
+        {isAdmin ? '' : 'My '}Orders
+      </Heading>
+      <Table {...getTableProps()} colorScheme='yellow'>
         <Thead>
           {
             // Loop over the header rows
@@ -63,7 +69,7 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <Th {...column.getHeaderProps()}>
-                    {column.render("Header")}
+                    <>{column.render('Header')}</>
                   </Th>
                 ))}
               </Tr>
@@ -80,7 +86,9 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
                 <Tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                      <Td {...cell.getCellProps()}>
+                        <>{cell.render('Cell')}</>
+                      </Td>
                     );
                   })}
                 </Tr>

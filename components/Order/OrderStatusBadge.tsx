@@ -7,8 +7,6 @@ const OrderStatusBadge: React.FC<BadgeProps & { orderStatus: OrderStatus }> = ({
 }) => {
   return (
     <Badge
-      px={2}
-      py={1}
       colorScheme={
         orderStatus === 'PAID'
           ? 'green'
@@ -22,6 +20,8 @@ const OrderStatusBadge: React.FC<BadgeProps & { orderStatus: OrderStatus }> = ({
           ? 'purple'
           : 'grey'
       }
+      px={2}
+      py={1}
       {...props}
     >
       {orderStatus}

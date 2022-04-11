@@ -10,7 +10,6 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
-// Shared Models
 model Account {
   id                 String  @id @default(cuid())
   type               String
@@ -66,22 +65,6 @@ model User {
   sessions      Session[]
 }
 
-enum UserRole {
-  ADMIN
-  CUSTOMER
-}
-
-enum StateEnum {
-  WA
-  NT
-  SA
-  QLD
-  NSW
-  VIC
-  TAS
-  ACT
-}
-
 model Order {
   id                  String            @id @default(cuid())
   createdAt           DateTime          @default(now())
@@ -101,26 +84,6 @@ model Order {
   userId              String?
 }
 
-enum OrderType {
-  GRILLZ
-  RING
-}
-
-enum OrderPaymentType {
-  DEPOSIT
-  FULL_PAYMENT
-  PARTIAL_PAYMENT
-}
-
-enum OrderStatus {
-  UNPAID
-  PENDING
-  PAID
-  SHIPPED
-  COMPLETED
-  CANCELED
-}
-
 model LineItem {
   id       String @id @default(cuid())
   amount   Int
@@ -129,67 +92,66 @@ model LineItem {
   orderId  String
 }
 
-// Ring Kingz Specific
 model RingShape {
-  id           String             @id @default(cuid())
-  order        Int                @default(0)
-  name         String             @unique
-  previewImage String             @db.VarChar(512)
-  variants     RingShapeVariant[]
+  id            String                @id @default(cuid())
+  order         Int                   @default(0)
+  name          String                @unique
+  previewImage  String                @db.VarChar(512)
+  examples      RingShapeExample[]
+  presets       RingEngravingPreset[]
+  modelUrl      String
+  templateFront String?               @db.VarChar(512)
+  templateSide1 String?               @db.VarChar(512)
+  templateSide2 String?               @db.VarChar(512)
+  templateInner String?               @db.VarChar(512)
+  materials     RingMaterial[]
+  price         Int
 }
 
-model RingShapeVariant {
-  id           String         @id @default(cuid())
-  name         String         @unique
-  modelUrl     String
-  previewImage String         @db.VarChar(512)
-  materials    RingMaterial[]
-  hasEngraving Boolean        @default(true)
-  hasJewels    Boolean        @default(false)
-  jewels       RingJewel[]
-  price        Int
-  baseShape    RingShape      @relation(fields: [baseShapeId], references: [id], onDelete: Cascade)
-  baseShapeId  String
+model RingShapeExample {
+  id          String    @id @default(cuid())
+  name        String?
+  imageUrl    String    @db.VarChar(512)
+  ringShape   RingShape @relation(fields: [ringShapeId], references: [id], onDelete: Cascade)
+  ringShapeId String
 }
 
 model RingMaterial {
-  id               String             @id @default(cuid())
-  name             String             @unique
+  id               String      @id @default(cuid())
+  name             String
   ambientOcclusion String?
   baseColor        String?
   metallic         String?
   roughness        String?
   normal           String?
   emissive         String?
-  previewImage     String?            @db.VarChar(512)
-  shapes           RingShapeVariant[]
+  previewImage     String?     @db.VarChar(512)
+  shapes           RingShape[]
   price            Int
 }
 
 model RingEngraving {
-  id         String            @id @default(cuid())
-  type       RingEngravingType
-  imageUrl   String?           @db.VarChar(512)
-  canvasData String?           @db.MediumText
-  text       String?
-  fontFamily String?
+  id            String            @id @default(cuid())
+  type          RingEngravingType
+  face          RingFace          @default(FRONT)
+  imageUrl      String?           @db.VarChar(512)
+  canvasData    String?           @db.MediumText
+  text          String?
+  fontFamily    String?
+  flippedX      Boolean?
+  flippedY      Boolean?
+  invertedColor Boolean?
 }
 
-enum RingEngravingType {
-  TEXT
-  IMAGE
+model RingEngravingPreset {
+  id       String      @id @default(cuid())
+  face     RingFace    @default(FRONT)
+  shapes   RingShape[]
+  imageUrl String?     @db.VarChar(512)
+  name     String
+  order    Int         @default(0)
 }
 
-model RingJewel {
-  id           String             @id @default(cuid())
-  name         String             @unique
-  modelUrl     String
-  previewImage String             @db.VarChar(512)
-  price        Int
-  shapes       RingShapeVariant[]
-}
-
-// Dr Grillz Specific
 model TeethMaterial {
   id             String                 @id @default(cuid())
   name           String                 @unique
@@ -218,4 +180,54 @@ model TeethMaterialOption {
   price          Int
   baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+enum StateEnum {
+  WA
+  NT
+  SA
+  QLD
+  NSW
+  VIC
+  TAS
+  ACT
+}
+
+enum OrderType {
+  GRILLZ
+  RING
+}
+
+enum OrderPaymentType {
+  DEPOSIT
+  FULL_PAYMENT
+  PARTIAL_PAYMENT
+}
+
+enum OrderStatus {
+  UNPAID
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELED
+}
+
+enum RingFace {
+  FRONT
+  SIDE1
+  SIDE2
+  INNER
+}
+
+enum RingEngravingType {
+  TEXT
+  DRAWING
+  IMAGE
+  PRESET
 }

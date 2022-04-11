@@ -27,38 +27,38 @@ const Customers = () => {
   const columns = useMemo<Column<User>[]>(
     () => [
       {
-        Header: "Email",
-        accessor: "email",
+        Header: 'Email',
+        accessor: 'email',
       },
       {
-        Header: "Verified",
-        accessor: "emailVerified",
+        Header: 'Verified',
+        accessor: 'emailVerified',
         Cell: ({ value }) => <Icon as={value ? FaCheck : FaTimes} />,
       },
       {
-        Header: "Name",
-        accessor: "name",
+        Header: 'Name',
+        accessor: 'name',
       },
       {
-        Header: "Role",
-        accessor: "role",
+        Header: 'Role',
+        accessor: 'role',
         Cell: ({ value }) => (
-          <Badge colorScheme={value === "ADMIN" ? "red" : "gray"}>
+          <Badge colorScheme={value === 'ADMIN' ? 'red' : 'gray'}>
             {value}
           </Badge>
         ),
       },
       {
-        Header: "",
-        accessor: "id",
+        Header: '',
+        accessor: 'id',
         Cell: ({ value }) => (
-          <Link href={`/admin/user/${value}`} passHref>
+          <Link legacyBehavior passHref href={`/admin/user/${value}`}>
             <Button
-              as="a"
-              size="sm"
-              colorScheme="red"
-              variant="outline"
+              as='a'
+              colorScheme='red'
               rightIcon={<Icon as={CgExternal} />}
+              size='sm'
+              variant='outline'
             >
               Details
             </Button>
@@ -70,8 +70,10 @@ const Customers = () => {
   );
 
   return _.isArray(userData) ? (
-    <PaginatedTable<User> columns={columns} data={userData} colorScheme="red" />
-  ) : null;
+    <PaginatedTable<User> colorScheme='red' columns={columns} data={userData} />
+  ) : (
+    <div />
+  );
 };
 
 export default Customers;
