@@ -74,34 +74,28 @@ const Header: React.FC<Props> = ({ mode }) => {
           justifyContent={{ base: 'flex-start', md: 'flex-end' }}
         >
           {!isMobile && (
-            <Box mr='auto'>
+            <Flex alignItems='center' mr='auto'>
               <Tooltip label='Back home' placement='bottom' hasArrow>
                 <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
                   {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
                 </Link>
               </Tooltip>
-            </Box>
-          )}
-          {!isMobile && mode === 'GRILLZ' && (
-            <>
-              <Heading
-                fontFamily='cursive'
-                fontWeight={600}
-                style={{
-                  marginLeft: '0.8rem',
-                }}
-              >
-                CUSTOM
-              </Heading>
-              <Heading
-                style={{
-                  marginLeft: '0.7rem',
-                  letterSpacing: '2.7px',
-                }}
-              >
-                GRILLZ BUILDER
-              </Heading>
-            </>
+              {mode === 'GRILLZ' && (
+                <>
+                  <Heading fontFamily='cursive' fontWeight={600} ml={3}>
+                    CUSTOM
+                  </Heading>
+                  <Heading
+                    ml={2}
+                    style={{
+                      letterSpacing: '2.7px',
+                    }}
+                  >
+                    GRILLZ BUILDER
+                  </Heading>
+                </>
+              )}
+            </Flex>
           )}
           <Navigation />
           {sessionData && <LogoutButton />}
