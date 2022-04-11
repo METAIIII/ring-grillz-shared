@@ -76,7 +76,7 @@ export type TeethForm = {
   option?: TeethMaterialOption;
   selectedTeeth: ToothID[];
 };
-export type FormValuesAsMetadata = {
+export type TeethFormAsMetadata = {
   materialId: string;
   variantId: string;
   optionId: string;
@@ -97,6 +97,14 @@ export interface RingFormState {
   selectedEngraving?: RingEngraving;
   size?: number;
 }
+export type RingFormAsMetadata = {
+  shapeID: string;
+  variantID: string;
+  materialID: string;
+  engravingID: string;
+  size: string;
+  expressShipping: string;
+};
 export type CreatorStep = {
   index: number;
   label: string;

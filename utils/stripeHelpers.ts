@@ -1,9 +1,21 @@
-const currency = "aud";
+import Stripe from 'stripe';
+
+import { CURRENCY, TOOTH_SEPARATOR } from '../config';
+import {
+  FullRing,
+  FullTeethMaterial,
+  RingFormAsMetadata,
+  RingFormState,
+  TeethForm,
+  TeethFormAsMetadata,
+  ToothID,
+} from '../types';
+import { getRingTotal, getTeethTotal } from './getTotals';
 
 export function formatAmountForDisplay(amount: number): string {
   const numberFormat = new Intl.NumberFormat(["en-US"], {
     style: "currency",
-    currency: currency,
+    currency: CURRENCY,
     currencyDisplay: "symbol",
   });
   return numberFormat.format(amount / 100);
@@ -12,7 +24,7 @@ export function formatAmountForDisplay(amount: number): string {
 export function formatAmountForStripe(amount: number): number {
   const numberFormat = new Intl.NumberFormat(["en-US"], {
     style: "currency",
-    currency: currency,
+    currency: CURRENCY,
     currencyDisplay: "symbol",
   });
   const parts = numberFormat.formatToParts(amount);
@@ -24,3 +36,113 @@ export function formatAmountForStripe(amount: number): number {
   }
   return zeroDecimalCurrency ? amount : Math.round(amount * 100);
 }
+
+export const convertRingToLineItem = (
+  form: RingFormState,
+  options: { expressShipping: boolean }
+): Stripe.Checkout.SessionCreateParams.LineItem => {
+  return {
+    quantity: 1,
+    price_data: {
+      currency: CURRENCY,
+      unit_amount: getRingTotal(form),
+      product_data: {
+        name: `Custom ${form?.selectedShape?.name} Ring`,
+        metadata: convertRingToMetadata(form, options),
+      },
+    },
+  };
+};
+
+export const convertRingToMetadata = (
+  form: RingFormState,
+  options: { expressShipping: boolean }
+): RingFormAsMetadata => {
+  return {
+    shapeID: form.selectedShape?.id ?? "",
+    variantID: form.selectedVariant?.id ?? "",
+    materialID: form.selectedMaterial?.id ?? "",
+    engravingID: form.selectedEngraving?.id ?? "",
+    size: form.size?.toString() ?? "",
+    expressShipping: options.expressShipping.toString(),
+  };
+};
+
+export const getRingFromMetadata = (
+  metadata: RingFormAsMetadata,
+  data: FullRing[]
+): RingFormState => {
+  const shape = data.find((shape) => shape.id === metadata.shapeID);
+  const variant = shape?.variants.find(
+    (variant) => variant.id === metadata.variantID
+  );
+  const material = variant?.materials.find(
+    (material) => material.id === metadata.materialID
+  );
+  const size = parseInt(metadata.size);
+
+  return {
+    selectedShape: shape,
+    selectedVariant: variant,
+    selectedMaterial: material,
+    selectedEngraving: { id: metadata.engravingID },
+    size,
+  } as RingFormState;
+};
+
+export const convertTeethToLineItem = (
+  form: TeethForm,
+  options: { expressShipping: boolean }
+): Stripe.Checkout.SessionCreateParams.LineItem => {
+  return {
+    quantity: 1,
+    price_data: {
+      currency: CURRENCY,
+      unit_amount: getTeethTotal(form, options),
+      product_data: {
+        name: `${form?.material?.name} ${form?.variant?.name} ${
+          form?.option ? `${form.option?.name}` : ""
+        } [${form?.selectedTeeth?.join(TOOTH_SEPARATOR)}]`,
+        metadata: convertTeethToMetadata(form, options),
+      },
+    },
+  };
+};
+
+export const convertTeethToMetadata = (
+  form: TeethForm,
+  options: { expressShipping: boolean }
+): TeethFormAsMetadata => {
+  return {
+    materialId: form.material?.id ?? "",
+    variantId: form.variant?.id ?? "",
+    optionId: form.material?.hasOptions && form.option ? form.option.id : "",
+    selectedTeethIds: form?.selectedTeeth?.join(TOOTH_SEPARATOR) ?? "",
+    expressShipping: options.expressShipping ? "true" : "false",
+  };
+};
+
+export const getTeethFromMetadata = (
+  metadata: TeethFormAsMetadata,
+  data: FullTeethMaterial[]
+): TeethForm => {
+  const material = data.find((material) => material.id === metadata.materialId);
+  const variant = material?.variants.find(
+    (variant) => variant.id === metadata.variantId
+  );
+  const option = material?.options.find(
+    (option) => option.id === metadata.optionId
+  );
+  const selectedTeeth = metadata?.selectedTeethIds?.split(
+    TOOTH_SEPARATOR
+  ) as ToothID[];
+
+  return JSON.parse(
+    JSON.stringify({
+      material,
+      variant,
+      option,
+      selectedTeeth,
+    })
+  ) as TeethForm;
+};
