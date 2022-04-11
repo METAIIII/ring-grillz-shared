@@ -21,8 +21,8 @@ const DeleteAccount: React.FC<{
   onClose(): void;
 }> = ({ isOpen, onClose, email }) => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const handleDelete = async () => {
     setLoading(true);
@@ -30,7 +30,7 @@ const DeleteAccount: React.FC<{
       await axios.delete(`/api/user/${email}`);
       await signOut();
       setLoading(false);
-      setSuccess('Deleted user.');
+      setSuccess("Deleted user.");
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -41,14 +41,14 @@ const DeleteAccount: React.FC<{
 
   useEffect(() => {
     if (error) {
-      setTimeout(() => setError(''), 3000);
+      setTimeout(() => setError(""), 3000);
     }
   }, [error]);
 
   useEffect(() => {
     if (success) {
       setTimeout(() => {
-        setSuccess('');
+        setSuccess("");
         onClose();
       }, 3000);
     }
@@ -66,14 +66,14 @@ const DeleteAccount: React.FC<{
             to your order history. If you log in to this website again, a new
             user account will be created.
           </Text>
-          <Text textColor='red.400'></Text>
+          <Text textColor="red.400"></Text>
           {error && error}
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
             <Button onClick={onClose}>Cancel</Button>
             <Button
-              colorScheme='red'
+              colorScheme="red"
               onClick={handleDelete}
               isLoading={loading}
             >

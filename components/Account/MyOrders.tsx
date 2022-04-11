@@ -1,12 +1,13 @@
 import { Box, Button, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
-import OrderStatusBadge from 'components/Order/OrderStatusBadge';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { Column, useTable } from 'react-table';
-import { formatAmountForDisplay } from 'shared/utils/stripeHelpers';
+
+import { formatAmountForDisplay } from '../../utils/stripeHelpers';
+import OrderStatusBadge from '../Order/OrderStatusBadge';
 
 /* eslint-disable react/jsx-key */
 const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {

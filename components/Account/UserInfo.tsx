@@ -21,11 +21,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import fetcher from 'shared/utils/axiosFetcher';
 import useSWR, { useSWRConfig } from 'swr';
-import { UserResponse } from 'types/apiResponses';
 import * as yup from 'yup';
 
+import { UserResponse } from '../../types/apiResponses';
+import fetcher from '../../utils/axiosFetcher';
 import DeleteAccount from './DeleteAccount';
 
 type Inputs = {

@@ -1,8 +1,9 @@
 import { Link } from '@chakra-ui/react';
 import React from 'react';
-import fetcher from 'shared/utils/axiosFetcher';
 import useSWR from 'swr';
-import { FullCheckoutResponse } from 'types/apiResponses';
+
+import { FullCheckoutResponse } from '../types/apiResponses';
+import fetcher from './axiosFetcher';
 
 interface Props {
   checkoutId: string;

@@ -1,15 +1,16 @@
 import { Badge, Button, Icon } from '@chakra-ui/react';
 import { User } from '@prisma/client';
-import PaginatedTable from 'components/UI/Table';
 import _ from 'lodash';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { Column } from 'react-table';
-import fetcher from 'shared/utils/axiosFetcher';
 import useSWR from 'swr';
-import { UsersResponse } from 'types/apiResponses';
+
+import { UsersResponse } from '../../../types/apiResponses';
+import fetcher from '../../../utils/axiosFetcher';
+import PaginatedTable from '../../UI/Table';
 
 /* eslint-disable react/jsx-key */
 const Customers = () => {

@@ -1,19 +1,19 @@
 import { Button, ButtonGroup, Icon, Link, Text } from '@chakra-ui/react';
 import { Order, OrderStatus } from '@prisma/client';
-import OrderStatusBadge from 'components/Order/OrderStatusBadge';
-import PaginatedTable from 'components/UI/Table';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { Column } from 'react-table';
-import fetcher from 'shared/utils/axiosFetcher';
-import { formatAmountForDisplay } from 'shared/utils/stripeHelpers';
 import useSWR from 'swr';
-import { OrdersResponse } from 'types/apiResponses';
-import AsyncCheckoutLink from 'utils/AsyncCheckoutLink';
 
+import { OrdersResponse } from '../../../types/apiResponses';
+import AsyncCheckoutLink from '../../../utils/AsyncCheckoutLink';
+import fetcher from '../../../utils/axiosFetcher';
+import { formatAmountForDisplay } from '../../../utils/stripeHelpers';
+import OrderStatusBadge from '../../Order/OrderStatusBadge';
+import PaginatedTable from '../../UI/Table';
 import MarkAsShipped from './MarkAsShipped';
 
 /* eslint-disable react/jsx-key */

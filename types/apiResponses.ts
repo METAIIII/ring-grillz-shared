@@ -1,7 +1,7 @@
 import { Order, RingEngraving, TeethMaterialOption, TeethMaterialVariant, User } from '@prisma/client';
-import { FullCheckoutSession } from 'shared/types/stripe';
 import Stripe from 'stripe';
 
+import { FullCheckoutSession } from '../types/stripe';
 import { FullOrder, FullRing, FullTeethMaterial, FullUser } from './';
 
 type ApiResponse<T> = {
