@@ -4,24 +4,20 @@ import Stripe from 'stripe';
 
 interface CustomerInfoProps {
   user?: Stripe.Customer;
-  shipping?: Stripe.Checkout.Session.Shipping;
+  shipping?: Stripe.Checkout.Session.ShippingDetails | null;
   showEdit?: boolean;
 }
 
-const CustomerInfo: React.FC<CustomerInfoProps> = ({
-  user,
-  shipping,
-  showEdit = false,
-}) => {
+const CustomerInfo: React.FC<CustomerInfoProps> = ({ user, shipping, showEdit = false }) => {
   return !user && !shipping ? (
     <Text>No information.</Text>
   ) : (
     <>
-      <Text mb={1} fontWeight='bold'>
+      <Text fontWeight='bold' mb={1}>
         {shipping?.name}
       </Text>
       {user && <Text mb={2}>{user.email}</Text>}
-      <Text lineHeight='4' textTransform='uppercase' fontFamily='mono' mb={2}>
+      <Text fontFamily='mono' lineHeight='4' mb={2} textTransform='uppercase'>
         {shipping?.address?.line1}
         <br />
         {shipping?.address?.line2}
@@ -31,10 +27,8 @@ const CustomerInfo: React.FC<CustomerInfoProps> = ({
         {shipping?.address?.state} {shipping?.address?.postal_code}
       </Text>
       {showEdit && (
-        <Link href='/account' passHref>
-          <Button as='a' size='sm'>
-            Edit Details
-          </Button>
+        <Link href='/account'>
+          <Button size='sm'>Edit Details</Button>
         </Link>
       )}
     </>

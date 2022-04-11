@@ -6,9 +6,11 @@ import {
   OrderType,
   RingEngraving,
   RingEngravingType,
+  RingFace,
   RingMaterial,
   RingShape,
-  RingShapeVariant,
+  RingShapeExample,
+  StateEnum,
   TeethMaterial,
   TeethMaterialOption,
   TeethMaterialVariant,
@@ -27,15 +29,52 @@ export interface FullOrder extends Order {
 }
 
 // Shared Database Queries / Mutations
+export interface CreateUser {
+  email: string;
+  name: string;
+  street?: string;
+  street2?: string;
+  suburb?: string;
+  state?: StateEnum;
+  postcode?: string;
+  image?: string;
+}
+export interface UpdateUser {
+  name: string;
+  street: string;
+  street2: string;
+  suburb: string;
+  state: StateEnum;
+  postcode: string;
+  image: string;
+}
 export interface CreateOrder {
   email?: string;
+  phone?: string;
   customerNotes?: string;
   status: OrderStatus;
   type: OrderType;
+  paymentAmount?: number;
   paymentType?: OrderPaymentType;
+  couponCode?: string;
   items: Stripe.Checkout.SessionCreateParams.LineItem[];
+  teethData?: FullTeethMaterial[];
+  ringData?: FullRing[];
+}
+export interface UpdateOrder {
+  email: string | null;
+  phone?: string;
+  customerNotes?: string | null;
+  status?: OrderStatus;
+  paymentType?: OrderPaymentType | null;
+  couponCode?: string;
+}
+
+export interface CheckoutOptions {
+  tcAgreed?: boolean;
   expressShipping?: boolean;
-  data?: FullTeethMaterial[];
+  paymentType?: OrderPaymentType;
+  couponCode?: string;
 }
 
 // Dr Grillz Specific
@@ -76,12 +115,11 @@ export type TeethForm = {
   option?: TeethMaterialOption;
   selectedTeeth: ToothID[];
 };
-export type FormValuesAsMetadata = {
+export type TeethFormAsMetadata = {
   materialId: string;
   variantId: string;
   optionId: string;
   selectedTeethIds: string;
-  expressShipping: string;
 };
 
 export type FullTeethMaterial = TeethMaterial & {
@@ -90,50 +128,83 @@ export type FullTeethMaterial = TeethMaterial & {
 };
 
 // Ring Kingz Specific
-export interface FormState {
-  selectedShape?: RingShape;
-  selectedVariant?: RingShapeVariant;
-  selectedMaterial?: RingMaterial;
-  selectedEngraving?: RingEngraving;
-  size?: number;
+export interface RingFormState {
+  selectedShape: RingShape | null;
+  selectedMaterial: RingMaterial | null;
+  selectedFace: RingFace;
+  selectedEngravings: Record<RingFace, RingEngraving | null>;
+  size: {
+    value: string;
+    format: string;
+  };
 }
+export type RingFormAsMetadata = {
+  shapeID: string;
+  materialID: string;
+  engravingIDs: string;
+  size: string;
+  sizeFormat: string;
+};
 export type CreatorStep = {
   index: number;
   label: string;
   icon: IconType;
 };
-export type RingFormFields =
-  | 'selectedShape'
-  | 'selectedVariant'
-  | 'selectedMaterial'
-  | 'selectedEngraving'
-  | 'size';
+
 export type RingFormValues =
   | RingShape
-  | RingShapeVariant
   | RingMaterial
-  | RingEngraving
-  | number;
+  | Partial<Record<RingFace, RingEngraving>>
+  | RingFace;
 
 export interface RingModelProps extends JSX.IntrinsicAttributes {
   material?: RingMaterial;
   displacement?: string;
 }
-export interface FullVariant extends RingShapeVariant {
-  materials: RingMaterial[];
-}
 export interface FullRing extends RingShape {
-  variants: FullVariant[];
+  materials: RingMaterial[];
+  examples: RingShapeExample[];
 }
 export interface UpdateRing {
   name: string;
   order: number;
   previewImage: string;
+  modelUrl: string;
+  price: number;
+}
+export interface UpdateRingMaterial {
+  name: string;
+  ambientOcclusion: string | null;
+  baseColor: string | null;
+  metallic: string | null;
+  roughness: string | null;
+  normal: string | null;
+  emissive: string | null;
+  previewImage: string | null;
+  price: number;
 }
 export interface CreateEngraving {
   type: RingEngravingType;
+  face: RingFace;
   imageUrl: string | null;
   canvasData: string | null;
   text: string | null;
   fontFamily: string | null;
+  flippedX?: boolean;
+  flippedY?: boolean;
+  invertedColor?: boolean;
+  imageOption?: 'standard' | 'drawing' | 'engraving';
+}
+export interface UpdateEngraving {
+  id: string;
+  type?: RingEngravingType;
+  face?: RingFace;
+  imageUrl?: string;
+  canvasData?: string;
+  text?: string;
+  fontFamily?: string;
+  flippedX?: boolean;
+  flippedY?: boolean;
+  invertedColor?: boolean;
+  imageOption?: 'standard' | 'drawing' | 'engraving';
 }

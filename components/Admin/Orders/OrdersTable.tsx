@@ -9,7 +9,6 @@ import { Column } from 'react-table';
 import useSWR from 'swr';
 
 import { OrdersResponse } from '../../../types/apiResponses';
-import AsyncCheckoutLink from '../../../utils/AsyncCheckoutLink';
 import fetcher from '../../../utils/axiosFetcher';
 import { formatAmountForDisplay } from '../../../utils/stripeHelpers';
 import OrderStatusBadge from '../../Order/OrderStatusBadge';
@@ -18,11 +17,8 @@ import MarkAsShipped from './MarkAsShipped';
 
 /* eslint-disable react/jsx-key */
 const Orders = () => {
-  const [status, setStatus] = useState<OrderStatus>("PAID");
-  const { data } = useSWR<OrdersResponse>(
-    `/api/order?status=${status}`,
-    fetcher
-  );
+  const [status, setStatus] = useState<OrderStatus>('PAID');
+  const { data } = useSWR<OrdersResponse>(`/api/order?status=${status}`, fetcher);
 
   const orderData = useMemo(() => {
     if (data?.data) {
@@ -35,53 +31,34 @@ const Orders = () => {
   const columns = useMemo<Column<Order>[]>(
     () => [
       {
-        Header: "Date",
-        accessor: "createdAt",
-        Cell: ({ value }) => dayjs(value).format("L"),
+        Header: 'Date',
+        accessor: 'createdAt',
+        Cell: ({ value }) => <>{dayjs(value).format('L')}</>,
       },
       {
-        Header: "Customer",
-        accessor: "email",
-        Cell: ({ value, row }) => (
-          <Link href={`/admin/user/${row.original.userId}`}>{value}</Link>
-        ),
+        Header: 'Customer',
+        accessor: 'email',
+        Cell: ({ value, row }) => <Link href={`/admin/user/${row.original.userId}`}>{value}</Link>,
       },
       {
-        Header: "Amount",
-        accessor: "total",
-        Cell: ({ value }) => formatAmountForDisplay(value),
+        Header: 'Amount',
+        accessor: 'paymentAmount',
+        Cell: ({ value }) => <>{formatAmountForDisplay(value)}</>,
       },
       {
-        Header: "Status",
-        accessor: "status",
+        Header: 'Status',
+        accessor: 'status',
         Cell: ({ value }) => <OrderStatusBadge orderStatus={value} />,
       },
       {
-        Header: "Stripe ID",
-        accessor: "stripeId",
-        Cell: ({ value }) => {
-          return (
-            !!value && (
-              <AsyncCheckoutLink checkoutId={value}>
-                {value.substring(0, 10)}...
-              </AsyncCheckoutLink>
-            )
-          );
-        },
-      },
-      {
-        Header: "",
-        accessor: "id",
+        Header: '',
+        accessor: 'id',
         Cell: ({ value, row }) => {
           return (
-            <ButtonGroup size="sm" variant="outline">
+            <ButtonGroup size='sm' variant='outline'>
               <MarkAsShipped order={row.original} />
-              <NextLink href={`/admin/order/${value}`} passHref>
-                <Button
-                  as="a"
-                  colorScheme="red"
-                  rightIcon={<Icon as={CgExternal} />}
-                >
+              <NextLink href={`/receipt?order_id=${value}`}>
+                <Button colorScheme='red' rightIcon={<Icon as={CgExternal} />}>
                   Details
                 </Button>
               </NextLink>
@@ -95,36 +72,34 @@ const Orders = () => {
 
   return _.isArray(orderData) ? (
     <>
-      <Text fontWeight="bold">Filter results</Text>
-      <ButtonGroup size="xs" colorScheme="red" mb={4}>
+      <Text fontWeight='bold'>Filter results</Text>
+      <ButtonGroup colorScheme='red' mb={4} size='xs'>
         <Button
-          colorScheme="green"
-          variant={status === "PAID" ? "solid" : "outline"}
-          onClick={() => setStatus("PAID")}
+          colorScheme='green'
+          variant={status === 'PAID' ? 'solid' : 'outline'}
+          onClick={() => setStatus('PAID')}
         >
           Paid
         </Button>
         <Button
-          colorScheme="blue"
-          variant={status === "SHIPPED" ? "solid" : "outline"}
-          onClick={() => setStatus("SHIPPED")}
+          colorScheme='blue'
+          variant={status === 'SHIPPED' ? 'solid' : 'outline'}
+          onClick={() => setStatus('SHIPPED')}
         >
           Shipped
         </Button>
         <Button
-          variant={status === "CANCELED" ? "solid" : "outline"}
-          onClick={() => setStatus("CANCELED")}
+          variant={status === 'CANCELED' ? 'solid' : 'outline'}
+          onClick={() => setStatus('CANCELED')}
         >
           Canceled
         </Button>
       </ButtonGroup>
-      <PaginatedTable<Order>
-        columns={columns}
-        data={orderData}
-        colorScheme="red"
-      />
+      <PaginatedTable<Order> colorScheme='red' columns={columns} data={orderData} />
     </>
-  ) : null;
+  ) : (
+    <div />
+  );
 };
 
 export default Orders;

@@ -22,7 +22,7 @@ import { Row, TableOptions, usePagination, useTable } from 'react-table';
 /* eslint-disable react/jsx-key */
 interface TableProps<T extends object> extends TableOptions<T> {
   onClick?: (row: Row<T>) => void;
-  colorScheme?: ThemeTypings["colorSchemes"];
+  colorScheme?: ThemeTypings['colorSchemes'];
 }
 
 function PaginatedTable<T extends object>({
@@ -55,7 +55,7 @@ function PaginatedTable<T extends object>({
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <Th {...column.getHeaderProps()}>
-                    {column.render("Header")}
+                    <>{column.render('Header')}</>
                   </Th>
                 ))}
               </Tr>
@@ -72,7 +72,9 @@ function PaginatedTable<T extends object>({
                 <Tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                      <Td {...cell.getCellProps()}>
+                        <>{cell.render('Cell')}</>
+                      </Td>
                     );
                   })}
                 </Tr>
@@ -81,40 +83,30 @@ function PaginatedTable<T extends object>({
           }
         </Tbody>
       </Table>
-      <Flex p={4} alignItems="center" justifyContent="flex-end">
-        <Text mr={2} fontWeight="bold" fontSize="sm">
+      <Flex alignItems='center' justifyContent='flex-end' p={4}>
+        <Text fontSize='sm' fontWeight='bold' mr={2}>
           Page {pageIndex + 1} of {pageCount}
         </Text>
-        <ButtonGroup
-          isAttached
-          size="sm"
-          variant="ghost"
-          colorScheme="yellow"
-          mr={2}
-        >
-          <Tooltip label="Previous Page">
+        <ButtonGroup isAttached colorScheme='yellow' mr={2} size='sm' variant='ghost'>
+          <Tooltip label='Previous Page'>
             <IconButton
-              isDisabled={!canPreviousPage}
-              aria-label="Previous Page"
+              aria-label='Previous Page'
               icon={<Icon as={FaAngleLeft} />}
+              isDisabled={!canPreviousPage}
               onClick={previousPage}
             />
           </Tooltip>
-          <Tooltip label="Next Page">
+          <Tooltip label='Next Page'>
             <IconButton
-              isDisabled={!canNextPage}
-              aria-label="Next Page"
+              aria-label='Next Page'
               icon={<Icon as={FaAngleRight} />}
+              isDisabled={!canNextPage}
               onClick={nextPage}
             />
           </Tooltip>
         </ButtonGroup>
         <Box>
-          <Select
-            size="sm"
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-          >
+          <Select size='sm' value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
             <option value={10}>10</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
