@@ -10,7 +10,7 @@ const getUser = async (
   const user = await prisma.user.findUnique({
     where: { email },
     include: {
-      orders: { where: { type: orderType }, orderBy: { createdAt: "desc" } },
+      orders: { where: { type: orderType }, orderBy: { createdAt: 'desc' } },
     },
   });
   if (user) {

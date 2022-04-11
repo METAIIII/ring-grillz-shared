@@ -14,30 +14,30 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
   const columns = useMemo<Column[]>(
     () => [
       {
-        Header: "Date",
-        accessor: "createdAt", // accessor is the "key" in the data
-        Cell: ({ value }) => dayjs(value).format("L"),
+        Header: 'Date',
+        accessor: 'createdAt', // accessor is the "key" in the data
+        Cell: ({ value }) => dayjs(value).format('L'),
       },
       {
-        Header: "Amount",
-        accessor: "total",
+        Header: 'Amount',
+        accessor: 'total',
         Cell: ({ value }) => formatAmountForDisplay(value),
       },
       {
-        Header: "Status",
-        accessor: "status",
+        Header: 'Status',
+        accessor: 'status',
         Cell: ({ value }) => <OrderStatusBadge orderStatus={value} />,
       },
       {
-        Header: "",
-        accessor: "id",
+        Header: '',
+        accessor: 'id',
         Cell: ({ value }) => (
           <Link href={`/receipt?order_id=${value}`} passHref>
             <Button
-              as="a"
-              size="sm"
-              variant="outline"
-              colorScheme="yellow"
+              as='a'
+              size='sm'
+              variant='outline'
+              colorScheme='yellow'
               rightIcon={<Icon as={CgExternal} />}
             >
               Details
@@ -54,8 +54,8 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
 
   return (
     <Box p={4} borderWidth={1}>
-      <Heading size="md">My Orders</Heading>
-      <Table {...getTableProps()} colorScheme="yellow">
+      <Heading size='md'>My Orders</Heading>
+      <Table {...getTableProps()} colorScheme='yellow'>
         <Thead>
           {
             // Loop over the header rows
@@ -63,7 +63,7 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <Th {...column.getHeaderProps()}>
-                    {column.render("Header")}
+                    {column.render('Header')}
                   </Th>
                 ))}
               </Tr>
@@ -80,7 +80,7 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
                 <Tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
+                      <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
                     );
                   })}
                 </Tr>

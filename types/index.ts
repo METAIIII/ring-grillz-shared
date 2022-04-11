@@ -41,31 +41,31 @@ export interface CreateOrder {
 
 // Dr Grillz Specific
 export type ToothID =
-  | "11"
-  | "12"
-  | "13"
-  | "14"
-  | "15"
-  | "21"
-  | "22"
-  | "23"
-  | "24"
-  | "25"
-  | "31"
-  | "32"
-  | "33"
-  | "34"
-  | "35"
-  | "41"
-  | "42"
-  | "43"
-  | "44"
-  | "45";
+  | '11'
+  | '12'
+  | '13'
+  | '14'
+  | '15'
+  | '21'
+  | '22'
+  | '23'
+  | '24'
+  | '25'
+  | '31'
+  | '32'
+  | '33'
+  | '34'
+  | '35'
+  | '41'
+  | '42'
+  | '43'
+  | '44'
+  | '45';
 
 export interface Tooth {
   id: ToothID;
   name: string;
-  row: "top" | "bottom";
+  row: 'top' | 'bottom';
   svgPathD: string;
   openFacePathD: string;
   disabled?: boolean;
@@ -112,11 +112,11 @@ export type CreatorStep = {
   icon: IconType;
 };
 export type RingFormFields =
-  | "selectedShape"
-  | "selectedVariant"
-  | "selectedMaterial"
-  | "selectedEngraving"
-  | "size";
+  | 'selectedShape'
+  | 'selectedVariant'
+  | 'selectedMaterial'
+  | 'selectedEngraving'
+  | 'size';
 export type RingFormValues =
   | RingShape
   | RingShapeVariant
