@@ -1,4 +1,4 @@
-import { Link, useBreakpointValue } from '@chakra-ui/react';
+import { Link, useBreakpointValue, useColorModeValue } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -16,6 +16,7 @@ const NavigationItem: React.FC<{
       ? true
       : false;
 
+  const isDark = useColorModeValue(false, true);
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
@@ -27,7 +28,17 @@ const NavigationItem: React.FC<{
         fontFamily='heading'
         fontSize='xl'
         textTransform='uppercase'
-        textColor={isAdmin ? 'red.400' : isActive ? 'yellow.500' : 'yellow.300'}
+        textColor={
+          isAdmin
+            ? 'red.400'
+            : isActive && isDark
+            ? 'yellow.500'
+            : isActive
+            ? 'yellow.600'
+            : isDark
+            ? 'yellow.300'
+            : 'gray.500'
+        }
         borderBottomWidth={isMobile ? 0 : 3}
         borderRightWidth={isMobile ? 4 : 0}
         borderColor={
