@@ -6,8 +6,6 @@ import useSWR from 'swr';
 import { UserResponse } from '../types/apiResponses';
 import fetcher from '../utils/axiosFetcher';
 
-import fetcher from '../shared/utils/axiosFetcher';
-
 const useUser = () => {
   const { data: sessionData } = useSession();
   const [user, setUser] = useState<User | null>(null);
