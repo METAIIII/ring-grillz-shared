@@ -10,9 +10,11 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useContext } from 'react';
 import { FaBars } from 'react-icons/fa';
 
 import useUser from '../../hooks/useUser';
+import { LayoutContext } from '../Layout';
 import NavigationItem from './NavigationItem';
 
 const Navigation = () => {
@@ -50,6 +52,7 @@ const Navigation = () => {
 
 const NavigationItems = () => {
   const user = useUser();
+  const { mode } = useContext(LayoutContext);
 
   return (
     <Stack direction={{ base: "column", md: "row" }} alignItems="flex-end">
@@ -57,7 +60,7 @@ const NavigationItems = () => {
         <NavigationItem href="/admin" label="Admin" isAdmin />
       )}
       <NavigationItem href="/" label="Create" />
-      <NavigationItem href="/preset" label="Presets" />
+      {mode === "RING" && <NavigationItem href="/preset" label="Presets" />}
       <NavigationItem
         href={user ? "/account" : "/api/auth/signin"}
         label={user ? "My Account" : "Login"}
