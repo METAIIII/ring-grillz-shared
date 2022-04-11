@@ -39,85 +39,85 @@ const Header: React.FC<Props> = ({ mode }) => {
   const { data: sessionData } = useSession();
 
   return (
-    <Container maxW='container.xl'>
-      <Flex
-        as='header'
-        pos='relative'
-        flexDir={{ base: 'row-reverse', md: 'row' }}
-        alignItems='center'
-        justifyContent={{ base: 'flex-start', md: 'flex-end' }}
-      >
-        {mode === 'GRILLZ' && (
-          <>
-            <Box
-              pos='absolute'
-              top={0}
-              left={0}
-              w='100%'
-              h='100%'
-              bgImage='url(https://drgrillz.com/wp-content/uploads/2020/12/Banner-Photo-4.jpg)'
-              bgSize='cover'
-              bgRepeat='no-repeat'
-              bgPosition='center'
-              zIndex={-2}
-            />
-            <Box
-              pos='absolute'
-              top={0}
-              left={0}
-              w='100%'
-              h='100%'
-              bgColor={isDark ? 'rgb(33, 35, 41)' : 'rgb(243,245,251)'}
-              opacity={0.72}
-              zIndex={-1}
-            />
-          </>
-        )}
-
-        {!isMobile && (
-          <Box mr='auto'>
-            <Tooltip label='Back home' placement='bottom' hasArrow>
-              <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
-                {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
-              </Link>
-            </Tooltip>
-          </Box>
-        )}
-        {!isMobile && mode === 'GRILLZ' && (
-          <>
-            <Heading
-              fontFamily='cursive'
-              fontWeight={600}
-              style={{
-                marginLeft: '0.8rem',
-              }}
-            >
-              CUSTOM
-            </Heading>
-            <Heading
-              style={{
-                marginLeft: '0.7rem',
-                letterSpacing: '2.7px',
-              }}
-            >
-              GRILLZ BUILDER
-            </Heading>
-          </>
-        )}
-        <Navigation />
-        {sessionData && <LogoutButton />}
-        <DarkModeSwitch />
-        {isMobile && (
-          <Box mr='auto'>
-            <Tooltip label='Back home' placement='bottom' hasArrow>
-              <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
-                {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
-              </Link>
-            </Tooltip>
-          </Box>
-        )}
-      </Flex>
-    </Container>
+    <Box pos='relative'>
+      {mode === 'GRILLZ' && (
+        <>
+          <Box
+            pos='absolute'
+            top={0}
+            left={0}
+            w='100%'
+            h='100%'
+            bgImage='url(https://drgrillz.com/wp-content/uploads/2020/12/Banner-Photo-4.jpg)'
+            bgSize='cover'
+            bgRepeat='no-repeat'
+            bgPosition='center'
+            zIndex={-2}
+          />
+          <Box
+            pos='absolute'
+            top={0}
+            left={0}
+            w='100%'
+            h='100%'
+            bgColor={isDark ? 'rgb(33, 35, 41)' : 'rgb(243,245,251)'}
+            opacity={0.72}
+            zIndex={-1}
+          />
+        </>
+      )}
+      <Container maxW='container.xl'>
+        <Flex
+          as='header'
+          flexDir={{ base: 'row-reverse', md: 'row' }}
+          alignItems='center'
+          justifyContent={{ base: 'flex-start', md: 'flex-end' }}
+        >
+          {!isMobile && (
+            <Box mr='auto'>
+              <Tooltip label='Back home' placement='bottom' hasArrow>
+                <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
+                  {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
+                </Link>
+              </Tooltip>
+            </Box>
+          )}
+          {!isMobile && mode === 'GRILLZ' && (
+            <>
+              <Heading
+                fontFamily='cursive'
+                fontWeight={600}
+                style={{
+                  marginLeft: '0.8rem',
+                }}
+              >
+                CUSTOM
+              </Heading>
+              <Heading
+                style={{
+                  marginLeft: '0.7rem',
+                  letterSpacing: '2.7px',
+                }}
+              >
+                GRILLZ BUILDER
+              </Heading>
+            </>
+          )}
+          <Navigation />
+          {sessionData && <LogoutButton />}
+          <DarkModeSwitch />
+          {isMobile && (
+            <Box mr='auto'>
+              <Tooltip label='Back home' placement='bottom' hasArrow>
+                <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
+                  {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
+                </Link>
+              </Tooltip>
+            </Box>
+          )}
+        </Flex>
+      </Container>
+    </Box>
   );
 };
 
