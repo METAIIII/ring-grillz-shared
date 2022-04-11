@@ -73,6 +73,16 @@ const Header: React.FC<Props> = ({ mode }) => {
             />
           </>
         )}
+
+        {!isMobile && (
+          <Box mr="auto">
+            <Tooltip label="Back home" placement="bottom" hasArrow>
+              <Link href={process.env.NEXT_PUBLIC_HOME_URL} target="_blank">
+                {mode === "GRILLZ" ? <DrGrillzLogo /> : <RingKingzLogo />}
+              </Link>
+            </Tooltip>
+          </Box>
+        )}
         {!isMobile && mode === "GRILLZ" && (
           <>
             <Heading
@@ -93,15 +103,6 @@ const Header: React.FC<Props> = ({ mode }) => {
               GRILLZ BUILDER
             </Heading>
           </>
-        )}
-        {!isMobile && (
-          <Box mr="auto">
-            <Tooltip label="Back home" placement="bottom" hasArrow>
-              <Link href={process.env.NEXT_PUBLIC_HOME_URL} target="_blank">
-                {mode === "GRILLZ" ? <DrGrillzLogo /> : <RingKingzLogo />}
-              </Link>
-            </Tooltip>
-          </Box>
         )}
         <Navigation />
         {sessionData && <LogoutButton />}
