@@ -61,10 +61,19 @@ export const getRingEngravingTotal = (engraving?: RingEngraving): number => {
   return 10000;
 };
 
-export const getRingTotal = (form: RingFormState) => {
+export const getRingTotal = (
+  form: RingFormState,
+  options: { expressShipping: boolean }
+) => {
+  let postage = 0;
+  if (options.expressShipping) {
+    // Add $20 for express shipping option
+    postage = 2000;
+  }
+
   const shapeTotal = getRingShapeTotal(form?.selectedShape);
   const variantTotal = getRingVariantTotal(form?.selectedVariant);
   const materialTotal = getRingMaterialTotal(form?.selectedMaterial);
   const engravingTotal = getRingEngravingTotal(form?.selectedEngraving);
-  return shapeTotal + variantTotal + materialTotal + engravingTotal;
+  return shapeTotal + variantTotal + materialTotal + engravingTotal + postage;
 };

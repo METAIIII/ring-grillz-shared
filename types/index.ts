@@ -35,7 +35,8 @@ export interface CreateOrder {
   paymentType?: OrderPaymentType;
   items: Stripe.Checkout.SessionCreateParams.LineItem[];
   expressShipping?: boolean;
-  data?: FullTeethMaterial[];
+  teethData?: FullTeethMaterial[];
+  ringData?: FullRing[];
 }
 
 // Dr Grillz Specific
