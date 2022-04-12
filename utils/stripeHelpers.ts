@@ -16,7 +16,7 @@ export function formatAmountForDisplay(amount: number): string {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
     style: 'currency',
     currency: CURRENCY,
-    currencyDisplay: 'symbol',
+    currencyDisplay: 'narrowSymbol',
   });
   return numberFormat.format(amount / 100);
 }
