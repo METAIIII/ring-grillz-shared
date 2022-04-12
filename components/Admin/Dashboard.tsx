@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Container, Flex, Icon } from '@chakra-ui/react';
+import { Button, ButtonGroup, Flex, Icon } from '@chakra-ui/react';
 import { OrderType } from '@prisma/client';
 import { useState } from 'react';
 import { FaBox, FaTooth, FaUser } from 'react-icons/fa';
@@ -18,7 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode }) => {
     'orders'
   );
   return (
-    <Container maxW='container.xl'>
+    <>
       <Flex py={4}>
         <ButtonGroup isAttached size='sm' colorScheme='red'>
           <Button
@@ -59,7 +59,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode }) => {
       {page === 'orders' && <OrdersTable />}
       {page === 'teeth' && <TeethTable />}
       {page === 'rings' && <RingsTable />}
-    </Container>
+    </>
   );
 };
 

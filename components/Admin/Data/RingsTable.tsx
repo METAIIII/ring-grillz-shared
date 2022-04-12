@@ -1,4 +1,4 @@
-import { Button, Icon, Image } from '@chakra-ui/react';
+import { Box, Button, Icon } from '@chakra-ui/react';
 import _ from 'lodash';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -28,7 +28,16 @@ const Rings = () => {
       {
         Header: 'Preview',
         accessor: 'previewImage',
-        Cell: ({ value }) => <Image alt='preview' src={value} maxW='32' />,
+        Cell: ({ value }) => (
+          <Box
+            w={20}
+            h={20}
+            bgImage={`url(${value})`}
+            bgRepeat='no-repeat'
+            bgSize='cover'
+            bgPosition='center'
+          />
+        ),
       },
       {
         Header: 'Name',
