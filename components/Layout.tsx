@@ -17,13 +17,15 @@ export const LayoutContext = createContext<{ mode?: OrderType }>({});
 
 const Layout: React.FC<Props> = ({ children, mode, size, title }) => {
   return (
-    <LayoutContext.Provider value={{ mode }}>
-      <NextSeo title={title} />
-      <Header mode={mode} />
-      <Container as='main' p={0} maxW={size}>
-        {children}
-      </Container>
-    </LayoutContext.Provider>
+    <div>
+      <LayoutContext.Provider value={{ mode }}>
+        <NextSeo title={title} />
+        <Header mode={mode} />
+        <Container as='main' p={0} maxW={size}>
+          {children}
+        </Container>
+      </LayoutContext.Provider>
+    </div>
   );
 };
 
