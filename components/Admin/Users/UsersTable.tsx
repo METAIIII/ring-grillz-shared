@@ -71,7 +71,9 @@ const Customers = () => {
 
   return _.isArray(userData) ? (
     <PaginatedTable<User> columns={columns} data={userData} colorScheme='red' />
-  ) : null;
+  ) : (
+    <div />
+  );
 };
 
 export default Customers;

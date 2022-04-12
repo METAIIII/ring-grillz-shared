@@ -124,7 +124,9 @@ const Orders = () => {
         colorScheme='red'
       />
     </>
-  ) : null;
+  ) : (
+    <div />
+  );
 };
 
 export default Orders;
