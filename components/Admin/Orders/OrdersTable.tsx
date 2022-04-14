@@ -76,7 +76,7 @@ const Orders = () => {
           return (
             <ButtonGroup size='sm' variant='outline'>
               <MarkAsShipped order={row.original} />
-              <NextLink href={`/admin/order/${value}`} passHref>
+              <NextLink href={`/receipt?order_id=${value}`} passHref>
                 <Button
                   as='a'
                   colorScheme='red'

@@ -41,7 +41,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode }) => {
               leftIcon={<Icon as={FaTooth} />}
               onClick={() => setPage('teeth')}
             >
-              Teeth
+              Grillz
             </Button>
           )}
           {mode === 'RING' && (

@@ -1,4 +1,4 @@
-import { Order, OrderType } from '@prisma/client';
+import { Order, OrderStatus, OrderType } from '@prisma/client';
 
 import prisma from '../../lib/prisma';
 import {
@@ -13,12 +13,13 @@ import {
 import { getRingTotal, getTeethTotal } from '../getTotals';
 import { getRingFromMetadata, getTeethFromMetadata } from '../stripeHelpers';
 
-export const getOrders = async (type: OrderType) => {
+export const getOrders = async (type: OrderType, status?: OrderStatus) => {
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
       where: {
         type,
+        status,
       },
     });
     if (!orders) return null;

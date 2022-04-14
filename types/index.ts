@@ -174,6 +174,7 @@ export interface UpdateRingMaterial {
   emissive: string | null;
   previewImage: string | null;
   price: number;
+  variantIds: string[];
 }
 export interface CreateEngraving {
   type: RingEngravingType;
