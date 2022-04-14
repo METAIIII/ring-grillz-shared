@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { FullCheckoutSession } from '../types/stripe';
 import { FullOrder, FullRing, FullTeethMaterial, FullUser } from './';
 
-type ApiResponse<T> = {
+export type ApiResponse<T> = {
   data?: T;
   error?: string;
 };

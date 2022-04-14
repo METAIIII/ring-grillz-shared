@@ -52,13 +52,16 @@ const Navigation = () => {
 
 const NavigationItems = () => {
   const user = useUser();
+  const isAdmin = user?.role === 'ADMIN';
   const { mode } = useContext(LayoutContext);
 
   return (
-    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end'>
-      {user?.role === 'ADMIN' && (
-        <NavigationItem href='/admin' label='Admin' isAdmin />
-      )}
+    <Stack
+      mr={{ base: 0, md: 4 }}
+      direction={{ base: 'column', md: 'row' }}
+      alignItems='flex-end'
+    >
+      {isAdmin && <NavigationItem href='/admin' label='Admin' isAdmin />}
       <NavigationItem href='/' label='Create' />
       {mode === 'RING' && <NavigationItem href='/preset' label='Presets' />}
       <NavigationItem

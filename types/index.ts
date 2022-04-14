@@ -9,6 +9,7 @@ import {
   RingMaterial,
   RingShape,
   RingShapeVariant,
+  StateEnum,
   TeethMaterial,
   TeethMaterialOption,
   TeethMaterialVariant,
@@ -27,6 +28,15 @@ export interface FullOrder extends Order {
 }
 
 // Shared Database Queries / Mutations
+export interface UpdateUser {
+  name: string;
+  street: string;
+  street2: string;
+  suburb: string;
+  state: StateEnum;
+  postcode: string;
+  image: string;
+}
 export interface CreateOrder {
   email?: string;
   customerNotes?: string;
@@ -37,6 +47,13 @@ export interface CreateOrder {
   expressShipping?: boolean;
   teethData?: FullTeethMaterial[];
   ringData?: FullRing[];
+}
+export interface UpdateOrder {
+  email?: string;
+  customerNotes?: string;
+  status: OrderStatus;
+  paymentType?: OrderPaymentType;
+  expressShipping?: boolean;
 }
 
 // Dr Grillz Specific
@@ -138,6 +155,25 @@ export interface UpdateRing {
   name: string;
   order: number;
   previewImage: string;
+}
+export interface UpdateRingVariant {
+  name: string;
+  modelUrl: string;
+  previewImage: string;
+  hasEngraving: boolean;
+  hasJewels: boolean;
+  price: number;
+}
+export interface UpdateRingMaterial {
+  name: string;
+  ambientOcclusion: string | null;
+  baseColor: string | null;
+  metallic: string | null;
+  roughness: string | null;
+  normal: string | null;
+  emissive: string | null;
+  previewImage: string | null;
+  price: number;
 }
 export interface CreateEngraving {
   type: RingEngravingType;
