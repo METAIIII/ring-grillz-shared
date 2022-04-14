@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FaCheck, FaTimes } from 'react-icons/fa';
@@ -71,6 +72,8 @@ const UserInfo: React.FC<{ email: string }> = ({ email }) => {
     },
     resolver: yupResolver(schema),
   });
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes('admin');
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
@@ -97,7 +100,7 @@ const UserInfo: React.FC<{ email: string }> = ({ email }) => {
   return (
     <Box as='form' onSubmit={handleSubmit(onSubmit)} p={4} borderWidth={1}>
       <Heading size='md' mb={2}>
-        My Details
+        {isAdmin ? 'Customer' : 'My'} Details
       </Heading>
       <FormControl mb={4}>
         <FormLabel>Name</FormLabel>
