@@ -113,7 +113,7 @@ export interface RingFormState {
   selectedVariant?: RingShapeVariant;
   selectedMaterial?: RingMaterial;
   selectedEngraving?: RingEngraving;
-  size?: number;
+  size?: RingFormSize;
 }
 export type RingFormAsMetadata = {
   shapeID: string;
@@ -121,6 +121,7 @@ export type RingFormAsMetadata = {
   materialID: string;
   engravingID: string;
   size: string;
+  sizeFormat: string;
   expressShipping: string;
 };
 export type CreatorStep = {
@@ -139,7 +140,11 @@ export type RingFormValues =
   | RingShapeVariant
   | RingMaterial
   | RingEngraving
-  | number;
+  | RingFormSize;
+export type RingFormSize = {
+  value: number;
+  format: 'mm' | 'US' | 'UK';
+}
 
 export interface RingModelProps extends JSX.IntrinsicAttributes {
   material?: RingMaterial;

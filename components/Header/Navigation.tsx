@@ -63,7 +63,6 @@ const NavigationItems = () => {
     >
       {isAdmin && <NavigationItem href='/admin' label='Admin' isAdmin />}
       <NavigationItem href='/' label='Create' />
-      {mode === 'RING' && <NavigationItem href='/preset' label='Presets' />}
       <NavigationItem
         href={user ? '/account' : '/api/auth/signin'}
         label={user ? 'My Account' : 'Login'}

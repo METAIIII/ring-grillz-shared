@@ -30,7 +30,7 @@ const DrGrillzLogo = () => (
 );
 
 const RingKingzLogo = () => (
-  <Image alt='Ring Kingz' src='/logo.svg' w='80px' p={2} />
+  <Image alt='Ring Kingz' src='/logo.svg' w='120px' p={2} />
 );
 
 const Header: React.FC<Props> = ({ mode }) => {

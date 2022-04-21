@@ -54,7 +54,7 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
             }
             mr={1}
           >
-            {`Payment Status: ${order?.status ?? ''}`}
+            {`Status: ${order?.status ?? ''}`}
           </Badge>
           {order?.hasSentOrderEmail && order.hasSentReceiptEmail && (
             <Tooltip hasArrow label='Receipt Emailed'>
