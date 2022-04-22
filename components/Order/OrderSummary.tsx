@@ -13,7 +13,7 @@ import { formatAmountForDisplay } from '../../utils/stripeHelpers';
 interface Props {
   order: FullOrder;
   checkout?: FullCheckoutSession;
-  itemsList: React.ReactNode[];
+  itemsList: React.ReactNode;
 }
 
 const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
