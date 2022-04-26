@@ -51,7 +51,20 @@ export const updateOrder = async (id: string, data: UpdateOrder) => {
   try {
     const updatedOrder = await prisma.order.update({
       where: { id },
-      data,
+      data: {
+        customerNotes: data.customerNotes,
+        status: data.status,
+        paymentType: data.paymentType,
+        expressShipping: data.expressShipping,
+        email: data.email ?? undefined,
+        user: data.email
+          ? {
+              connect: {
+                email: data.email,
+              },
+            }
+          : undefined,
+      },
       include: {
         items: true,
         user: true,

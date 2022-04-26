@@ -28,6 +28,10 @@ export interface FullOrder extends Order {
 }
 
 // Shared Database Queries / Mutations
+export interface CreateUser {
+  email: string;
+  name: string;
+}
 export interface UpdateUser {
   name: string;
   street: string;
@@ -49,10 +53,10 @@ export interface CreateOrder {
   ringData?: FullRing[];
 }
 export interface UpdateOrder {
-  email?: string;
-  customerNotes?: string;
+  email: string | null;
+  customerNotes: string | null;
   status: OrderStatus;
-  paymentType?: OrderPaymentType;
+  paymentType: OrderPaymentType | null;
   expressShipping?: boolean;
 }
 
@@ -144,7 +148,7 @@ export type RingFormValues =
 export type RingFormSize = {
   value: number;
   format: 'mm' | 'US' | 'UK';
-}
+};
 
 export interface RingModelProps extends JSX.IntrinsicAttributes {
   material?: RingMaterial;
