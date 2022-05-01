@@ -3,11 +3,11 @@ import { Token } from '@chakra-ui/styled-system/dist/declarations/src/utils';
 import { OrderType } from '@prisma/client';
 import * as CSS from 'csstype';
 import { NextSeo } from 'next-seo';
-import { createContext } from 'react';
+import { createContext, PropsWithChildren } from 'react';
 
 import Header from '../components/Header';
 
-interface Props {
+interface LayoutProps {
   title?: string;
   mode: OrderType;
   size: Token<CSS.Property.MaxWidth | number, 'sizes'>;
@@ -15,7 +15,12 @@ interface Props {
 
 export const LayoutContext = createContext<{ mode?: OrderType }>({});
 
-const Layout: React.FC<Props> = ({ children, mode, size, title }) => {
+const Layout: React.FC<PropsWithChildren<LayoutProps>> = ({
+  children,
+  mode,
+  size,
+  title,
+}) => {
   return (
     <LayoutContext.Provider value={{ mode }}>
       <NextSeo title={title} />
