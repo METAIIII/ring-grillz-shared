@@ -55,7 +55,7 @@ function PaginatedTable<T extends object>({
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <Th {...column.getHeaderProps()}>
-                    {column.render('Header')}
+                    <>{column.render('Header')}</>
                   </Th>
                 ))}
               </Tr>
@@ -72,7 +72,9 @@ function PaginatedTable<T extends object>({
                 <Tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                      <Td {...cell.getCellProps()}>
+                        <>{cell.render('Cell')}</>
+                      </Td>
                     );
                   })}
                 </Tr>

@@ -67,7 +67,7 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <Th {...column.getHeaderProps()}>
-                    {column.render('Header')}
+                    <>{column.render('Header')}</>
                   </Th>
                 ))}
               </Tr>
@@ -84,7 +84,9 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
                 <Tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                      <Td {...cell.getCellProps()}>
+                        <>{cell.render('Cell')}</>
+                      </Td>
                     );
                   })}
                 </Tr>
