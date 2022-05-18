@@ -35,7 +35,7 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
           Order Details
         </Heading>
         <Box px={2}>
-          <Text>
+          <Text as='div'>
             <Icon as={FaClock} mr={2} />
             {dayjs(order.createdAt).format('LLL')}
           </Text>

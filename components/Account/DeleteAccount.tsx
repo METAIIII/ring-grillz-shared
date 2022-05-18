@@ -66,8 +66,7 @@ const DeleteAccount: React.FC<{
             to your order history. If you log in to this website again, a new
             user account will be created.
           </Text>
-          <Text textColor='red.400'></Text>
-          {error && error}
+          <Text textColor='red.400'>{error && error}</Text>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
