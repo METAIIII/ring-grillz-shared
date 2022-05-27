@@ -163,6 +163,8 @@ async function main() {
       metallic: '1',
       roughness: '0.01',
       price: 35000,
+      previewImage:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665067/ring-kingz/material_gold_cpwubk.png',
     },
   });
   const silverMaterial = await prisma.ringMaterial.create({
@@ -172,6 +174,8 @@ async function main() {
       metallic: '1',
       roughness: '0.01',
       price: 15000,
+      previewImage:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665067/ring-kingz/material_silver_yhgept.png',
     },
   });
   const whiteGoldMaterial = await prisma.ringMaterial.create({
@@ -181,6 +185,8 @@ async function main() {
       metallic: '1',
       roughness: '0.2',
       price: 25000,
+      previewImage:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665068/ring-kingz/material_whitegold_jqrqmq.png',
     },
   });
 
@@ -194,7 +200,7 @@ async function main() {
         create: {
           name: 'Lasered Band',
           modelUrl:
-            'https://res.cloudinary.com/meta-iiii/image/upload/v1650814386/ring-kingz/simple_iqyexa.glb',
+            'https://res.cloudinary.com/meta-iiii/image/upload/v1653665441/ring-kingz/simple_uagu58.glb',
           previewImage:
             'https://res.cloudinary.com/meta-iiii/image/upload/v1650965822/ring-kingz/simplelaser_s9s1j3.jpg',
           hasEngraving: true,
@@ -223,7 +229,7 @@ async function main() {
           {
             name: 'Circle 1-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653139626/ring-kingz/circle_mwwm0d.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/circle_dghgnb.glb',
             previewImage:
               'https://res.cloudinary.com/meta-iiii/image/upload/v1650965821/ring-kingz/circle_yllez1.jpg',
             hasEngraving: true,
@@ -240,7 +246,7 @@ async function main() {
           {
             name: 'Circle 3-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653139626/ring-kingz/circle_mwwm0d.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/circle_dghgnb.glb',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -269,7 +275,7 @@ async function main() {
           {
             name: 'Oval 1-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1645437638/ring-kingz/oval_khuiy1.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -285,7 +291,7 @@ async function main() {
           {
             name: 'Oval 3-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1645437638/ring-kingz/oval_khuiy1.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -314,7 +320,7 @@ async function main() {
           {
             name: 'Square 1-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1650814386/ring-kingz/square_ctfgmh.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
             previewImage:
               'https://res.cloudinary.com/meta-iiii/image/upload/v1650965821/ring-kingz/square1_sp9vrh.jpg',
             hasEngraving: true,
@@ -331,7 +337,7 @@ async function main() {
           {
             name: 'Square 3-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1650814386/ring-kingz/square_ctfgmh.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -359,8 +365,7 @@ async function main() {
         create: [
           {
             name: 'Cushion 1-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1645437634/ring-kingz/cushion_cvik9x.glb',
+            modelUrl: '',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -375,8 +380,7 @@ async function main() {
           },
           {
             name: 'Cushion 3-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1645437634/ring-kingz/cushion_cvik9x.glb',
+            modelUrl: '',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -405,7 +409,7 @@ async function main() {
           {
             name: 'Hexagon 1-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1645437635/ring-kingz/hexagon_fqhqkd.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665980/ring-kingz/hexagon_lthcrl.glb',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
@@ -421,7 +425,7 @@ async function main() {
           {
             name: 'Hexagon 3-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1645437635/ring-kingz/hexagon_fqhqkd.glb',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665980/ring-kingz/hexagon_lthcrl.glb',
             previewImage: '',
             hasEngraving: true,
             hasJewels: false,
