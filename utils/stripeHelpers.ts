@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Stripe from 'stripe';
 
 import { CURRENCY, TOOTH_SEPARATOR } from '../config';
@@ -86,7 +87,7 @@ export const getRingFromMetadata = (
     selectedVariant: variant,
     selectedMaterial: material,
     selectedEngraving: { id: parsedMetadata.engravingID },
-    size:{
+    size: {
       value: parseInt(parsedMetadata.size),
       format: parsedMetadata.sizeFormat,
     },
@@ -148,4 +149,11 @@ export const getTeethFromMetadata = (
       selectedTeeth,
     })
   ) as TeethForm;
+};
+
+export const isNewCartItem = (
+  item: Stripe.Checkout.SessionCreateParams.LineItem,
+  cartItems: Stripe.Checkout.SessionCreateParams.LineItem[]
+) => {
+  return !_.find(cartItems, item);
 };
