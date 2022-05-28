@@ -183,7 +183,7 @@ async function main() {
       name: 'White Gold',
       baseColor: '#FFFDD1',
       metallic: '1',
-      roughness: '0.2',
+      roughness: '0.05',
       price: 25000,
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1653665068/ring-kingz/material_whitegold_jqrqmq.png',
@@ -231,7 +231,7 @@ async function main() {
             modelUrl:
               'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/circle_dghgnb.glb',
             previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1650965821/ring-kingz/circle_yllez1.jpg',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/circle-1-face_zdjxss.png',
             hasEngraving: true,
             hasJewels: false,
             price: 15000,
@@ -246,8 +246,9 @@ async function main() {
           {
             name: 'Circle 3-Face',
             modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/circle_dghgnb.glb',
-            previewImage: '',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653717277/ring-kingz/circle-3_wixpxd.glb',
+            previewImage:
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653715775/ring-kingz/circle-3-face_lvokzh.png',
             hasEngraving: true,
             hasJewels: false,
             price: 17500,
@@ -276,7 +277,8 @@ async function main() {
             name: 'Oval 1-Face',
             modelUrl:
               'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
-            previewImage: '',
+            previewImage:
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/oval-1-face_ovu3f7.png',
             hasEngraving: true,
             hasJewels: false,
             price: 15000,
@@ -322,7 +324,7 @@ async function main() {
             modelUrl:
               'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
             previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1650965821/ring-kingz/square1_sp9vrh.jpg',
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/square-1-face_tuomnm.png',
             hasEngraving: true,
             hasJewels: false,
             price: 15000,
@@ -410,7 +412,8 @@ async function main() {
             name: 'Hexagon 1-Face',
             modelUrl:
               'https://res.cloudinary.com/meta-iiii/image/upload/v1653665980/ring-kingz/hexagon_lthcrl.glb',
-            previewImage: '',
+            previewImage:
+              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/hexagon-1-face_kxhuzt.png',
             hasEngraving: true,
             hasJewels: false,
             price: 15000,

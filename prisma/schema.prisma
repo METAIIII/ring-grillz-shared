@@ -143,6 +143,8 @@ model RingShapeVariant {
   name         String         @unique
   modelUrl     String
   previewImage String         @db.VarChar(512)
+  templatePng  String?        @db.VarChar(512)
+  templatePsd  String?        @db.VarChar(512)
   materials    RingMaterial[]
   hasEngraving Boolean        @default(true)
   hasJewels    Boolean        @default(false)
