@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Heading, Icon, SimpleGrid, Text, Tooltip } from '@chakra-ui/react';
+import { Badge, Box, Button, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import React from 'react';
 import { FaClock, FaEnvelope, FaShippingFast, FaStripeS } from 'react-icons/fa';
@@ -39,37 +39,30 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
             <Icon as={FaClock} mr={2} />
             {dayjs(order.createdAt).format('LLL')}
           </Text>
-          <Badge fontFamily='mono' mr={1}>
-            ID: {order.id}
-          </Badge>
-          <Badge
-            colorScheme={
-              order.status === 'PAID'
-                ? 'green'
-                : order.status === 'PENDING'
-                ? 'orange'
-                : order.status === 'SHIPPED'
-                ? 'blue'
-                : 'red'
-            }
-            mr={1}
-          >
-            {`Status: ${order?.status ?? ''}`}
-          </Badge>
-          {order?.hasSentOrderEmail && order.hasSentReceiptEmail && (
-            <Tooltip hasArrow label='Receipt Emailed'>
-              <Badge mr={1}>
-                <Icon as={FaEnvelope} />
+          <Stack spacing={1} alignItems='flex-start'>
+            <Badge fontFamily='mono'>ID: {order.id}</Badge>
+            <Badge
+              colorScheme={
+                order.status === 'PAID' || order.status === 'SHIPPED'
+                  ? 'green'
+                  : order.status === 'PENDING'
+                  ? 'orange'
+                  : 'red'
+              }
+            >
+              {`Status: ${order?.status ?? ''}`}
+            </Badge>
+            {order?.hasSentOrderEmail && order.hasSentReceiptEmail && (
+              <Badge colorScheme='teal' display='flex' alignItems='center'>
+                <Icon as={FaEnvelope} mr={1} /> Emails sent
               </Badge>
-            </Tooltip>
-          )}
-          {order.status === 'SHIPPED' && (
-            <Tooltip hasArrow label='Order Shipped'>
-              <Badge mr={1}>
-                <Icon as={FaShippingFast} />
+            )}
+            {order.status !== 'SHIPPED' && (
+              <Badge colorScheme='blue' display='flex' alignItems='center'>
+                <Icon as={FaShippingFast} mr={1} /> Order Shipped
               </Badge>
-            </Tooltip>
-          )}
+            )}
+          </Stack>
           {checkout?.payment_intent?.charges.data[0]?.receipt_url && (
             <Box pt={2}>
               <Button
