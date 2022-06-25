@@ -2,7 +2,7 @@ import { Button, Icon } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { FaCheck, FaSquare } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 import { useSWRConfig } from 'swr';
 
 import { OrderResponse } from '../../../types/apiResponses';
@@ -34,7 +34,7 @@ const MarkAsShipped: React.FC<Props> = ({ order }) => {
     <Button
       isLoading={loading}
       colorScheme='blue'
-      leftIcon={<Icon as={isShipped ? FaCheck : FaSquare} />}
+      leftIcon={isShipped ? <Icon as={FaCheck} /> : undefined}
       onClick={handleClick}
     >
       {isShipped ? 'Shipped' : 'Mark as sent'}

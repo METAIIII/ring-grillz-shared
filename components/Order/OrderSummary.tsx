@@ -57,7 +57,7 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
                 <Icon as={FaEnvelope} mr={1} /> Emails sent
               </Badge>
             )}
-            {order.status !== 'SHIPPED' && (
+            {order.status === 'SHIPPED' && (
               <Badge colorScheme='blue' display='flex' alignItems='center'>
                 <Icon as={FaShippingFast} mr={1} /> Order Shipped
               </Badge>
