@@ -37,7 +37,7 @@ const Orders = () => {
       {
         Header: 'Date',
         accessor: 'createdAt',
-        Cell: ({ value }) => dayjs(value).format('L'),
+        Cell: ({ value }) => <>{dayjs(value).format('L')}</>,
       },
       {
         Header: 'Customer',
@@ -49,7 +49,7 @@ const Orders = () => {
       {
         Header: 'Amount',
         accessor: 'total',
-        Cell: ({ value }) => formatAmountForDisplay(value),
+        Cell: ({ value }) => <>{formatAmountForDisplay(value)}</>,
       },
       {
         Header: 'Status',
