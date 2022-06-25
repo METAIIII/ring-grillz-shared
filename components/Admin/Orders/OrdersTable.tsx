@@ -61,11 +61,13 @@ const Orders = () => {
         accessor: 'stripeId',
         Cell: ({ value }) => {
           return (
-            !!value && (
-              <AsyncCheckoutLink checkoutId={value}>
-                {value.substring(0, 10)}...
-              </AsyncCheckoutLink>
-            )
+            <>
+              {!!value && (
+                <AsyncCheckoutLink checkoutId={value}>
+                  {value.substring(0, 10)}...
+                </AsyncCheckoutLink>
+              )}
+            </>
           );
         },
       },
