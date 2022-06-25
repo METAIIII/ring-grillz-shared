@@ -17,12 +17,12 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
       {
         Header: 'Date',
         accessor: 'createdAt', // accessor is the "key" in the data
-        Cell: ({ value }) => dayjs(value).format('L'),
+        Cell: ({ value }) => <>{dayjs(value).format('L')}</>,
       },
       {
         Header: 'Amount',
         accessor: 'total',
-        Cell: ({ value }) => formatAmountForDisplay(value),
+        Cell: ({ value }) => <>{formatAmountForDisplay(value)}</>,
       },
       {
         Header: 'Status',
