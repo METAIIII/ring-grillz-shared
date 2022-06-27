@@ -131,31 +131,21 @@ model LineItem {
 
 // Ring Kingz Specific
 model RingShape {
-  id           String             @id @default(cuid())
-  order        Int                @default(0)
-  name         String             @unique
-  previewImage String             @db.VarChar(512)
-  variants     RingShapeVariant[]
-}
-
-model RingShapeVariant {
-  id           String         @id @default(cuid())
-  name         String         @unique
-  modelUrl     String
-  previewImage String         @db.VarChar(512)
-  templatePng  String?        @db.VarChar(512)
-  templatePsd  String?        @db.VarChar(512)
-  materials    RingMaterial[]
-  hasEngraving Boolean        @default(true)
-  hasJewels    Boolean        @default(false)
-  jewels       RingJewel[]
-  price        Int
-  baseShape    RingShape      @relation(fields: [baseShapeId], references: [id], onDelete: Cascade)
-  baseShapeId  String
+  id            String         @id @default(cuid())
+  order         Int            @default(0)
+  name          String         @unique
+  previewImage  String         @db.VarChar(512)
+  modelUrl      String
+  templateFront String?        @db.VarChar(512)
+  templateSide1 String?        @db.VarChar(512)
+  templateSide2 String?        @db.VarChar(512)
+  templateInner String?        @db.VarChar(512)
+  materials     RingMaterial[]
+  price         Int
 }
 
 model RingMaterial {
-  id               String             @id @default(cuid())
+  id               String      @id @default(cuid())
   name             String
   ambientOcclusion String?
   baseColor        String?
@@ -163,32 +153,32 @@ model RingMaterial {
   roughness        String?
   normal           String?
   emissive         String?
-  previewImage     String?            @db.VarChar(512)
-  shapes           RingShapeVariant[]
+  previewImage     String?     @db.VarChar(512)
+  shapes           RingShape[]
   price            Int
 }
 
 model RingEngraving {
   id         String            @id @default(cuid())
   type       RingEngravingType
+  face       RingFace          @default(FRONT)
   imageUrl   String?           @db.VarChar(512)
   canvasData String?           @db.MediumText
   text       String?
   fontFamily String?
 }
 
+enum RingFace {
+  FRONT
+  SIDE1
+  SIDE2
+  INNER
+}
+
 enum RingEngravingType {
   TEXT
   IMAGE
-}
-
-model RingJewel {
-  id           String             @id @default(cuid())
-  name         String             @unique
-  modelUrl     String
-  previewImage String             @db.VarChar(512)
-  price        Int
-  shapes       RingShapeVariant[]
+  PRESET
 }
 
 // Dr Grillz Specific

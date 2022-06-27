@@ -1,4 +1,4 @@
-import { RingEngraving, RingMaterial, RingShape, RingShapeVariant } from '@prisma/client';
+import { RingMaterial, RingShape } from '@prisma/client';
 
 import { RingFormState, TeethForm } from '../types';
 
@@ -45,20 +45,24 @@ export const getTeethTotal = (
 // Ring Kingz Specific
 export const getRingShapeTotal = (shape?: RingShape): number => {
   if (!shape) return 0;
-  return 0;
-};
-export const getRingVariantTotal = (variant?: RingShapeVariant): number => {
-  if (!variant) return 0;
-  return variant.price;
+  return shape.price;
 };
 export const getRingMaterialTotal = (material?: RingMaterial): number => {
   if (!material) return 0;
   return material.price;
 };
-export const getRingEngravingTotal = (engraving?: RingEngraving): number => {
-  if (!engraving) return 0;
-  // Fixed cost at $100
-  return 10000;
+export const getRingEngravingTotal = (
+  engravings?: RingFormState['selectedEngravings']
+): number => {
+  if (!engravings) return 0;
+  let total: number = 0;
+
+  // Loop through each engraving and add the price
+  Object.values(engravings).forEach((engraving) => {
+    total += 10000;
+  });
+
+  return total;
 };
 
 export const getRingTotal = (
@@ -72,8 +76,7 @@ export const getRingTotal = (
   }
 
   const shapeTotal = getRingShapeTotal(form?.selectedShape);
-  const variantTotal = getRingVariantTotal(form?.selectedVariant);
   const materialTotal = getRingMaterialTotal(form?.selectedMaterial);
-  const engravingTotal = getRingEngravingTotal(form?.selectedEngraving);
-  return shapeTotal + variantTotal + materialTotal + engravingTotal + postage;
+  const engravingTotal = getRingEngravingTotal(form?.selectedEngravings);
+  return shapeTotal + materialTotal + engravingTotal + postage;
 };

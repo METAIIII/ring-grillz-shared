@@ -61,9 +61,13 @@ export const convertRingToMetadata = (
 ): RingFormAsMetadata => {
   return {
     shapeID: form.selectedShape?.id ?? '',
-    variantID: form.selectedVariant?.id ?? '',
     materialID: form.selectedMaterial?.id ?? '',
-    engravingID: form.selectedEngraving?.id ?? '',
+    engravingIDs: JSON.stringify({
+      FRONT: form.selectedEngravings.FRONT?.id,
+      SIDE1: form.selectedEngravings.SIDE1?.id,
+      SIDE2: form.selectedEngravings.SIDE2?.id,
+      INNER: form.selectedEngravings.INNER?.id,
+    }),
     size: form.size?.value.toString() ?? '',
     sizeFormat: form.size?.format ?? 'US',
     expressShipping: options.expressShipping.toString(),
@@ -75,18 +79,15 @@ export const getRingFromMetadata = (
   data: FullRing[]
 ): RingFormState => {
   const shape = data.find((shape) => shape.id === parsedMetadata.shapeID);
-  const variant = shape?.variants.find(
-    (variant) => variant.id === parsedMetadata.variantID
-  );
-  const material = variant?.materials.find(
+
+  const material = shape?.materials.find(
     (material) => material.id === parsedMetadata.materialID
   );
 
   return {
     selectedShape: shape,
-    selectedVariant: variant,
     selectedMaterial: material,
-    selectedEngraving: { id: parsedMetadata.engravingID },
+    selectedEngravings: JSON.parse(parsedMetadata.engravingIDs),
     size: {
       value: parseInt(parsedMetadata.size),
       format: parsedMetadata.sizeFormat,

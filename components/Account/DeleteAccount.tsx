@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { signOut } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 /* eslint-disable react-hooks/exhaustive-deps */
 const DeleteAccount: React.FC<{

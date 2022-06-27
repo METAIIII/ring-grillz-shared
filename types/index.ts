@@ -6,9 +6,9 @@ import {
   OrderType,
   RingEngraving,
   RingEngravingType,
+  RingFace,
   RingMaterial,
   RingShape,
-  RingShapeVariant,
   StateEnum,
   TeethMaterial,
   TeethMaterialOption,
@@ -31,6 +31,12 @@ export interface FullOrder extends Order {
 export interface CreateUser {
   email: string;
   name: string;
+  street?: string;
+  street2?: string;
+  suburb?: string;
+  state?: StateEnum;
+  postcode?: string;
+  image?: string;
 }
 export interface UpdateUser {
   name: string;
@@ -114,16 +120,15 @@ export type FullTeethMaterial = TeethMaterial & {
 // Ring Kingz Specific
 export interface RingFormState {
   selectedShape?: RingShape;
-  selectedVariant?: RingShapeVariant;
   selectedMaterial?: RingMaterial;
-  selectedEngraving?: RingEngraving;
+  selectedFace: RingFace;
+  selectedEngravings: Partial<Record<RingFace, RingEngraving>>;
   size?: RingFormSize;
 }
 export type RingFormAsMetadata = {
   shapeID: string;
-  variantID: string;
   materialID: string;
-  engravingID: string;
+  engravingIDs: string;
   size: string;
   sizeFormat: string;
   expressShipping: string;
@@ -132,18 +137,19 @@ export type CreatorStep = {
   index: number;
   label: string;
   icon: IconType;
+  onClick: () => void;
 };
 export type RingFormFields =
   | 'selectedShape'
-  | 'selectedVariant'
   | 'selectedMaterial'
-  | 'selectedEngraving'
+  | 'selectedEngravings'
+  | 'selectedFace'
   | 'size';
 export type RingFormValues =
   | RingShape
-  | RingShapeVariant
   | RingMaterial
-  | RingEngraving
+  | Partial<Record<RingFace, RingEngraving>>
+  | RingFace
   | RingFormSize;
 export type RingFormSize = {
   value: number;
@@ -154,23 +160,14 @@ export interface RingModelProps extends JSX.IntrinsicAttributes {
   material?: RingMaterial;
   displacement?: string;
 }
-export interface FullVariant extends RingShapeVariant {
-  materials: RingMaterial[];
-}
 export interface FullRing extends RingShape {
-  variants: FullVariant[];
+  materials: RingMaterial[];
 }
 export interface UpdateRing {
   name: string;
   order: number;
   previewImage: string;
-}
-export interface UpdateRingVariant {
-  name: string;
   modelUrl: string;
-  previewImage: string;
-  hasEngraving: boolean;
-  hasJewels: boolean;
   price: number;
 }
 export interface UpdateRingMaterial {
@@ -183,12 +180,23 @@ export interface UpdateRingMaterial {
   emissive: string | null;
   previewImage: string | null;
   price: number;
-  variantIds: string[];
 }
 export interface CreateEngraving {
   type: RingEngravingType;
+  face: RingFace;
   imageUrl: string | null;
   canvasData: string | null;
   text: string | null;
   fontFamily: string | null;
+  imageOption?: 'standard' | 'drawing' | 'invert' | 'engraving';
+}
+export interface UpdateEngraving {
+  id: string;
+  type?: RingEngravingType;
+  face?: RingFace;
+  imageUrl?: string;
+  canvasData?: string;
+  text?: string;
+  fontFamily?: string;
+  imageOption?: 'standard' | 'drawing' | 'invert' | 'engraving';
 }

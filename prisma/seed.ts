@@ -22,7 +22,7 @@ async function main() {
             name: 'Open-Face',
             previewImage: '/img/examples/chrome_openFace.jpg',
             toothBgImage: '/img/toothmasks/chrome_polished.jpg',
-            price: 5000,
+            price: 10000,
             singleRowOnly: true,
           },
         ],
@@ -48,7 +48,7 @@ async function main() {
             name: 'Open-Face',
             previewImage: '/img/examples/fauxGold_openFace.jpg',
             toothBgImage: '/img/toothmasks/fauxGold_polished.jpg',
-            price: 5000,
+            price: 10000,
             singleRowOnly: true,
           },
         ],
@@ -74,14 +74,14 @@ async function main() {
             name: 'Open-Face',
             previewImage: '/img/examples/gold_openFace.jpg',
             toothBgImage: '/img/toothmasks/gold_polished.jpg',
-            price: 0,
+            price: 5000,
             singleRowOnly: false,
           },
           {
             name: 'Pineapple',
             previewImage: '/img/examples/gold_pineapple.jpg',
             toothBgImage: '/img/toothmasks/gold_pineapple.jpg',
-            price: 0,
+            price: 2500,
             singleRowOnly: false,
           },
         ],
@@ -119,21 +119,21 @@ async function main() {
             name: 'Silver',
             previewImage: '/img/examples/premium_silver.jpg',
             toothBgImage: '/img/toothmasks/premium_silver.jpg',
-            price: 10000,
+            price: 5000,
             singleRowOnly: false,
           },
           {
             name: 'White Gold',
             previewImage: '/img/examples/premium_whiteGold.jpg',
             toothBgImage: '/img/toothmasks/premium_whiteGold.jpg',
-            price: 10000,
+            price: 20000,
             singleRowOnly: false,
           },
           {
             name: 'LV',
             previewImage: '/img/examples/premium_LV.jpg',
             toothBgImage: '/img/toothmasks/premium_LV.jpg',
-            price: 10000,
+            price: 25000,
             singleRowOnly: false,
           },
           {
@@ -196,24 +196,16 @@ async function main() {
       name: 'Simple',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433213/ring-kingz/simple_preview_eu8jqa.png',
-      variants: {
-        create: {
-          name: 'Lasered Band',
-          modelUrl:
-            'https://res.cloudinary.com/meta-iiii/image/upload/v1653665441/ring-kingz/simple_uagu58.glb',
-          previewImage:
-            'https://res.cloudinary.com/meta-iiii/image/upload/v1650965822/ring-kingz/simplelaser_s9s1j3.jpg',
-          hasEngraving: true,
-          hasJewels: false,
-          price: 10000,
-          materials: {
-            connect: [
-              { id: goldMaterial.id },
-              { id: silverMaterial.id },
-              { id: whiteGoldMaterial.id },
-            ],
-          },
-        },
+
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665441/ring-kingz/simple_uagu58.glb',
+      price: 10000,
+      materials: {
+        connect: [
+          { id: goldMaterial.id },
+          { id: silverMaterial.id },
+          { id: whiteGoldMaterial.id },
+        ],
       },
     },
   });
@@ -224,42 +216,14 @@ async function main() {
       name: 'Circle',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433213/ring-kingz/circle_preview_e37hn6.png',
-      variants: {
-        create: [
-          {
-            name: 'Circle 1-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/circle_dghgnb.glb',
-            previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/circle-1-face_zdjxss.png',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 15000,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
-          {
-            name: 'Circle 3-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653717277/ring-kingz/circle-3_wixpxd.glb',
-            previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653715775/ring-kingz/circle-3-face_lvokzh.png',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 17500,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1656265643/ring-kingz/circle_i2pe5h.glb',
+      price: 15000,
+      materials: {
+        connect: [
+          { id: goldMaterial.id },
+          { id: silverMaterial.id },
+          { id: whiteGoldMaterial.id },
         ],
       },
     },
@@ -271,41 +235,14 @@ async function main() {
       name: 'Oval',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433212/ring-kingz/oval_preview_lquccc.png',
-      variants: {
-        create: [
-          {
-            name: 'Oval 1-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
-            previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/oval-1-face_ovu3f7.png',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 15000,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
-          {
-            name: 'Oval 3-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
-            previewImage: '',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 17500,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
+      price: 15000,
+      materials: {
+        connect: [
+          { id: goldMaterial.id },
+          { id: silverMaterial.id },
+          { id: whiteGoldMaterial.id },
         ],
       },
     },
@@ -317,41 +254,14 @@ async function main() {
       name: 'Square',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433212/ring-kingz/square_preview_v3vtek.png',
-      variants: {
-        create: [
-          {
-            name: 'Square 1-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
-            previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/square-1-face_tuomnm.png',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 15000,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
-          {
-            name: 'Square 3-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
-            previewImage: '',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 17500,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
+      price: 15000,
+      materials: {
+        connect: [
+          { id: goldMaterial.id },
+          { id: silverMaterial.id },
+          { id: whiteGoldMaterial.id },
         ],
       },
     },
@@ -363,38 +273,13 @@ async function main() {
       name: 'Cushion',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433214/ring-kingz/cushion_preview_pjozyi.png',
-      variants: {
-        create: [
-          {
-            name: 'Cushion 1-Face',
-            modelUrl: '',
-            previewImage: '',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 15000,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
-          {
-            name: 'Cushion 3-Face',
-            modelUrl: '',
-            previewImage: '',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 17500,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
+      modelUrl: '',
+      price: 15000,
+      materials: {
+        connect: [
+          { id: goldMaterial.id },
+          { id: silverMaterial.id },
+          { id: whiteGoldMaterial.id },
         ],
       },
     },
@@ -406,41 +291,14 @@ async function main() {
       name: 'Hexagon',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433213/ring-kingz/hexagon_preview_isy00x.png',
-      variants: {
-        create: [
-          {
-            name: 'Hexagon 1-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665980/ring-kingz/hexagon_lthcrl.glb',
-            previewImage:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653714190/ring-kingz/hexagon-1-face_kxhuzt.png',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 15000,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
-          {
-            name: 'Hexagon 3-Face',
-            modelUrl:
-              'https://res.cloudinary.com/meta-iiii/image/upload/v1653665980/ring-kingz/hexagon_lthcrl.glb',
-            previewImage: '',
-            hasEngraving: true,
-            hasJewels: false,
-            price: 17500,
-            materials: {
-              connect: [
-                { id: goldMaterial.id },
-                { id: silverMaterial.id },
-                { id: whiteGoldMaterial.id },
-              ],
-            },
-          },
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665980/ring-kingz/hexagon_lthcrl.glb',
+      price: 15000,
+      materials: {
+        connect: [
+          { id: goldMaterial.id },
+          { id: silverMaterial.id },
+          { id: whiteGoldMaterial.id },
         ],
       },
     },
