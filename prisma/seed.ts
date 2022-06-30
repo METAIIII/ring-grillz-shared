@@ -217,7 +217,7 @@ async function main() {
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433213/ring-kingz/circle_preview_e37hn6.png',
       modelUrl:
-        'https://res.cloudinary.com/meta-iiii/image/upload/v1656265643/ring-kingz/circle_i2pe5h.glb',
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1656337889/ring-kingz/circle_bftrlt.glb',
       price: 15000,
       materials: {
         connect: [
@@ -255,7 +255,7 @@ async function main() {
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433212/ring-kingz/square_preview_v3vtek.png',
       modelUrl:
-        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665977/ring-kingz/square_zgzmgf.glb',
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1656336773/ring-kingz/square_spbrpk.glb',
       price: 15000,
       materials: {
         connect: [

@@ -30,7 +30,7 @@ const DrGrillzLogo = () => (
 );
 
 const RingKingzLogo = () => (
-  <Image alt='Ring Kingz' src='/logo.svg' w='120px' p={2} />
+  <Image alt='Ring Kingz' src='/logo.svg' w='120px' p={2} ml={4} mb={3} />
 );
 
 const Header: React.FC<Props> = ({ mode }) => {
@@ -66,15 +66,28 @@ const Header: React.FC<Props> = ({ mode }) => {
           />
         </>
       )}
-      <Container maxW='container.xl'>
+      <Container
+        maxW={mode === 'RING' ? 'full' : 'container.xl'}
+        p={mode === 'RING' ? '0' : undefined}
+      >
         <Flex
           as='header'
           flexDir={{ base: 'row-reverse', md: 'row' }}
           alignItems='center'
           justifyContent={{ base: 'flex-start', md: 'flex-end' }}
+          pr={4}
+          mb={mode === 'RING' ? 8 : undefined}
+          boxShadow={
+            mode === 'RING' ? '0px 0px 10px 0px rgb(0 0 0 / 50%)' : undefined
+          }
         >
           {!isMobile && (
-            <Flex alignItems='center' mr='auto'>
+            <Flex
+              flex={1}
+              alignItems='center'
+              justifyContent={mode === 'RING' ? 'center' : 'flex-start'}
+              mr='auto'
+            >
               <Tooltip label='Back home' placement='bottom' hasArrow>
                 <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
                   {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
