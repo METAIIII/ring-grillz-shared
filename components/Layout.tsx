@@ -5,7 +5,7 @@ import * as CSS from 'csstype';
 import { NextSeo } from 'next-seo';
 import { createContext, PropsWithChildren } from 'react';
 
-import Header from '../components/Header';
+import { DrGrillzHeader, RingKingzHeader } from '../components/Header';
 
 interface LayoutProps {
   title?: string;
@@ -24,7 +24,7 @@ const Layout: React.FC<PropsWithChildren<LayoutProps>> = ({
   return (
     <LayoutContext.Provider value={{ mode }}>
       <NextSeo title={title} />
-      <Header mode={mode} />
+      {mode === 'GRILLZ' ? <DrGrillzHeader /> : <RingKingzHeader />}
       <Container as='main' p={0} maxW={size}>
         {children}
       </Container>

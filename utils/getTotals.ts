@@ -75,8 +75,12 @@ export const getRingTotal = (
     postage = 2000;
   }
 
-  const shapeTotal = getRingShapeTotal(form?.selectedShape);
-  const materialTotal = getRingMaterialTotal(form?.selectedMaterial);
+  const shapeTotal = !!form?.selectedShape
+    ? getRingShapeTotal(form.selectedShape)
+    : 0;
+  const materialTotal = !!form?.selectedMaterial
+    ? getRingMaterialTotal(form.selectedMaterial)
+    : 0;
   const engravingTotal = getRingEngravingTotal(form?.selectedEngravings);
   return shapeTotal + materialTotal + engravingTotal + postage;
 };

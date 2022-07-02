@@ -48,7 +48,7 @@ const NavigationItem: React.FC<{
             ? 'yellow.500'
             : 'transparent'
         }
-        _hover={{ textColor: 'yellow.500' }}
+        _hover={{ textColor: isDark ? 'gray.50' : 'yellow.500' }}
       >
         {label}
       </Link>

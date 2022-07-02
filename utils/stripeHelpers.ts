@@ -92,6 +92,7 @@ export const getRingFromMetadata = (
       value: parseInt(parsedMetadata.size),
       format: parsedMetadata.sizeFormat,
     },
+    selectedFace: 'FRONT',
   } as RingFormState;
 };
 

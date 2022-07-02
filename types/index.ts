@@ -119,11 +119,11 @@ export type FullTeethMaterial = TeethMaterial & {
 
 // Ring Kingz Specific
 export interface RingFormState {
-  selectedShape?: RingShape;
-  selectedMaterial?: RingMaterial;
+  selectedShape: RingShape | null;
+  selectedMaterial: RingMaterial | null;
   selectedFace: RingFace;
-  selectedEngravings: Partial<Record<RingFace, RingEngraving>>;
-  size?: RingFormSize;
+  selectedEngravings: Record<RingFace, RingEngraving | null>;
+  size: RingFormSize | null;
 }
 export type RingFormAsMetadata = {
   shapeID: string;
@@ -137,14 +137,8 @@ export type CreatorStep = {
   index: number;
   label: string;
   icon: IconType;
-  onClick: () => void;
 };
-export type RingFormFields =
-  | 'selectedShape'
-  | 'selectedMaterial'
-  | 'selectedEngravings'
-  | 'selectedFace'
-  | 'size';
+
 export type RingFormValues =
   | RingShape
   | RingMaterial
