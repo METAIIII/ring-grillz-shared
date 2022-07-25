@@ -1,24 +1,19 @@
 import {
-    Box,
-    Container,
-    Flex,
-    Heading,
-    Image,
-    Link,
-    Tooltip,
-    useBreakpointValue,
-    useColorModeValue,
+  Box,
+  Container,
+  Flex,
+  Heading,
+  Image,
+  Link,
+  Tooltip,
+  useBreakpointValue,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import { OrderType } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 
 import LogoutButton from '../../components/Account/LogoutButton';
 import DarkModeSwitch from '../../components/UI/DarkModeSwitch';
 import Navigation from './Navigation';
-
-interface Props {
-  mode: OrderType;
-}
 
 const DrGrillzLogo = () => (
   <Image

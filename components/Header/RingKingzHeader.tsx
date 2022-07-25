@@ -1,6 +1,7 @@
 import { Box, Flex, Image, Link, Tooltip, useColorModeValue } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 
+import { IHeaderProps } from '.';
 import LogoutButton from '../Account/LogoutButton';
 import DarkModeSwitch from '../UI/DarkModeSwitch';
 import Navigation from './Navigation';
@@ -18,7 +19,7 @@ const RingKingzLogo = () => (
   />
 );
 
-const Header = () => {
+const Header: React.FC<IHeaderProps> = (props) => {
   const { data: sessionData } = useSession();
   const isDark = useColorModeValue(false, true);
 
@@ -37,6 +38,7 @@ const Header = () => {
           ? '0px 0px 10px 0px rgb(0 0 0 / 50%)'
           : '0px 0px 10px 0px rgb(155 155 155 / 50%)'
       }
+      {...props.containerProps}
     >
       <Box ml='8' mr='auto'>
         <Tooltip label='Back home' placement='bottom' hasArrow>
