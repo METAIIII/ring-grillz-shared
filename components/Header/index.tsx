@@ -14,10 +14,12 @@ import { useSession } from 'next-auth/react';
 
 import LogoutButton from '../../components/Account/LogoutButton';
 import DarkModeSwitch from '../../components/UI/DarkModeSwitch';
+import { FullUser } from '../../types';
 import Navigation from '../Navigation';
 
 interface Props {
   mode: OrderType;
+  user?: FullUser;
 }
 
 const DrGrillzLogo = () => (
@@ -31,7 +33,7 @@ const DrGrillzLogo = () => (
 
 const RingKingzLogo = () => <Image alt='Ring Kingz' p={2} src='/logo.svg' w='120px' />;
 
-const Header: React.FC<Props> = ({ mode }) => {
+const Header: React.FC<Props> = ({ mode, user }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const isDark = useColorModeValue(false, true);
   const { data: sessionData } = useSession();
@@ -95,7 +97,7 @@ const Header: React.FC<Props> = ({ mode }) => {
               )}
             </Flex>
           )}
-          <Navigation />
+          <Navigation user={user} />
           {sessionData && <LogoutButton />}
           <DarkModeSwitch />
           {isMobile && (

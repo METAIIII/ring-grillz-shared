@@ -57,7 +57,7 @@ const DeleteAccount: React.FC<{
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent borderRadius={0}>
+      <ModalContent>
         <ModalCloseButton />
         <ModalHeader>Are you sure?</ModalHeader>
         <ModalBody>

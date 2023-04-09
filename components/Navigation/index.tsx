@@ -12,10 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { FaBars } from 'react-icons/fa';
 
-import useUser from '../../hooks/useUser';
+import { FullUser } from '../../types';
 import NavigationItem from './NavigationItem';
 
-const Navigation = () => {
+const Navigation = ({ user }: { user?: FullUser }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { isOpen, onOpen, onClose } = useDisclosure();
   return isMobile ? (
@@ -33,18 +33,17 @@ const Navigation = () => {
         <DrawerContent bgColor='gray.900' borderLeftColor='yellow.500' borderLeftWidth={1} px={4}>
           <DrawerCloseButton color='yellow.300' right={4} size='lg' top={4} />
           <Box pt={20} px={4}>
-            <NavigationItems />
+            <NavigationItems user={user} />
           </Box>
         </DrawerContent>
       </Drawer>
     </>
   ) : (
-    <NavigationItems />
+    <NavigationItems user={user} />
   );
 };
 
-const NavigationItems = () => {
-  const user = useUser();
+const NavigationItems = ({ user }: { user?: FullUser }) => {
   const isAdmin = user?.role === 'ADMIN';
 
   return (

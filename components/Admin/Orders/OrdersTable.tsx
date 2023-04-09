@@ -56,7 +56,7 @@ const Orders = () => {
         Cell: ({ value, row }) => {
           return (
             <ButtonGroup size='sm' variant='outline'>
-              <MarkAsShipped order={row.original} />
+              {row.original.status === 'PAID' && <MarkAsShipped order={row.original} />}
               <NextLink href={`/receipt?order_id=${value}`}>
                 <Button colorScheme='red' rightIcon={<Icon as={CgExternal} />}>
                   Details
@@ -80,6 +80,13 @@ const Orders = () => {
           onClick={() => setStatus('PAID')}
         >
           Paid
+        </Button>
+        <Button
+          colorScheme='yellow'
+          variant={status === 'PENDING' ? 'solid' : 'outline'}
+          onClick={() => setStatus('PENDING')}
+        >
+          Pending
         </Button>
         <Button
           colorScheme='blue'

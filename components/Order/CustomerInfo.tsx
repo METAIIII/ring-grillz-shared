@@ -1,37 +1,37 @@
-import { Button, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import Stripe from 'stripe';
 
 interface CustomerInfoProps {
-  user?: Stripe.Customer;
-  shipping?: Stripe.Checkout.Session.ShippingDetails | null;
+  user?: Stripe.Checkout.Session.CustomerDetails | null;
   showEdit?: boolean;
 }
 
-const CustomerInfo: React.FC<CustomerInfoProps> = ({ user, shipping, showEdit = false }) => {
-  return !user && !shipping ? (
+const CustomerInfo: React.FC<CustomerInfoProps> = ({ user, showEdit = false }) => {
+  return !user ? (
     <Text>No information.</Text>
   ) : (
-    <>
+    <Box pl={3}>
       <Text fontWeight='bold' mb={1}>
-        {shipping?.name}
+        {user?.name}
       </Text>
       {user && <Text mb={2}>{user.email}</Text>}
+      {user.phone && <Text mb={2}>{user.phone}</Text>}
       <Text fontFamily='mono' lineHeight='4' mb={2} textTransform='uppercase'>
-        {shipping?.address?.line1}
+        {user?.address?.line1}
         <br />
-        {shipping?.address?.line2}
-        {shipping?.address?.line2 && <br />}
-        {shipping?.address?.city}
+        {user?.address?.line2}
+        {user?.address?.line2 && <br />}
+        {user?.address?.city}
         <br />
-        {shipping?.address?.state} {shipping?.address?.postal_code}
+        {user?.address?.state} {user?.address?.postal_code}
       </Text>
       {showEdit && (
         <Link href='/account'>
           <Button size='sm'>Edit Details</Button>
         </Link>
       )}
-    </>
+    </Box>
   );
 };
 

@@ -52,12 +52,14 @@ model User {
   name          String?
   email         String?    @unique
   emailVerified DateTime?
+  phone         String?
   street        String?
   street2       String?
   suburb        String?
   state         StateEnum?
   postcode      String?
   image         String?
+  stripeId      String?
   role          UserRole   @default(CUSTOMER)
   orders        Order[]
   accounts      Account[]
@@ -73,6 +75,7 @@ model Order {
   type                OrderType
   paymentType         OrderPaymentType?
   paymentAmount       Int
+  couponCode          String?
   email               String
   phone               String?
   customerNotes       String?           @db.Text

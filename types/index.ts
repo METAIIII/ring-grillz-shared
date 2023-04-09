@@ -32,6 +32,7 @@ export interface FullOrder extends Order {
 export interface CreateUser {
   email: string;
   name: string;
+  phone?: string;
   street?: string;
   street2?: string;
   suburb?: string;
@@ -41,33 +42,36 @@ export interface CreateUser {
 }
 export interface UpdateUser {
   name: string;
+  phone: string;
   street: string;
   street2: string;
   suburb: string;
   state: StateEnum;
   postcode: string;
-  image: string;
+  image?: string;
+  stripeId?: string;
 }
 export interface CreateOrder {
+  customerNotes?: string;
   email?: string;
   phone?: string;
-  customerNotes?: string;
-  status: OrderStatus;
-  type: OrderType;
+  items: Stripe.Checkout.SessionCreateParams.LineItem[];
   paymentAmount?: number;
   paymentType?: OrderPaymentType;
   couponCode?: string;
-  items: Stripe.Checkout.SessionCreateParams.LineItem[];
-  teethData?: FullTeethMaterial[];
   ringData?: FullRing[];
+  teethData?: FullTeethMaterial[];
+  status: OrderStatus;
+  type: OrderType;
 }
 export interface UpdateOrder {
-  email: string | null;
+  email?: string;
   phone?: string;
-  customerNotes?: string | null;
+  customerNotes?: string;
   status?: OrderStatus;
-  paymentType?: OrderPaymentType | null;
+  paymentType?: OrderPaymentType;
   couponCode?: string;
+  stripeId?: string;
 }
 
 export interface CheckoutOptions {

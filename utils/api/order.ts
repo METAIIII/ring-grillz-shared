@@ -55,6 +55,7 @@ export const updateOrder = async (id: string, data: UpdateOrder) => {
         ...(data.customerNotes && { customerNotes: data.customerNotes }),
         ...(data.status && { status: data.status }),
         ...(data.paymentType && { paymentType: data.paymentType }),
+        ...(data.couponCode && { couponCode: data.couponCode }),
         ...(data.email && {
           email: data.email,
           user: {
@@ -106,6 +107,7 @@ export const createOrder = async (body: CreateOrder, type: OrderType) => {
         customerNotes: body.customerNotes,
         paymentAmount: orderTotal,
         paymentType: body.paymentType,
+        couponCode: body.couponCode,
         type: body.type,
         status: body.status,
         items: {

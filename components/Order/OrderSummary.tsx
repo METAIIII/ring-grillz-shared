@@ -16,8 +16,7 @@ interface Props {
 }
 
 const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
-  const customer = checkout?.customer;
-  const shipping = checkout?.shipping_details;
+  const customer = checkout?.customer_details;
 
   return (
     <SimpleGrid columns={{ base: 1, md: 2 }} mb={4} spacing={8}>
@@ -25,7 +24,7 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
         <Heading borderBottomWidth={1} fontFamily='body' mb={2} p={2} size='md'>
           Customer Details
         </Heading>
-        <CustomerInfo shipping={shipping} user={customer} />
+        <CustomerInfo user={customer} />
       </Box>
       <Box>
         <Heading borderBottomWidth={1} fontFamily='body' mb={2} p={2} size='md'>
@@ -74,7 +73,7 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
               </Button>
             </Box>
           )}
-          {!order.hasSentReceiptEmail && checkout && checkout.status === 'complete' && (
+          {!order.hasSentReceiptEmail && checkout && order.status === 'PAID' && (
             <Box pt={2}>
               <ResendEmail checkoutId={checkout.id} orderId={order.id} />
             </Box>
@@ -83,11 +82,9 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
             Items
           </Text>
           {itemsList}
-          <Box>
-            <Text fontSize='2xl' textAlign='right'>
-              {formatAmountForDisplay(checkout?.amount_total ?? 0)}
-            </Text>
-          </Box>
+          <Text fontSize='2xl' fontWeight={700} textAlign='right'>
+            {formatAmountForDisplay(checkout?.amount_total ?? 0)}
+          </Text>
         </Box>
       </Box>
     </SimpleGrid>
