@@ -14,12 +14,12 @@ export function formatCouponDiscount(amount_off?: number | null, percent_off?: n
 }
 
 // Dr Grillz Specific
-export const getGrillzLabourCost = (data: GrillzForm): number => {
+const getGrillzLabourCost = (data: GrillzForm): number => {
   const labourCost = data.material?.labourCost || 0;
   return labourCost;
 };
 
-export const getToothValue = (data: GrillzForm): number => {
+const getToothValue = (data: GrillzForm): number => {
   let variantValue = 0;
   let optionValue = 0;
 
@@ -36,14 +36,11 @@ export const getToothValue = (data: GrillzForm): number => {
 export const getGrillzTotal = (data: GrillzForm): number => {
   if (!data.material || !data.selectedTeeth) return 0;
 
-  // Add $20 for express shipping option
-  let postage = 2000;
-
   const toothValue = getToothValue(data);
   const numOfTeeth = data.selectedTeeth.length;
   const labourCost = getGrillzLabourCost(data);
 
-  return toothValue * numOfTeeth + labourCost + postage;
+  return toothValue * numOfTeeth + labourCost;
 };
 
 // Ring Kingz Specific
@@ -68,11 +65,9 @@ export const getRingEngravingTotal = (engravings?: RingFormState['selectedEngrav
 };
 
 export const getRingTotal = (form: RingFormState) => {
-  // Add $20 for express shipping
-  let postage = 2000;
-
+  const labourCost = 30000;
   const shapeTotal = form?.selectedShape ? getRingShapeTotal(form.selectedShape) : 0;
   const materialTotal = form?.selectedMaterial ? getRingMaterialTotal(form.selectedMaterial) : 0;
   const engravingTotal = getRingEngravingTotal(form?.selectedEngravings);
-  return shapeTotal + materialTotal + engravingTotal + postage + 30000;
+  return shapeTotal + materialTotal + engravingTotal + labourCost;
 };

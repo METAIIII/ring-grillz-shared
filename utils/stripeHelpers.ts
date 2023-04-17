@@ -1,5 +1,4 @@
 import Stripe from 'stripe';
-
 import { CURRENCY, TOOTH_SEPARATOR } from '../config/stripe';
 import {
   FullGrillzMaterial,

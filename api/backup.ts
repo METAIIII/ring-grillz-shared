@@ -1,8 +1,8 @@
 import { RingEngraving, User } from '@prisma/client';
 
-import prisma from '../../prisma';
-import { FullGrillzMaterial, FullOrder, FullRing } from '../../types';
-import { BackupData, PresetData } from '../../types/apiResponses';
+import prisma from '../prisma';
+import { FullGrillzMaterial, FullOrder, FullRing } from '../types';
+import { BackupData, PresetData } from '../types/apiResponses';
 
 // SHARED
 

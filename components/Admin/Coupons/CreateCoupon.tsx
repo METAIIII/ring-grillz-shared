@@ -1,18 +1,18 @@
 import {
   BoxProps,
   Button,
-  ButtonGroup,
+  Flex,
   FormErrorMessage,
   Heading,
   IconButton,
   Input,
   InputGroup,
-  InputLeftElement,
+  Text,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaDollarSign, FaPercent } from 'react-icons/fa';
+import { FaDollarSign, FaPercentage } from 'react-icons/fa';
 import { Panel } from 'shared/components/UI/Panel';
 import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
 import { useCreateCouponMutation } from 'shared/reducers/api';
@@ -21,35 +21,16 @@ import { z } from 'zod';
 
 export function CreateCoupon(props: BoxProps) {
   const [mode, setMode] = useState<'amount_off' | 'percent_off'>('amount_off');
-  const [createCoupon, { isLoading, isError, isSuccess }] = useCreateCouponMutation();
+  const [createCoupon, { isLoading, isError, isSuccess, data }] = useCreateCouponMutation();
   const schema = z.object({
-    amount_off: z
-      .number()
-      .positive()
-      .int()
-      .optional()
-      .refine((value) => value && mode === 'amount_off', {
-        message: 'Amount off must be set when fixed mode is selected',
-      }),
+    amount_off: z.number().optional(),
     duration: z.enum(['forever', 'once', 'repeating']),
-    duration_in_months: z.number().positive().int().optional(),
-    max_redemptions: z.number().positive().int().optional(),
     name: z.string(),
-    percent_off: z
-      .number()
-      .positive()
-      .int()
-      .optional()
-      .refine((value) => value && mode === 'percent_off', {
-        message: 'Percent off must be set when percentage mode is selected',
-      }),
+    percent_off: z.number().optional(),
     promotion_code: z.string(),
-    redeem_by: z.number().positive().int().optional(),
   });
   const {
     register,
-    watch,
-    setValue,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<CreateCoupon>({
@@ -60,8 +41,6 @@ export function CreateCoupon(props: BoxProps) {
     resolver: zodResolver(schema),
   });
 
-  const duration = watch('duration');
-
   const onSubmit = (data: CreateCoupon) =>
     createCoupon({
       ...data,
@@ -70,8 +49,8 @@ export function CreateCoupon(props: BoxProps) {
     });
 
   useSuccessFailToast({
-    isSuccess,
-    isFail: isError,
+    isSuccess: isSuccess && !data?.error,
+    isFail: isError || (isSuccess && !!data?.error),
     successMessage: 'Coupon created successfully',
     failMessage: 'Something went wrong',
   });
@@ -95,54 +74,33 @@ export function CreateCoupon(props: BoxProps) {
             <FormErrorMessage>{errors.promotion_code.message}</FormErrorMessage>
           )}
         </InputGroup>
-        <InputGroup mb={2}>
-          <InputLeftElement>
-            <IconButton
-              aria-label='Toggle Percentage/Fixed Amount'
-              borderRightRadius={0}
-              icon={mode === 'amount_off' ? <FaDollarSign /> : <FaPercent />}
-              onClick={() => setMode(mode === 'amount_off' ? 'percent_off' : 'amount_off')}
-            />
-          </InputLeftElement>
-          {mode === 'amount_off' && (
-            <Input
-              {...register('amount_off')}
-              isInvalid={!!errors.amount_off}
-              placeholder='Amount Off'
-              type='number'
-            />
-          )}
-          {mode === 'percent_off' && (
-            <Input
-              {...register('percent_off')}
-              isInvalid={!!errors.percent_off}
-              placeholder='Percent Off'
-              type='number'
-            />
-          )}
-          {errors.amount_off && <FormErrorMessage>{errors.amount_off.message}</FormErrorMessage>}
-          {errors.percent_off && <FormErrorMessage>{errors.percent_off.message}</FormErrorMessage>}
-        </InputGroup>
-        <ButtonGroup isAttached mb={2}>
-          <Button
-            variant={duration === 'forever' ? 'solid' : 'outline'}
-            onClick={() => setValue('duration', 'forever')}
-          >
-            Forever
-          </Button>
-          <Button
-            variant={duration === 'once' ? 'solid' : 'outline'}
-            onClick={() => setValue('duration', 'once')}
-          >
-            Once
-          </Button>
-          <Button
-            variant={duration === 'repeating' ? 'solid' : 'outline'}
-            onClick={() => setValue('duration', 'repeating')}
-          >
-            Repeating
-          </Button>
-        </ButtonGroup>
+        <Flex mb={2}>
+          <IconButton
+            aria-label={mode === 'amount_off' ? 'Fixed' : 'Percentage'}
+            icon={mode === 'amount_off' ? <FaDollarSign /> : <FaPercentage />}
+            mr={2}
+            onClick={() => setMode(mode === 'amount_off' ? 'percent_off' : 'amount_off')}
+          />
+          <Input
+            flex={1}
+            {...register('amount_off', { valueAsNumber: true })}
+            isDisabled={mode === 'percent_off'}
+            isInvalid={!!errors.amount_off}
+            mr={2}
+            placeholder='Amount Off'
+            type='number'
+          />
+          {errors.amount_off && <Text color='red.300'>{errors.amount_off.message}</Text>}
+          <Input
+            flex={1}
+            {...register('percent_off', { valueAsNumber: true })}
+            isDisabled={mode === 'amount_off'}
+            isInvalid={!!errors.percent_off}
+            placeholder='Percent Off'
+            type='number'
+          />
+        </Flex>
+        {errors.percent_off && <Text color='red.300'>{errors.percent_off.message}</Text>}
         <Button
           colorScheme='green'
           isLoading={isLoading || isSubmitting}

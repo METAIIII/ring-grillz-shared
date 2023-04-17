@@ -3,15 +3,15 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { FaClock, FaEnvelope, FaShippingFast, FaStripeS } from 'react-icons/fa';
 
+import Stripe from 'stripe';
 import CustomerInfo from '../../components/Order/CustomerInfo';
 import ResendEmail from '../../components/Order/ResendEmail';
 import { FullOrder } from '../../types';
-import { FullCheckoutSession } from '../../types/stripe';
 import { formatAmountForDisplay } from '../../utils/stripeHelpers';
 
 interface Props {
   order: FullOrder;
-  checkout?: FullCheckoutSession;
+  checkout?: Stripe.Checkout.Session;
   itemsList: React.ReactNode;
 }
 

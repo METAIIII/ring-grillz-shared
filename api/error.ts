@@ -7,7 +7,7 @@ export interface ApiErrorResponse {
 
 const logError = (message: string) => {
   const now = new Date().toISOString();
-  console.error(`[${now}] [ERROR] ${message}`);
+  console.error(`[${now}] ${message}`);
 };
 
 export const handleApiError = (

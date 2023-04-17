@@ -8,7 +8,6 @@ import {
 } from '@prisma/client';
 
 import Stripe from 'stripe';
-import { FullCheckoutSession } from '../types/stripe';
 import { FullGrillzMaterial, FullOrder, FullRing, FullUser } from './';
 
 export type ApiResponse<T> = {
@@ -29,7 +28,7 @@ export type CouponsResponse = ApiResponse<
 
 export type CheckoutResponse = ApiResponse<{ url: string } | null>;
 
-export type FullCheckoutResponse = ApiResponse<FullCheckoutSession>;
+export type FullCheckoutResponse = ApiResponse<Stripe.Response<Stripe.Checkout.Session>>;
 
 // Dr Grillz Specific
 export type GrillzMaterialResponse = ApiResponse<FullGrillzMaterial>;
