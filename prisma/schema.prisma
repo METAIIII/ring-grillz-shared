@@ -154,33 +154,33 @@ model RingEngravingPreset {
   order    Int         @default(0)
 }
 
-model TeethMaterial {
-  id             String                 @id @default(cuid())
-  name           String                 @unique
-  variants       TeethMaterialVariant[]
-  hasOptions     Boolean                @default(false)
+model GrillzMaterial {
+  id             String                  @id @default(cuid())
+  name           String                  @unique
+  variants       GrillzMaterialVariant[]
+  hasOptions     Boolean                 @default(false)
   labourCost     Int
-  options        TeethMaterialOption[]
+  options        GrillzMaterialOption[]
   optionsHeading String?
 }
 
-model TeethMaterialVariant {
-  id             String        @id @default(cuid())
+model GrillzMaterialVariant {
+  id             String         @id @default(cuid())
   name           String
-  previewImage   String        @db.VarChar(512)
+  previewImage   String         @db.VarChar(512)
   price          Int
-  singleRowOnly  Boolean       @default(false)
-  toothBgImage   String?       @db.VarChar(512)
-  baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
+  singleRowOnly  Boolean        @default(false)
+  bgImage        String?        @db.VarChar(512)
+  baseMaterial   GrillzMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
 }
 
-model TeethMaterialOption {
-  id             String        @id @default(cuid())
+model GrillzMaterialOption {
+  id             String         @id @default(cuid())
   name           String
-  previewImage   String        @db.VarChar(512)
+  previewImage   String         @db.VarChar(512)
   price          Int
-  baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
+  baseMaterial   GrillzMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
 }
 

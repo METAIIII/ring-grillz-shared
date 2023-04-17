@@ -1,24 +1,21 @@
-import { Button, ButtonGroup, Icon, Link, Text } from '@chakra-ui/react';
+import { Button, ButtonGroup, FormLabel, Icon, Link } from '@chakra-ui/react';
 import { Order, OrderStatus } from '@prisma/client';
 import dayjs from 'dayjs';
-import _ from 'lodash';
 import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { Column } from 'react-table';
-import useSWR from 'swr';
 
-import { OrdersResponse } from '../../../types/apiResponses';
-import fetcher from '../../../utils/axiosFetcher';
+import { useGetOrdersByStatusQuery } from '../../../reducers/api';
 import { formatAmountForDisplay } from '../../../utils/stripeHelpers';
 import OrderStatusBadge from '../../Order/OrderStatusBadge';
+import { Panel } from '../../UI/Panel';
 import PaginatedTable from '../../UI/Table';
 import MarkAsShipped from './MarkAsShipped';
 
-/* eslint-disable react/jsx-key */
 const Orders = () => {
   const [status, setStatus] = useState<OrderStatus>('PAID');
-  const { data } = useSWR<OrdersResponse>(`/api/order?status=${status}`, fetcher);
+  const { data } = useGetOrdersByStatusQuery(status);
 
   const orderData = useMemo(() => {
     if (data?.data) {
@@ -57,7 +54,7 @@ const Orders = () => {
           return (
             <ButtonGroup size='sm' variant='outline'>
               {row.original.status === 'PAID' && <MarkAsShipped order={row.original} />}
-              <NextLink href={`/receipt?order_id=${value}`}>
+              <NextLink href={`/admin/order/${value}`}>
                 <Button colorScheme='red' rightIcon={<Icon as={CgExternal} />}>
                   Details
                 </Button>
@@ -70,23 +67,18 @@ const Orders = () => {
     []
   );
 
-  return _.isArray(orderData) ? (
-    <>
-      <Text fontWeight='bold'>Filter results</Text>
-      <ButtonGroup colorScheme='red' mb={4} size='xs'>
+  return (
+    <Panel>
+      <FormLabel fontWeight='bold' mb={1}>
+        Filter results
+      </FormLabel>
+      <ButtonGroup mb={4} size='xs'>
         <Button
           colorScheme='green'
           variant={status === 'PAID' ? 'solid' : 'outline'}
           onClick={() => setStatus('PAID')}
         >
           Paid
-        </Button>
-        <Button
-          colorScheme='yellow'
-          variant={status === 'PENDING' ? 'solid' : 'outline'}
-          onClick={() => setStatus('PENDING')}
-        >
-          Pending
         </Button>
         <Button
           colorScheme='blue'
@@ -96,6 +88,14 @@ const Orders = () => {
           Shipped
         </Button>
         <Button
+          colorScheme='yellow'
+          variant={status === 'PENDING' ? 'solid' : 'outline'}
+          onClick={() => setStatus('PENDING')}
+        >
+          Pending
+        </Button>
+        <Button
+          colorScheme='red'
           variant={status === 'CANCELED' ? 'solid' : 'outline'}
           onClick={() => setStatus('CANCELED')}
         >
@@ -103,9 +103,7 @@ const Orders = () => {
         </Button>
       </ButtonGroup>
       <PaginatedTable<Order> colorScheme='red' columns={columns} data={orderData} />
-    </>
-  ) : (
-    <div />
+    </Panel>
   );
 };
 

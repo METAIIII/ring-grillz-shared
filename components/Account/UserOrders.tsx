@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import { Button, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
@@ -11,8 +12,10 @@ import { formatAmountForDisplay } from '../../utils/stripeHelpers';
 import OrderStatusBadge from '../Order/OrderStatusBadge';
 import { Panel } from '../UI/Panel';
 
-/* eslint-disable react/jsx-key */
 const UserOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes('admin');
+
   const columns = useMemo<Column[]>(
     () => [
       {
@@ -41,7 +44,7 @@ const UserOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
               size='sm'
               variant='outline'
             >
-              Details
+              Receipt
             </Button>
           </Link>
         ),
@@ -54,9 +57,6 @@ const UserOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
     columns,
     data: orders,
   });
-
-  const { pathname } = useRouter();
-  const isAdmin = pathname.includes('admin');
 
   return (
     <Panel>

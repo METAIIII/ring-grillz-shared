@@ -1,17 +1,17 @@
 import { Order, OrderStatus, OrderType } from '@prisma/client';
 
-import prisma from '../../lib/prisma';
+import prisma from '../../prisma';
 import {
   CreateOrder,
   FullOrder,
+  GrillzForm,
+  GrillzFormAsMetadata,
   RingFormAsMetadata,
   RingFormState,
-  TeethForm,
-  TeethFormAsMetadata,
   UpdateOrder,
 } from '../../types';
-import { getRingTotal, getTeethTotal } from '../getTotals';
-import { getRingFromMetadata, getTeethFromMetadata } from '../stripeHelpers';
+import { getGrillzTotal, getRingTotal } from '../getTotals';
+import { getGrillzFromMetadata, getRingFromMetadata } from '../stripeHelpers';
 
 export const getOrders = async (type: OrderType, status?: OrderStatus) => {
   try {
@@ -87,10 +87,10 @@ export const createOrder = async (body: CreateOrder, type: OrderType) => {
 
       const teethMetadata = JSON.parse(
         JSON.stringify(item?.price_data?.product_data?.metadata)
-      ) as TeethFormAsMetadata;
+      ) as GrillzFormAsMetadata;
 
       if (type === 'GRILLZ') {
-        return getTeethTotal(getTeethFromMetadata(teethMetadata, body?.teethData ?? []));
+        return getGrillzTotal(getGrillzFromMetadata(teethMetadata, body?.teethData ?? []));
       }
       // if type === 'RING'
       else {
@@ -118,11 +118,11 @@ export const createOrder = async (body: CreateOrder, type: OrderType) => {
 
             const teethMetadata = JSON.parse(
               JSON.stringify(item?.price_data?.product_data?.metadata)
-            ) as TeethForm;
+            ) as GrillzForm;
 
             return type === 'GRILLZ'
               ? {
-                  amount: getTeethTotal(teethMetadata),
+                  amount: getGrillzTotal(teethMetadata),
                   metadata: JSON.stringify(teethMetadata),
                 }
               : // if 'RING'

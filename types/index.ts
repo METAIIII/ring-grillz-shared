@@ -1,4 +1,7 @@
 import {
+  GrillzMaterial,
+  GrillzMaterialOption,
+  GrillzMaterialVariant,
   LineItem,
   Order,
   OrderPaymentType,
@@ -11,9 +14,6 @@ import {
   RingShape,
   RingShapeExample,
   StateEnum,
-  TeethMaterial,
-  TeethMaterialOption,
-  TeethMaterialVariant,
   User,
 } from '@prisma/client';
 import { IconType } from 'react-icons/lib';
@@ -40,17 +40,7 @@ export interface CreateUser {
   postcode?: string;
   image?: string;
 }
-export interface UpdateUser {
-  name: string;
-  phone: string;
-  street: string;
-  street2: string;
-  suburb: string;
-  state: StateEnum;
-  postcode: string;
-  image?: string;
-  stripeId?: string;
-}
+
 export interface CreateOrder {
   customerNotes?: string;
   email?: string;
@@ -60,7 +50,7 @@ export interface CreateOrder {
   paymentType?: OrderPaymentType;
   couponCode?: string;
   ringData?: FullRing[];
-  teethData?: FullTeethMaterial[];
+  teethData?: FullGrillzMaterial[];
   status: OrderStatus;
   type: OrderType;
 }
@@ -72,6 +62,13 @@ export interface UpdateOrder {
   paymentType?: OrderPaymentType;
   couponCode?: string;
   stripeId?: string;
+}
+
+export interface CreateCoupon extends Stripe.CouponCreateParams {
+  promotion_code: string;
+}
+export interface UpdateCoupon extends Stripe.CouponUpdateParams {
+  promotion_code?: string;
 }
 
 export interface CheckoutOptions {
@@ -113,22 +110,22 @@ export interface Tooth {
   disabled?: boolean;
 }
 export type Teeth = Tooth[];
-export type TeethForm = {
-  material?: TeethMaterial;
-  variant?: TeethMaterialVariant;
-  option?: TeethMaterialOption;
+export type GrillzForm = {
+  material?: GrillzMaterial;
+  variant?: GrillzMaterialVariant;
+  option?: GrillzMaterialOption;
   selectedTeeth: ToothID[];
 };
-export type TeethFormAsMetadata = {
+export type GrillzFormAsMetadata = {
   materialId: string;
   variantId: string;
   optionId: string;
   selectedTeethIds: string;
 };
 
-export type FullTeethMaterial = TeethMaterial & {
-  options: TeethMaterialOption[];
-  variants: TeethMaterialVariant[];
+export type FullGrillzMaterial = GrillzMaterial & {
+  options: GrillzMaterialOption[];
+  variants: GrillzMaterialVariant[];
 };
 
 // Ring Kingz Specific

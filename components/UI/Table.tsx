@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import {
   Box,
   ButtonGroup,
@@ -19,7 +20,6 @@ import { ReactElement } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Row, TableOptions, usePagination, useTable } from 'react-table';
 
-/* eslint-disable react/jsx-key */
 interface TableProps<T extends object> extends TableOptions<T> {
   onClick?: (row: Row<T>) => void;
   colorScheme?: ThemeTypings['colorSchemes'];

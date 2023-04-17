@@ -1,20 +1,17 @@
 import { Badge, Button, Icon } from '@chakra-ui/react';
 import { User } from '@prisma/client';
-import _ from 'lodash';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { Column } from 'react-table';
-import useSWR from 'swr';
 
-import { UsersResponse } from '../../../types/apiResponses';
-import fetcher from '../../../utils/axiosFetcher';
+import { useGetAllUsersQuery } from '../../../reducers/api';
+import { Panel } from '../../UI/Panel';
 import PaginatedTable from '../../UI/Table';
 
-/* eslint-disable react/jsx-key */
 const Customers = () => {
-  const { data } = useSWR<UsersResponse>(`/api/user`, fetcher);
+  const { data } = useGetAllUsersQuery('');
 
   const userData = useMemo(() => {
     if (data?.data) {
@@ -27,6 +24,14 @@ const Customers = () => {
   const columns = useMemo<Column<User>[]>(
     () => [
       {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Phone',
+        accessor: 'phone',
+      },
+      {
         Header: 'Email',
         accessor: 'email',
       },
@@ -34,10 +39,6 @@ const Customers = () => {
         Header: 'Verified',
         accessor: 'emailVerified',
         Cell: ({ value }) => <Icon as={value ? FaCheck : FaTimes} />,
-      },
-      {
-        Header: 'Name',
-        accessor: 'name',
       },
       {
         Header: 'Role',
@@ -66,10 +67,10 @@ const Customers = () => {
     []
   );
 
-  return _.isArray(userData) ? (
-    <PaginatedTable<User> colorScheme='red' columns={columns} data={userData} />
-  ) : (
-    <div />
+  return (
+    <Panel>
+      <PaginatedTable<User> colorScheme='red' columns={columns} data={userData} />
+    </Panel>
   );
 };
 

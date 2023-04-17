@@ -1,17 +1,16 @@
-import _ from 'lodash';
 import Stripe from 'stripe';
 
-import { CURRENCY, TOOTH_SEPARATOR } from '../config';
+import { CURRENCY, TOOTH_SEPARATOR } from '../config/stripe';
 import {
+  FullGrillzMaterial,
   FullRing,
-  FullTeethMaterial,
+  GrillzForm,
+  GrillzFormAsMetadata,
   RingFormAsMetadata,
   RingFormState,
-  TeethForm,
-  TeethFormAsMetadata,
   ToothID,
 } from '../types';
-import { getRingTotal, getTeethTotal } from './getTotals';
+import { getGrillzTotal, getRingTotal } from './getTotals';
 
 export function formatAmountForDisplay(amount: number): string {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
@@ -89,25 +88,25 @@ export const getRingFromMetadata = (
   } as RingFormState;
 };
 
-export const convertTeethToLineItem = (
-  form: TeethForm
+export const convertGrillzToLineItem = (
+  form: GrillzForm
 ): Stripe.Checkout.SessionCreateParams.LineItem => {
   return {
     quantity: 1,
     price_data: {
       currency: CURRENCY,
-      unit_amount: getTeethTotal(form),
+      unit_amount: getGrillzTotal(form),
       product_data: {
         name: `${form?.material?.name} ${form?.variant?.name} ${
           form?.option ? `${form.option?.name}` : ''
         } [${form?.selectedTeeth?.join(TOOTH_SEPARATOR)}]`,
-        metadata: convertTeethToMetadata(form),
+        metadata: convertGrillzToMetadata(form),
       },
     },
   };
 };
 
-export const convertTeethToMetadata = (form: TeethForm): TeethFormAsMetadata => {
+export const convertGrillzToMetadata = (form: GrillzForm): GrillzFormAsMetadata => {
   return {
     materialId: form.material?.id ?? '',
     variantId: form.variant?.id ?? '',
@@ -116,10 +115,10 @@ export const convertTeethToMetadata = (form: TeethForm): TeethFormAsMetadata => 
   };
 };
 
-export const getTeethFromMetadata = (
-  metadata: TeethFormAsMetadata,
-  data: FullTeethMaterial[]
-): TeethForm => {
+export const getGrillzFromMetadata = (
+  metadata: GrillzFormAsMetadata,
+  data: FullGrillzMaterial[]
+): GrillzForm => {
   const material = data.find((material) => material.id === metadata.materialId);
   const variant = material?.variants.find((variant) => variant.id === metadata.variantId);
   const option = material?.options.find((option) => option.id === metadata.optionId);
@@ -132,12 +131,5 @@ export const getTeethFromMetadata = (
       option,
       selectedTeeth,
     })
-  ) as TeethForm;
-};
-
-export const isNewCartItem = (
-  item: Stripe.Checkout.SessionCreateParams.LineItem,
-  cartItems: Stripe.Checkout.SessionCreateParams.LineItem[]
-) => {
-  return !_.find(cartItems, item);
+  ) as GrillzForm;
 };

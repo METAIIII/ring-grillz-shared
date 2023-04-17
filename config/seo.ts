@@ -1,16 +1,5 @@
 import { DefaultSeoProps } from 'next-seo';
 
-// Stripe
-export const CURRENCY = 'aud';
-// https://stripe.com/docs/currencies#zero-decimal.
-export const MIN_AMOUNT = 4500;
-export const MAX_AMOUNT = 10000000;
-export const AMOUNT_STEP = 5.0;
-
-// METADATA
-export const TOOTH_SEPARATOR = ', ';
-
-// SEO
 const drGrillzDesc =
   'Express yourself and make a statement with custom made Grillz that are perfectly suited to your style and who you are.';
 export const DR_GRILLZ_DEFAULT_SEO: DefaultSeoProps = {

@@ -1,6 +1,6 @@
 import { RingMaterial, RingShape } from '@prisma/client';
 
-import { RingFormState, TeethForm } from '../types';
+import { GrillzForm, RingFormState } from '../types';
 import { formatAmountForDisplay } from './stripeHelpers';
 
 export function formatCouponDiscount(amount_off?: number | null, percent_off?: number | null) {
@@ -14,12 +14,12 @@ export function formatCouponDiscount(amount_off?: number | null, percent_off?: n
 }
 
 // Dr Grillz Specific
-export const getTeethLabourCost = (data: TeethForm): number => {
+export const getGrillzLabourCost = (data: GrillzForm): number => {
   const labourCost = data.material?.labourCost || 0;
   return labourCost;
 };
 
-export const getToothValue = (data: TeethForm): number => {
+export const getToothValue = (data: GrillzForm): number => {
   let variantValue = 0;
   let optionValue = 0;
 
@@ -33,7 +33,7 @@ export const getToothValue = (data: TeethForm): number => {
   return variantValue + optionValue;
 };
 
-export const getTeethTotal = (data: TeethForm): number => {
+export const getGrillzTotal = (data: GrillzForm): number => {
   if (!data.material || !data.selectedTeeth) return 0;
 
   // Add $20 for express shipping option
@@ -41,7 +41,7 @@ export const getTeethTotal = (data: TeethForm): number => {
 
   const toothValue = getToothValue(data);
   const numOfTeeth = data.selectedTeeth.length;
-  const labourCost = getTeethLabourCost(data);
+  const labourCost = getGrillzLabourCost(data);
 
   return toothValue * numOfTeeth + labourCost + postage;
 };

@@ -1,41 +1,25 @@
 import { Button, Icon } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
-import axios from 'axios';
-import React, { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
-import { useSWRConfig } from 'swr';
 
-import { OrderResponse } from '../../../types/apiResponses';
+import { useUpdateOrderMutation } from 'shared/reducers/api';
 
 interface Props {
   order: Order;
 }
 
 const MarkAsShipped: React.FC<Props> = ({ order }) => {
-  const [loading, setLoading] = useState(false);
-  const { mutate } = useSWRConfig();
+  const [updateOrder, { isLoading }] = useUpdateOrderMutation();
   const isShipped = order.status === 'SHIPPED';
-
-  const handleClick = async () => {
-    setLoading(true);
-    try {
-      await axios.patch<OrderResponse>(`/api/order/${order.id}`, {
-        status: isShipped ? 'PAID' : 'SHIPPED',
-      });
-      mutate(`/api/order?status=SHIPPED`);
-      mutate(`/api/order?status=PAID`);
-    } catch (e) {
-      console.error(e);
-    }
-    setLoading(false);
-  };
 
   return (
     <Button
       colorScheme='blue'
-      isLoading={loading}
+      isLoading={isLoading}
       leftIcon={isShipped ? <Icon as={FaCheck} /> : undefined}
-      onClick={handleClick}
+      onClick={() =>
+        updateOrder({ id: order.id, data: { status: isShipped ? 'PAID' : 'SHIPPED' } })
+      }
     >
       {isShipped ? 'Shipped' : 'Mark as sent'}
     </Button>

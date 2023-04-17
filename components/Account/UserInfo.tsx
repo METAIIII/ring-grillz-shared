@@ -11,86 +11,68 @@ import {
   InputGroup,
   InputRightElement,
   SimpleGrid,
-  Text,
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import * as yup from 'yup';
-
+import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
+import { useUpdateUserMutation } from 'shared/reducers/api';
+import { z } from 'zod';
 import { FullUser } from '../../types';
 import { Panel } from '../UI/Panel';
 import DeleteAccount from './DeleteAccount';
 
-type Inputs = {
-  name: string;
-  street: string;
-  street2: string;
-  suburb: string;
-  state: 'WA' | 'NT' | 'SA' | 'QLD' | 'NSW' | 'VIC' | 'TAS' | 'ACT';
-  postcode: string;
-};
-
-const schema = yup.object().shape({
-  name: yup.string().required(),
-  street: yup.string().required(),
-  street2: yup.string(),
-  suburb: yup.string().required(),
-  state: yup.string().oneOf(['WA', 'NT', 'SA', 'QLD', 'NSW', 'VIC', 'TAS', 'ACT']).required(),
-  postcode: yup.string().required(),
+const schema = z.object({
+  name: z.string(),
+  phone: z.string(),
+  street: z.string(),
+  street2: z.string().optional(),
+  suburb: z.string(),
+  state: z.enum(['WA', 'NT', 'SA', 'QLD', 'NSW', 'VIC', 'TAS', 'ACT']),
+  postcode: z.string(),
+  image: z.string().optional(),
+  stripeId: z.string().optional(),
 });
 
+export type UpdateUser = z.infer<typeof schema>;
+
 const UserInfo: React.FC<{ user: FullUser }> = ({ user }) => {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes('admin');
+
   const { isOpen, onClose, onOpen } = useDisclosure();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<Inputs>({
+  } = useForm<UpdateUser>({
     defaultValues: {
-      name: user?.name || '',
-      street: user?.street || '',
-      street2: user?.street2 || '',
-      suburb: user?.suburb || '',
-      state: user?.state || 'WA',
-      postcode: user?.postcode || '',
+      name: user.name || '',
+      phone: user.phone || '',
+      street: user.street || '',
+      street2: user.street2 || '',
+      suburb: user.suburb || '',
+      state: user.state || 'WA',
+      postcode: user.postcode || '',
     },
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
-  const { pathname } = useRouter();
-  const isAdmin = pathname.includes('admin');
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      await axios.patch(`/api/user/${user.email}`, data);
-      setSuccess('Updated user information.');
-    } catch (error) {
-      setError('Error updating user.');
-    }
-  };
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => setError(''), 3000);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => setSuccess(''), 3000);
-    }
-  }, [success]);
+  const [updateUser, { isError, isLoading, isSuccess }] = useUpdateUserMutation();
+  useSuccessFailToast({
+    isSuccess,
+    isFail: isError,
+    successMessage: 'Your details have been updated',
+    failMessage: 'There was an error updating your details',
+  });
 
   return (
     <Panel>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit((data) => updateUser({ email: user.email ?? '', data }))}>
         <Heading mb={2} size={{ base: 'sm', md: 'md' }}>
           {isAdmin ? 'Customer' : 'My'} Details
         </Heading>
@@ -141,27 +123,17 @@ const UserInfo: React.FC<{ user: FullUser }> = ({ user }) => {
             {errors.postcode && <FormErrorMessage>{errors.postcode.message}</FormErrorMessage>}
           </FormControl>
         </SimpleGrid>
-        {error && (
-          <Text py={2} textColor='red.400'>
-            {error}
-          </Text>
-        )}
-        {success && (
-          <Text py={2} textColor='green.400'>
-            {success}
-          </Text>
-        )}
         <Flex justifyContent='flex-end'>
           <ButtonGroup size='sm' variant='ghost'>
             <Button colorScheme='red' onClick={onOpen}>
               Delete Account
             </Button>
-            <Button colorScheme='yellow' isLoading={isSubmitting} type='submit'>
+            <Button colorScheme='yellow' isLoading={isSubmitting || isLoading} type='submit'>
               Save Changes
             </Button>
           </ButtonGroup>
         </Flex>
-        <DeleteAccount email={user?.email ?? ''} isOpen={isOpen} onClose={onClose} />
+        {user.email && <DeleteAccount email={user.email} isOpen={isOpen} onClose={onClose} />}
       </form>
     </Panel>
   );

@@ -1,7 +1,8 @@
 import { OrderType } from '@prisma/client';
 
-import prisma from '../../lib/prisma';
-import { FullUser, UpdateUser } from '../../types';
+import { UpdateUser } from '../../components/Account/UserInfo';
+import prisma from '../../prisma';
+import { FullUser } from '../../types';
 
 export const getUser = async (email: string, orderType: OrderType): Promise<FullUser | null> => {
   try {

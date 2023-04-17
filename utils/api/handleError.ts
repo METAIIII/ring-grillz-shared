@@ -1,19 +1,26 @@
 import { NextApiResponse } from 'next';
 
-const handleError = (res: NextApiResponse, error: string | Error, status?: number) => {
-  if (error instanceof Error) {
-    console.log(error.message);
-    res.status(status ?? 500).json({ error: error.message });
-  } else {
-    const jsonError = JSON.stringify(error, null, 2);
-    if (jsonError === '{}') {
-      console.log(`${error}`);
-    } else {
-      console.log(jsonError);
-    }
-    res.status(status ?? 500).json({ error: `${error}` });
-  }
-  return;
+export interface ApiErrorResponse {
+  statusCode: number;
+  message: string;
+}
+
+const logError = (message: string) => {
+  const now = new Date().toISOString();
+  console.error(`[${now}] [ERROR] ${message}`);
 };
 
-export default handleError;
+export const handleApiError = (
+  res: NextApiResponse,
+  error: string | Error,
+  status: number = 500
+): Promise<never> => {
+  console.log(error);
+  const errorMessage = error instanceof Error ? error.message : `${JSON.stringify(error)}`;
+  const response: ApiErrorResponse = {
+    statusCode: status,
+    message: errorMessage,
+  };
+  logError(errorMessage);
+  return Promise.reject(response);
+};

@@ -10,49 +10,22 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import axios from 'axios';
-import { signOut } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
+import { useDeleteUserMutation } from 'shared/reducers/api';
 
-/* eslint-disable react-hooks/exhaustive-deps */
 const DeleteAccount: React.FC<{
   email: string;
   isOpen: boolean;
   onClose(): void;
 }> = ({ isOpen, onClose, email }) => {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [deleteUser, { isError, isLoading, isSuccess }] = useDeleteUserMutation();
 
-  const handleDelete = async () => {
-    setLoading(true);
-    try {
-      await axios.delete(`/api/user/${email}`);
-      await signOut();
-      setLoading(false);
-      setSuccess('Deleted user.');
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => setError(''), 3000);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        setSuccess('');
-        onClose();
-      }, 3000);
-    }
-  }, [success]);
+  useSuccessFailToast({
+    isSuccess,
+    isFail: isError,
+    successMessage: 'Account deleted',
+    failMessage: 'There was an error deleting your account',
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -65,12 +38,11 @@ const DeleteAccount: React.FC<{
             Deleting your account will log you out and permanently remove access to your order
             history. If you log in to this website again, a new user account will be created.
           </Text>
-          <Text textColor='red.400'>{error && error}</Text>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
             <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme='red' isLoading={loading} onClick={handleDelete}>
+            <Button colorScheme='red' isLoading={isLoading} onClick={() => deleteUser(email)}>
               Delete
             </Button>
           </ButtonGroup>

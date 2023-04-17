@@ -1,25 +1,21 @@
 import { Box, Button, Icon } from '@chakra-ui/react';
-import _ from 'lodash';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { GiPencil } from 'react-icons/gi';
 import { Column } from 'react-table';
-import useSWR from 'swr';
 
+import { useGetRingsDataQuery } from 'shared/reducers/api';
 import PaginatedTable from '../../../components/UI/Table';
 import { FullRing } from '../../../types';
-import { RingsResponse } from '../../../types/apiResponses';
-import fetcher from '../../../utils/axiosFetcher';
+
+// TODO: THIS FILE TO BE MOVED TO RING KINGZ REPO, NOT SHARED
 
 const Rings = () => {
-  const { data } = useSWR<RingsResponse>(`/api/ring`, fetcher);
+  const { data } = useGetRingsDataQuery('');
 
-  const ringsData = useMemo(() => {
-    if (data?.data) {
-      return data.data;
-    } else {
-      return [];
-    }
+  const ringsData = useMemo<FullRing[]>(() => {
+    if (!data?.data) return [];
+    return data.data.rings;
   }, [data]);
 
   const columns = useMemo<Column<FullRing>[]>(
@@ -61,11 +57,7 @@ const Rings = () => {
     []
   );
 
-  return _.isArray(ringsData) ? (
-    <PaginatedTable<FullRing> columns={columns} data={ringsData} />
-  ) : (
-    <div />
-  );
+  return <PaginatedTable<FullRing> columns={columns} data={ringsData} />;
 };
 
 export default Rings;
