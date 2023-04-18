@@ -6,7 +6,7 @@ datasource db {
   provider          = "mysql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  relationMode      = "foreignKeys"
+  relationMode      = "prisma"
 }
 
 model Account {
@@ -27,6 +27,7 @@ model Account {
   userId             String
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -35,6 +36,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -84,6 +87,8 @@ model Order {
   stripeId            String?
   user                User?             @relation(fields: [userId], references: [id])
   userId              String?
+
+  @@index([userId])
 }
 
 model LineItem {
@@ -92,6 +97,8 @@ model LineItem {
   metadata String @db.MediumText
   order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId  String
+
+  @@index([orderId])
 }
 
 model RingShape {
@@ -116,6 +123,8 @@ model RingShapeExample {
   imageUrl    String    @db.VarChar(512)
   ringShape   RingShape @relation(fields: [ringShapeId], references: [id], onDelete: Cascade)
   ringShapeId String
+
+  @@index([ringShapeId])
 }
 
 model RingMaterial {
@@ -173,6 +182,8 @@ model GrillzMaterialVariant {
   bgImage        String?        @db.VarChar(512)
   baseMaterial   GrillzMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
+
+  @@index([baseMaterialId])
 }
 
 model GrillzMaterialOption {
@@ -182,6 +193,8 @@ model GrillzMaterialOption {
   price          Int
   baseMaterial   GrillzMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
+
+  @@index([baseMaterialId])
 }
 
 enum UserRole {
