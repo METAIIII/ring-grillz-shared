@@ -15,7 +15,6 @@ export const handleApiError = (
   error: string | Error,
   status: number = 500
 ): Promise<never> => {
-  console.log(error);
   const errorMessage = error instanceof Error ? error.message : `${JSON.stringify(error)}`;
   const response: ApiErrorResponse = {
     statusCode: status,

@@ -1,14 +1,4 @@
-import {
-  BoxProps,
-  Button,
-  Flex,
-  FormErrorMessage,
-  Heading,
-  IconButton,
-  Input,
-  InputGroup,
-  Text,
-} from '@chakra-ui/react';
+import { BoxProps, Button, Flex, Heading, IconButton, Input, InputGroup } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -23,10 +13,36 @@ export function CreateCoupon(props: BoxProps) {
   const [mode, setMode] = useState<'amount_off' | 'percent_off'>('amount_off');
   const [createCoupon, { isLoading, isError, isSuccess, data }] = useCreateCouponMutation();
   const schema = z.object({
-    amount_off: z.number().optional(),
+    amount_off: z
+      .number()
+      .optional()
+      .refine(
+        (value) => {
+          if (mode === 'amount_off') {
+            return value !== undefined;
+          }
+          return true;
+        },
+        {
+          message: 'Please provide a value for Amount Off when in Fixed mode.',
+        }
+      ),
     duration: z.enum(['forever', 'once', 'repeating']),
     name: z.string(),
-    percent_off: z.number().optional(),
+    percent_off: z
+      .number()
+      .optional()
+      .refine(
+        (value) => {
+          if (mode === 'percent_off') {
+            return value !== undefined;
+          }
+          return true;
+        },
+        {
+          message: 'Please provide a value for Percent Off when in Percentage mode.',
+        }
+      ),
     promotion_code: z.string(),
   });
   const {
@@ -41,12 +57,27 @@ export function CreateCoupon(props: BoxProps) {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: CreateCoupon) =>
-    createCoupon({
+  const onSubmit = (data: CreateCoupon) => {
+    const baseData = {
       ...data,
       currency: 'aud',
-      amount_off: data.amount_off ? data.amount_off * 100 : undefined,
-    });
+    };
+
+    const updatedData =
+      mode === 'amount_off'
+        ? {
+            ...baseData,
+            amount_off: data.amount_off ? data.amount_off * 100 : undefined,
+            percent_off: undefined,
+          }
+        : {
+            ...baseData,
+            percent_off: data.percent_off,
+            amount_off: undefined,
+          };
+
+    createCoupon(updatedData);
+  };
 
   useSuccessFailToast({
     isSuccess: isSuccess && !data?.error,
@@ -70,9 +101,6 @@ export function CreateCoupon(props: BoxProps) {
             isInvalid={!!errors.promotion_code}
             placeholder='Promotion Code'
           />
-          {errors.promotion_code && (
-            <FormErrorMessage>{errors.promotion_code.message}</FormErrorMessage>
-          )}
         </InputGroup>
         <Flex mb={2}>
           <IconButton
@@ -82,15 +110,14 @@ export function CreateCoupon(props: BoxProps) {
             onClick={() => setMode(mode === 'amount_off' ? 'percent_off' : 'amount_off')}
           />
           <Input
-            flex={1}
             {...register('amount_off', { valueAsNumber: true })}
+            flex={1}
             isDisabled={mode === 'percent_off'}
             isInvalid={!!errors.amount_off}
             mr={2}
             placeholder='Amount Off'
             type='number'
           />
-          {errors.amount_off && <Text color='red.300'>{errors.amount_off.message}</Text>}
           <Input
             flex={1}
             {...register('percent_off', { valueAsNumber: true })}
@@ -100,7 +127,6 @@ export function CreateCoupon(props: BoxProps) {
             type='number'
           />
         </Flex>
-        {errors.percent_off && <Text color='red.300'>{errors.percent_off.message}</Text>}
         <Button
           colorScheme='green'
           isLoading={isLoading || isSubmitting}

@@ -57,6 +57,24 @@ export const handleCoupons = async (
 
 export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<CouponResponse>) => {
   try {
+    if (req.method === 'POST') {
+      const createParams = req.body as CreateCoupon;
+      const newCoupon = await stripe.coupons.create({
+        amount_off: createParams.amount_off,
+        currency: createParams.currency,
+        duration: createParams.duration,
+        name: createParams.name,
+        percent_off: createParams.percent_off,
+      });
+      const newPromotionCode = await stripe.promotionCodes.create({
+        coupon: newCoupon.id,
+        code: createParams.promotion_code,
+        active: true,
+      });
+
+      res.status(200).json({ data: newPromotionCode ? newCoupon : null });
+    }
+
     const couponCode = req.query.code as string;
     if (!couponCode || couponCode === 'UNDEFINED') {
       return res.status(200).json({ data: null });
@@ -80,21 +98,11 @@ export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<Cou
 
     if (req.method === 'GET') {
       res.status(200).json({ data: coupon });
-    } else if (req.method === 'POST') {
-      const createParams = req.body as CreateCoupon;
-      const newCoupon = await stripe.coupons.create({ ...createParams });
-      const newPromotionCode = await stripe.promotionCodes.create({
-        coupon: newCoupon.id,
-        code: createParams.promotion_code,
-        active: true,
-      });
+    }
 
-      res.status(200).json({ data: newPromotionCode ? newCoupon : null });
-    } else if (req.method === 'DELETE') {
+    if (req.method === 'DELETE') {
       await stripe.coupons.del(coupon.id);
       res.status(200).json({ data: coupon });
-    } else {
-      await handleApiError(res, new Error('Invalid request method'));
     }
   } catch (error) {
     await handleApiError(res, 'Error creating coupon');

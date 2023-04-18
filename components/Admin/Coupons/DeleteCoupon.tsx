@@ -48,7 +48,14 @@ export function DeleteCoupon({
             <Button mr={3} variant='ghost' onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme='red' isLoading={isLoading} onClick={() => deleteCoupon(couponId)}>
+            <Button
+              colorScheme='red'
+              isLoading={isLoading}
+              onClick={async () => {
+                await deleteCoupon(couponId);
+                onClose();
+              }}
+            >
               Yes, delete
             </Button>
           </ModalFooter>

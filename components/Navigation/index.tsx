@@ -11,7 +11,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { FaBars } from 'react-icons/fa';
-
 import { FullUser } from '../../types';
 import NavigationItem from './NavigationItem';
 

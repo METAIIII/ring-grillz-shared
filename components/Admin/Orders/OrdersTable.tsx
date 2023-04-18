@@ -5,7 +5,6 @@ import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { Column } from 'react-table';
-
 import { useGetOrdersByStatusQuery } from '../../../reducers/api';
 import { formatAmountForDisplay } from '../../../utils/stripeHelpers';
 import OrderStatusBadge from '../../Order/OrderStatusBadge';

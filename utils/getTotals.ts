@@ -5,10 +5,10 @@ import { formatAmountForDisplay } from './stripeHelpers';
 
 export function formatCouponDiscount(amount_off?: number | null, percent_off?: number | null) {
   if (amount_off) {
-    return formatAmountForDisplay(amount_off);
+    return `- ${formatAmountForDisplay(amount_off)}`;
   }
   if (percent_off) {
-    return `${percent_off}%`;
+    return `- ${percent_off}%`;
   }
   return '';
 }

@@ -97,7 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode, ringDataComponent, grillzDa
       {page === 'orders' && <OrdersTable />}
       {page === 'coupons' && (
         <Flex alignItems='flex-start'>
-          <CreateCoupon mr={4} />
+          <CreateCoupon maxW='96' mr={4} />
           <CouponList />
         </Flex>
       )}

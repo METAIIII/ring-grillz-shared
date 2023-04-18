@@ -1,9 +1,9 @@
-import { Flex, Heading, Text, Wrap } from '@chakra-ui/react';
+import { Badge, Flex, Heading, Text, Wrap } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { Panel } from 'shared/components/UI/Panel';
 import { useGetCouponsQuery } from 'shared/reducers/api';
-import { formatAmountForDisplay } from 'shared/utils/stripeHelpers';
+import { formatCouponDiscount } from 'shared/utils/getTotals';
 import { DeleteCoupon } from './DeleteCoupon';
 
 const CouponList = () => {
@@ -31,9 +31,18 @@ const CouponList = () => {
               fontWeight={700}
               ml='auto'
             >
-              {coupon.amount_off && formatAmountForDisplay(coupon.amount_off)}
-              {coupon.percent_off && `${coupon.percent_off}%`}
+              {formatCouponDiscount(coupon.amount_off, coupon.percent_off)}
             </Text>
+          </Flex>
+          <Flex mb={4}>
+            <Badge colorScheme={!coupon.promotion ? 'red' : undefined}>
+              {!coupon.promotion ? 'No promo code' : coupon.promotion.code}
+            </Badge>
+            {coupon.times_redeemed > 0 && (
+              <Badge colorScheme='green' ml={2}>
+                {coupon.times_redeemed} redeemed
+              </Badge>
+            )}
           </Flex>
           <DeleteCoupon buttonProps={{ size: 'sm' }} couponId={coupon.id} />
         </Panel>
