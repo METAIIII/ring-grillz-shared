@@ -180,4 +180,7 @@ export const {
   useGetUserByEmailQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  util: { getRunningQueriesThunk },
 } = api;
+
+export const { getGrillzData } = api.endpoints;
