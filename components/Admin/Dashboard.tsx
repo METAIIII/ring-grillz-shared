@@ -6,7 +6,7 @@ import { GiRing } from 'react-icons/gi';
 
 import { useRouter } from 'next/router';
 import CouponList from './Coupons/CouponList';
-import { CreateCoupon } from './Coupons/CreateCoupon';
+import { CreateCouponForm } from './Coupons/CreateCoupon';
 import OrdersTable from './Orders/OrdersTable';
 import UsersTable from './Users/UsersTable';
 
@@ -97,7 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode, ringDataComponent, grillzDa
       {page === 'orders' && <OrdersTable />}
       {page === 'coupons' && (
         <Flex alignItems='flex-start'>
-          <CreateCoupon maxW='96' mr={4} />
+          <CreateCouponForm maxW='96' mr={4} />
           <CouponList />
         </Flex>
       )}

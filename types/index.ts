@@ -64,13 +64,6 @@ export interface UpdateOrder {
   stripeId?: string;
 }
 
-export interface CreateCoupon extends Stripe.CouponCreateParams {
-  promotion_code: string;
-}
-export interface UpdateCoupon extends Stripe.CouponUpdateParams {
-  promotion_code?: string;
-}
-
 export interface CheckoutOptions {
   tcAgreed?: boolean;
   expressShipping?: boolean;

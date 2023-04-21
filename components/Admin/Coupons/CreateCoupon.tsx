@@ -1,61 +1,65 @@
 import { BoxProps, Button, Flex, Heading, IconButton, Input, InputGroup } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaDollarSign, FaPercentage } from 'react-icons/fa';
 import { Panel } from 'shared/components/UI/Panel';
 import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
 import { useCreateCouponMutation } from 'shared/reducers/api';
-import { CreateCoupon } from 'shared/types';
 import { z } from 'zod';
 
-export function CreateCoupon(props: BoxProps) {
-  const [mode, setMode] = useState<'amount_off' | 'percent_off'>('amount_off');
-  const [createCoupon, { isLoading, isError, isSuccess, data }] = useCreateCouponMutation();
-  const schema = z.object({
-    amount_off: z
-      .number()
-      .optional()
-      .refine(
-        (value) => {
-          if (mode === 'amount_off') {
-            return value !== undefined;
-          }
-          return true;
-        },
-        {
-          message: 'Please provide a value for Amount Off when in Fixed mode.',
-        }
-      ),
+const schema = z
+  .object({
+    mode: z.enum(['fixed', 'percentage']),
     duration: z.enum(['forever', 'once', 'repeating']),
     name: z.string(),
-    percent_off: z
-      .number()
-      .optional()
-      .refine(
-        (value) => {
-          if (mode === 'percent_off') {
-            return value !== undefined;
-          }
-          return true;
-        },
-        {
-          message: 'Please provide a value for Percent Off when in Percentage mode.',
-        }
-      ),
     promotion_code: z.string(),
-  });
+    amount_off: z.union([z.number().optional().nullable(), z.nan()]),
+    percent_off: z.union([z.number().optional().nullable(), z.nan()]),
+  })
+  .refine(
+    (data) => {
+      if (
+        data.mode === 'fixed' &&
+        (data.amount_off === undefined || (data.amount_off && isNaN(data.amount_off)))
+      ) {
+        return false;
+      } else if (
+        data.mode === 'percentage' &&
+        (data.percent_off === undefined || (data.percent_off && isNaN(data.percent_off)))
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: 'Invalid combination of mode and amount_off/percent_off',
+      path: ['mode'],
+    }
+  );
+
+export type CreateCoupon = z.infer<typeof schema>;
+
+export function CreateCouponForm(props: BoxProps) {
+  const [createCoupon, { isLoading, isError, isSuccess, data }] = useCreateCouponMutation();
+
   const {
     register,
     handleSubmit,
+    reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateCoupon>({
     defaultValues: {
+      amount_off: undefined,
       duration: 'forever',
       name: '',
+      percent_off: undefined,
     },
     resolver: zodResolver(schema),
   });
+  const mode = watch('mode', 'fixed');
 
   const onSubmit = (data: CreateCoupon) => {
     const baseData = {
@@ -64,7 +68,7 @@ export function CreateCoupon(props: BoxProps) {
     };
 
     const updatedData =
-      mode === 'amount_off'
+      mode === 'fixed'
         ? {
             ...baseData,
             amount_off: data.amount_off ? data.amount_off * 100 : undefined,
@@ -78,6 +82,13 @@ export function CreateCoupon(props: BoxProps) {
 
     createCoupon(updatedData);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   useSuccessFailToast({
     isSuccess: isSuccess && !data?.error,
@@ -104,15 +115,15 @@ export function CreateCoupon(props: BoxProps) {
         </InputGroup>
         <Flex mb={2}>
           <IconButton
-            aria-label={mode === 'amount_off' ? 'Fixed' : 'Percentage'}
-            icon={mode === 'amount_off' ? <FaDollarSign /> : <FaPercentage />}
+            aria-label={mode === 'fixed' ? 'Fixed' : 'Percentage'}
+            icon={mode === 'fixed' ? <FaDollarSign /> : <FaPercentage />}
             mr={2}
-            onClick={() => setMode(mode === 'amount_off' ? 'percent_off' : 'amount_off')}
+            onClick={() => setValue('mode', mode === 'fixed' ? 'percentage' : 'fixed')}
           />
           <Input
             {...register('amount_off', { valueAsNumber: true })}
             flex={1}
-            isDisabled={mode === 'percent_off'}
+            isDisabled={mode === 'percentage'}
             isInvalid={!!errors.amount_off}
             mr={2}
             placeholder='Amount Off'
@@ -121,12 +132,14 @@ export function CreateCoupon(props: BoxProps) {
           <Input
             flex={1}
             {...register('percent_off', { valueAsNumber: true })}
-            isDisabled={mode === 'amount_off'}
+            isDisabled={mode === 'fixed'}
             isInvalid={!!errors.percent_off}
             placeholder='Percent Off'
             type='number'
           />
         </Flex>
+        {errors.amount_off && <p>{errors.amount_off.message}</p>}
+        {errors.percent_off && <p>{errors.percent_off.message}</p>}
         <Button
           colorScheme='green'
           isLoading={isLoading || isSubmitting}

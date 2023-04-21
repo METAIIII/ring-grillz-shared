@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { HYDRATE } from 'next-redux-wrapper';
 import { UpdateUser } from '../components/Account/UserInfo';
-import { CreateCoupon, CreateOrder, FullOrder, UpdateCoupon, UpdateOrder } from '../types';
+import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
+import { CreateOrder, FullOrder, UpdateOrder } from '../types';
 import {
   CouponResponse,
   CouponsResponse,
@@ -105,17 +106,6 @@ export const api = createApi({
       }),
       invalidatesTags: () => [{ type: 'Coupon', code: 'LIST' }],
     }),
-    updateCoupon: builder.mutation<CouponResponse, { code: string; data: UpdateCoupon }>({
-      query: ({ code, data }) => ({
-        url: `coupon/${code}`,
-        method: 'PATCH',
-        body: data,
-      }),
-      invalidatesTags: (result, error, { code }) => [
-        { type: 'Coupon', code },
-        { type: 'Coupon', code: 'LIST' },
-      ],
-    }),
     deleteCoupon: builder.mutation<null, string>({
       query: (code) => ({
         url: `coupon/${code}`,
@@ -167,7 +157,6 @@ export const {
   useGetCouponsQuery,
   useGetCouponByCodeQuery,
   useCreateCouponMutation,
-  useUpdateCouponMutation,
   useDeleteCouponMutation,
   useGetOrderByIdQuery,
   useGetOrdersByStatusQuery,

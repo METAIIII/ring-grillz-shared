@@ -1,11 +1,12 @@
 import { Badge, Box, Button, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import React from 'react';
-import { FaClock, FaEnvelope, FaShippingFast, FaStripeS } from 'react-icons/fa';
+import { FaClock, FaEnvelope, FaShippingFast } from 'react-icons/fa';
 
 import Stripe from 'stripe';
 import CustomerInfo from '../../components/Order/CustomerInfo';
 import ResendEmail from '../../components/Order/ResendEmail';
+import { useUpdateOrderMutation } from '../../reducers/api';
 import { FullOrder } from '../../types';
 import { formatAmountForDisplay } from '../../utils/stripeHelpers';
 
@@ -17,6 +18,7 @@ interface Props {
 
 const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
   const customer = checkout?.customer_details;
+  const [updateOrder, { isLoading }] = useUpdateOrderMutation();
 
   return (
     <SimpleGrid columns={{ base: 1, md: 2 }} mb={4} spacing={8}>
@@ -59,21 +61,27 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
               </Badge>
             )}
           </Stack>
-          {checkout?.url && (
-            <Box pt={2}>
-              <Button
-                as='a'
-                colorScheme='purple'
-                href={checkout.url}
-                leftIcon={<Icon as={FaStripeS} />}
-                size='sm'
-                target='_blank'
-              >
-                Continue Checkout
+          {checkout?.url && order.status === 'PENDING' && (
+            <Stack pt={2}>
+              <Button as='a' colorScheme='yellow' href={checkout.url} size='sm' target='_blank'>
+                Continue checkout
               </Button>
-            </Box>
+              <Button
+                colorScheme='red'
+                isLoading={isLoading}
+                size='sm'
+                onClick={() =>
+                  updateOrder({
+                    id: order.id,
+                    data: { status: 'CANCELED' },
+                  })
+                }
+              >
+                Cancel order
+              </Button>
+            </Stack>
           )}
-          {!order.hasSentReceiptEmail && checkout && order.status === 'PAID' && (
+          {checkout && order.status === 'PAID' && !order.hasSentReceiptEmail && (
             <Box pt={2}>
               <ResendEmail checkoutId={checkout.id} orderId={order.id} />
             </Box>
@@ -83,7 +91,7 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
           </Text>
           {itemsList}
           <Text fontSize='2xl' fontWeight={700} textAlign='right'>
-            {formatAmountForDisplay(checkout?.amount_total ?? 0)}
+            {formatAmountForDisplay(checkout?.amount_total ?? order.paymentAmount ?? 0)}
           </Text>
         </Box>
       </Box>

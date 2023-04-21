@@ -2,8 +2,8 @@ import { OrderType } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import Stripe from 'stripe';
+import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
 import { authOptions } from '../config/auth';
-import { CreateCoupon } from '../types';
 import { CouponResponse, CouponsResponse } from '../types/apiResponses';
 import { handleApiError } from './error';
 import { getUser } from './user';
@@ -61,7 +61,7 @@ export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<Cou
       const createParams = req.body as CreateCoupon;
       const newCoupon = await stripe.coupons.create({
         amount_off: createParams.amount_off,
-        currency: createParams.currency,
+        currency: 'aud',
         duration: createParams.duration,
         name: createParams.name,
         percent_off: createParams.percent_off,
@@ -75,34 +75,31 @@ export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<Cou
       res.status(200).json({ data: newPromotionCode ? newCoupon : null });
     }
 
-    const couponCode = req.query.code as string;
-    if (!couponCode || couponCode === 'UNDEFINED') {
-      return res.status(200).json({ data: null });
-    }
-
-    const promotionCodes = await stripe.promotionCodes.list({
-      code: couponCode,
-      limit: 1,
-    });
-
-    const promotionCode = promotionCodes.data[0];
-    const coupon = promotionCode?.coupon;
-
-    if (!promotionCode) {
-      return res.status(200).json({ data: null, error: 'Promotion code not found' });
-    }
-
-    if (!coupon) {
-      return res.status(200).json({ data: null, error: 'Coupon not found' });
-    }
-
     if (req.method === 'GET') {
+      const couponCode = req.query.code as string;
+      if (!couponCode || couponCode === 'UNDEFINED') {
+        return res.status(200).json({ data: null, error: 'No coupon code provided' });
+      }
+      const promotionCodes = await stripe.promotionCodes.list({
+        code: couponCode,
+        limit: 1,
+      });
+
+      const promotionCode = promotionCodes.data[0];
+      if (!promotionCode) {
+        return res.status(200).json({ data: null, error: 'Promotion code not found' });
+      }
+      const coupon = promotionCode?.coupon;
+      if (!coupon) {
+        return res.status(200).json({ data: null, error: 'Coupon not found' });
+      }
       res.status(200).json({ data: coupon });
     }
-
     if (req.method === 'DELETE') {
-      await stripe.coupons.del(coupon.id);
-      res.status(200).json({ data: coupon });
+      const couponId = req.query.code as string;
+      // in the case of delete req, 'code' is actually the id of the coupon, not the promo code
+      await stripe.coupons.del(couponId);
+      res.status(200).json({ data: null });
     }
   } catch (error) {
     await handleApiError(res, 'Error creating coupon');
