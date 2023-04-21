@@ -60,11 +60,11 @@ export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<Cou
     if (req.method === 'POST') {
       const createParams = req.body as CreateCoupon;
       const newCoupon = await stripe.coupons.create({
-        amount_off: createParams.amount_off,
+        amount_off: !!createParams.amount_off ? createParams.amount_off : undefined,
         currency: 'aud',
         duration: createParams.duration,
         name: createParams.name,
-        percent_off: createParams.percent_off,
+        percent_off: !!createParams.percent_off ? createParams.percent_off : undefined,
       });
       const newPromotionCode = await stripe.promotionCodes.create({
         coupon: newCoupon.id,
