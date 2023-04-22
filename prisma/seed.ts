@@ -3,14 +3,14 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // // DELETE ALL DATA
-  // await prisma.user.deleteMany();
-  // await prisma.order.deleteMany();
-  // await prisma.lineItem.deleteMany();
-  // await prisma.session.deleteMany();
-  // await prisma.teethMaterial.deleteMany();
-  // await prisma.teethMaterialOption.deleteMany();
-  // await prisma.teethMaterialVariant.deleteMany();
+  // DELETE ALL DATA
+  await prisma.user.deleteMany();
+  await prisma.session.deleteMany();
+  await prisma.order.deleteMany();
+  await prisma.lineItem.deleteMany();
+  await prisma.grillzMaterial.deleteMany();
+  await prisma.grillzMaterialOption.deleteMany();
+  await prisma.grillzMaterialVariant.deleteMany();
   await prisma.ringEngraving.deleteMany();
   await prisma.ringEngravingPreset.deleteMany();
   await prisma.ringShape.deleteMany();
@@ -18,172 +18,179 @@ async function main() {
   await prisma.ringMaterial.deleteMany();
 
   // Users
-  // await prisma.user.create({
-  //   data: {
-  //     name: 'IIII ADMIN',
-  //     email: 'dev@metaiiii.online',
-  //     role: 'ADMIN',
-  //   },
-  // });
-  // await prisma.user.create({
-  //   data: {
-  //     name: 'IIII USER',
-  //     email: 'jai@metaiiii.online',
-  //     role: 'CUSTOMER',
-  //   },
-  // });
+  await prisma.user.create({
+    data: {
+      name: 'Maheer',
+      email: 'info@drgrillz.com',
+      role: 'ADMIN',
+    },
+  });
+  await prisma.user.create({
+    data: {
+      name: 'IIII ADMIN',
+      email: 'dev@metaiiii.online',
+      role: 'ADMIN',
+    },
+  });
+  await prisma.user.create({
+    data: {
+      name: 'IIII USER',
+      email: 'jai@metaiiii.online',
+      role: 'CUSTOMER',
+    },
+  });
 
   // DR GRILLZ
-  // await prisma.teethMaterial.create({
-  //   data: {
-  //     name: 'Chrome',
-  //     hasOptions: false,
-  //     labourCost: 40000,
-  //     variants: {
-  //       create: [
-  //         {
-  //           name: 'Polished',
-  //           previewImage: '/img/examples/chrome_polished.jpg',
-  //           toothBgImage: '/img/toothmasks/chrome_polished.jpg',
-  //           price: 5000,
-  //           singleRowOnly: true,
-  //         },
-  //         {
-  //           name: 'Open-Face',
-  //           previewImage: '/img/examples/chrome_openFace.jpg',
-  //           toothBgImage: '/img/toothmasks/chrome_polished.jpg',
-  //           price: 10000,
-  //           singleRowOnly: true,
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
+  await prisma.grillzMaterial.create({
+    data: {
+      name: 'Chrome',
+      hasOptions: false,
+      labourCost: 40000,
+      variants: {
+        create: [
+          {
+            name: 'Polished',
+            previewImage: '/img/examples/chrome_polished.jpg',
+            bgImage: '/img/toothmasks/chrome_polished.jpg',
+            price: 5000,
+            singleRowOnly: true,
+          },
+          {
+            name: 'Open-Face',
+            previewImage: '/img/examples/chrome_openFace.jpg',
+            bgImage: '/img/toothmasks/chrome_polished.jpg',
+            price: 10000,
+            singleRowOnly: true,
+          },
+        ],
+      },
+    },
+  });
 
-  // await prisma.teethMaterial.create({
-  //   data: {
-  //     name: 'Faux Gold',
-  //     hasOptions: false,
-  //     labourCost: 40000,
-  //     variants: {
-  //       create: [
-  //         {
-  //           name: 'Polished',
-  //           previewImage: '/img/examples/fauxGold_polished.jpg',
-  //           toothBgImage: '/img/toothmasks/fauxGold_polished.jpg',
-  //           price: 5000,
-  //           singleRowOnly: true,
-  //         },
-  //         {
-  //           name: 'Open-Face',
-  //           previewImage: '/img/examples/fauxGold_openFace.jpg',
-  //           toothBgImage: '/img/toothmasks/fauxGold_polished.jpg',
-  //           price: 10000,
-  //           singleRowOnly: true,
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
+  await prisma.grillzMaterial.create({
+    data: {
+      name: 'Faux Gold',
+      hasOptions: false,
+      labourCost: 40000,
+      variants: {
+        create: [
+          {
+            name: 'Polished',
+            previewImage: '/img/examples/fauxGold_polished.jpg',
+            bgImage: '/img/toothmasks/fauxGold_polished.jpg',
+            price: 5000,
+            singleRowOnly: true,
+          },
+          {
+            name: 'Open-Face',
+            previewImage: '/img/examples/fauxGold_openFace.jpg',
+            bgImage: '/img/toothmasks/fauxGold_polished.jpg',
+            price: 10000,
+            singleRowOnly: true,
+          },
+        ],
+      },
+    },
+  });
 
-  // await prisma.teethMaterial.create({
-  //   data: {
-  //     name: 'Gold',
-  //     hasOptions: true,
-  //     labourCost: 30000,
-  //     variants: {
-  //       create: [
-  //         {
-  //           name: 'Polished',
-  //           previewImage: '/img/examples/gold_polished.jpg',
-  //           toothBgImage: '/img/toothmasks/gold_polished.jpg',
-  //           price: 0,
-  //           singleRowOnly: false,
-  //         },
-  //         {
-  //           name: 'Open-Face',
-  //           previewImage: '/img/examples/gold_openFace.jpg',
-  //           toothBgImage: '/img/toothmasks/gold_polished.jpg',
-  //           price: 5000,
-  //           singleRowOnly: false,
-  //         },
-  //         {
-  //           name: 'Pineapple',
-  //           previewImage: '/img/examples/gold_pineapple.jpg',
-  //           toothBgImage: '/img/toothmasks/gold_pineapple.jpg',
-  //           price: 2500,
-  //           singleRowOnly: false,
-  //         },
-  //       ],
-  //     },
-  //     options: {
-  //       create: [
-  //         {
-  //           name: '10k',
-  //           previewImage: '/img/examples/gold_polished_10k.jpg',
-  //           price: 15000,
-  //         },
-  //         {
-  //           name: '14k',
-  //           previewImage: '/img/examples/gold_polished_14k.jpg',
-  //           price: 20000,
-  //         },
-  //         {
-  //           name: '18k',
-  //           previewImage: '/img/examples/gold_polished_18k.jpg',
-  //           price: 25000,
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
+  await prisma.grillzMaterial.create({
+    data: {
+      name: 'Gold',
+      hasOptions: true,
+      labourCost: 30000,
+      variants: {
+        create: [
+          {
+            name: 'Polished',
+            previewImage: '/img/examples/gold_polished.jpg',
+            bgImage: '/img/toothmasks/gold_polished.jpg',
+            price: 0,
+            singleRowOnly: false,
+          },
+          {
+            name: 'Open-Face',
+            previewImage: '/img/examples/gold_openFace.jpg',
+            bgImage: '/img/toothmasks/gold_polished.jpg',
+            price: 5000,
+            singleRowOnly: false,
+          },
+          {
+            name: 'Pineapple',
+            previewImage: '/img/examples/gold_pineapple.jpg',
+            bgImage: '/img/toothmasks/gold_pineapple.jpg',
+            price: 2500,
+            singleRowOnly: false,
+          },
+        ],
+      },
+      options: {
+        create: [
+          {
+            name: '10k',
+            previewImage: '/img/examples/gold_polished_10k.jpg',
+            price: 15000,
+          },
+          {
+            name: '14k',
+            previewImage: '/img/examples/gold_polished_14k.jpg',
+            price: 20000,
+          },
+          {
+            name: '18k',
+            previewImage: '/img/examples/gold_polished_18k.jpg',
+            price: 25000,
+          },
+        ],
+      },
+    },
+  });
 
-  // await prisma.teethMaterial.create({
-  //   data: {
-  //     name: 'Premium',
-  //     hasOptions: false,
-  //     labourCost: 30000,
-  //     variants: {
-  //       create: [
-  //         {
-  //           name: 'Silver',
-  //           previewImage: '/img/examples/premium_silver.jpg',
-  //           toothBgImage: '/img/toothmasks/premium_silver.jpg',
-  //           price: 5000,
-  //           singleRowOnly: false,
-  //         },
-  //         {
-  //           name: 'White Gold',
-  //           previewImage: '/img/examples/premium_whiteGold.jpg',
-  //           toothBgImage: '/img/toothmasks/premium_whiteGold.jpg',
-  //           price: 20000,
-  //           singleRowOnly: false,
-  //         },
-  //         {
-  //           name: 'LV',
-  //           previewImage: '/img/examples/premium_LV.jpg',
-  //           toothBgImage: '/img/toothmasks/premium_LV.jpg',
-  //           price: 25000,
-  //           singleRowOnly: false,
-  //         },
-  //         {
-  //           name: 'CZ',
-  //           previewImage: '/img/examples/premium_CZ.jpg',
-  //           toothBgImage: '/img/toothmasks/premium_diamond.jpg',
-  //           price: 80000,
-  //           singleRowOnly: false,
-  //         },
-  //         {
-  //           name: 'Diamond',
-  //           previewImage: '/img/examples/premium_diamond.jpg',
-  //           toothBgImage: '/img/toothmasks/premium_diamond.jpg',
-  //           price: 120000,
-  //           singleRowOnly: false,
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
+  await prisma.grillzMaterial.create({
+    data: {
+      name: 'Premium',
+      hasOptions: false,
+      labourCost: 30000,
+      variants: {
+        create: [
+          {
+            name: 'Silver',
+            previewImage: '/img/examples/premium_silver.jpg',
+            bgImage: '/img/toothmasks/premium_silver.jpg',
+            price: 5000,
+            singleRowOnly: false,
+          },
+          {
+            name: 'White Gold',
+            previewImage: '/img/examples/premium_whiteGold.jpg',
+            bgImage: '/img/toothmasks/premium_whiteGold.jpg',
+            price: 20000,
+            singleRowOnly: false,
+          },
+          {
+            name: 'LV',
+            previewImage: '/img/examples/premium_LV.jpg',
+            bgImage: '/img/toothmasks/premium_LV.jpg',
+            price: 25000,
+            singleRowOnly: false,
+          },
+          {
+            name: 'CZ',
+            previewImage: '/img/examples/premium_CZ.jpg',
+            bgImage: '/img/toothmasks/premium_diamond.jpg',
+            price: 80000,
+            singleRowOnly: false,
+          },
+          {
+            name: 'Diamond',
+            previewImage: '/img/examples/premium_diamond.jpg',
+            bgImage: '/img/toothmasks/premium_diamond.jpg',
+            price: 120000,
+            singleRowOnly: false,
+          },
+        ],
+      },
+    },
+  });
 
   // RING KINGZ
   const goldMaterial = await prisma.ringMaterial.create({
@@ -232,11 +239,7 @@ async function main() {
         'https://res.cloudinary.com/meta-iiii/image/upload/v1668182745/ring-kingz/SIMPLE_FRONT_ohbkyt.png',
       price: 10000,
       materials: {
-        connect: [
-          { id: goldMaterial.id },
-          { id: silverMaterial.id },
-          { id: whiteGoldMaterial.id },
-        ],
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
       },
     },
   });
@@ -244,6 +247,36 @@ async function main() {
   const squareRing = await prisma.ringShape.create({
     data: {
       order: 1,
+      name: 'Circle',
+      previewImage:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1645433213/ring-kingz/circle_preview_e37hn6.png',
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1656265643/ring-kingz/circle_i2pe5h.glb',
+      price: 15000,
+      materials: {
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
+      },
+    },
+  });
+
+  await prisma.ringShape.create({
+    data: {
+      order: 2,
+      name: 'Oval',
+      previewImage:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1645433212/ring-kingz/oval_preview_lquccc.png',
+      modelUrl:
+        'https://res.cloudinary.com/meta-iiii/image/upload/v1653665976/ring-kingz/oval_o6uppq.glb',
+      price: 15000,
+      materials: {
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
+      },
+    },
+  });
+
+  await prisma.ringShape.create({
+    data: {
+      order: 3,
       name: 'Square',
       previewImage:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1645433212/ring-kingz/square_preview_v3vtek.png',
@@ -258,11 +291,7 @@ async function main() {
         'https://res.cloudinary.com/meta-iiii/image/upload/v1668182746/ring-kingz/SQUARE_SIDE2_kopits.png',
       price: 15000,
       materials: {
-        connect: [
-          { id: goldMaterial.id },
-          { id: silverMaterial.id },
-          { id: whiteGoldMaterial.id },
-        ],
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
       },
     },
   });
@@ -284,11 +313,7 @@ async function main() {
         'https://res.cloudinary.com/meta-iiii/image/upload/v1668182745/ring-kingz/CIRCLE_SIDE2_z4v1m5.png',
       price: 15000,
       materials: {
-        connect: [
-          { id: goldMaterial.id },
-          { id: silverMaterial.id },
-          { id: whiteGoldMaterial.id },
-        ],
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
       },
     },
   });
@@ -309,11 +334,7 @@ async function main() {
         'https://res.cloudinary.com/meta-iiii/image/upload/v1668182744/ring-kingz/BIGCIRCLE_SIDE2_bzivtd.png',
       price: 20000,
       materials: {
-        connect: [
-          { id: goldMaterial.id },
-          { id: silverMaterial.id },
-          { id: whiteGoldMaterial.id },
-        ],
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
       },
     },
   });
@@ -352,11 +373,7 @@ async function main() {
       templateSide2:
         'https://res.cloudinary.com/meta-iiii/image/upload/v1668182745/ring-kingz/HEXAGON_SIDE2_hx0zxz.png',
       materials: {
-        connect: [
-          { id: goldMaterial.id },
-          { id: silverMaterial.id },
-          { id: whiteGoldMaterial.id },
-        ],
+        connect: [{ id: goldMaterial.id }, { id: silverMaterial.id }, { id: whiteGoldMaterial.id }],
       },
     },
   });
@@ -365,12 +382,9 @@ async function main() {
   const simpleRingID = { id: simpleRing.id };
 
   // Rings with a big flat face (e.g. square, circle, hexagon)
-  const signetRingIDs = [
-    squareRing,
-    circleRing,
-    bigCircleRing,
-    hexagonRing,
-  ].map((ring) => ({ id: ring.id }));
+  const signetRingIDs = [squareRing, circleRing, bigCircleRing, hexagonRing].map((ring) => ({
+    id: ring.id,
+  }));
 
   // Simple Presets
   await prisma.ringEngravingPreset.create({

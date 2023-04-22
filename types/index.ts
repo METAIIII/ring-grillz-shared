@@ -1,4 +1,7 @@
 import {
+  GrillzMaterial,
+  GrillzMaterialOption,
+  GrillzMaterialVariant,
   LineItem,
   Order,
   OrderPaymentType,
@@ -11,9 +14,6 @@ import {
   RingShape,
   RingShapeExample,
   StateEnum,
-  TeethMaterial,
-  TeethMaterialOption,
-  TeethMaterialVariant,
   User,
 } from '@prisma/client';
 import { IconType } from 'react-icons/lib';
@@ -32,6 +32,7 @@ export interface FullOrder extends Order {
 export interface CreateUser {
   email: string;
   name: string;
+  phone?: string;
   street?: string;
   street2?: string;
   suburb?: string;
@@ -39,32 +40,35 @@ export interface CreateUser {
   postcode?: string;
   image?: string;
 }
-export interface UpdateUser {
-  name: string;
-  street: string;
-  street2: string;
-  suburb: string;
-  state: StateEnum;
-  postcode: string;
-  image: string;
-}
+
 export interface CreateOrder {
-  email?: string;
   customerNotes?: string;
+  email?: string;
+  phone?: string;
+  items: Stripe.Checkout.SessionCreateParams.LineItem[];
+  paymentAmount?: number;
+  paymentType?: OrderPaymentType;
+  couponCode?: string;
+  ringData?: FullRing[];
+  teethData?: FullGrillzMaterial[];
   status: OrderStatus;
   type: OrderType;
-  paymentType?: OrderPaymentType;
-  items: Stripe.Checkout.SessionCreateParams.LineItem[];
-  expressShipping?: boolean;
-  teethData?: FullTeethMaterial[];
-  ringData?: FullRing[];
 }
 export interface UpdateOrder {
-  email: string | null;
-  customerNotes: string | null;
-  status: OrderStatus;
-  paymentType: OrderPaymentType | null;
+  email?: string;
+  phone?: string;
+  customerNotes?: string;
+  status?: OrderStatus;
+  paymentType?: OrderPaymentType;
+  couponCode?: string;
+  stripeId?: string;
+}
+
+export interface CheckoutOptions {
+  tcAgreed?: boolean;
   expressShipping?: boolean;
+  paymentType?: OrderPaymentType;
+  couponCode?: string;
 }
 
 // Dr Grillz Specific
@@ -92,30 +96,29 @@ export type ToothID =
 
 export interface Tooth {
   id: ToothID;
+  isDisabled?: boolean;
   name: string;
   row: 'top' | 'bottom';
-  svgPathD: string;
-  openFacePathD: string;
-  disabled?: boolean;
+  pathD: string;
+  pathDOpenFace: string;
 }
 export type Teeth = Tooth[];
-export type TeethForm = {
-  material?: TeethMaterial;
-  variant?: TeethMaterialVariant;
-  option?: TeethMaterialOption;
+export type GrillzForm = {
+  material: GrillzMaterial | null;
+  variant: GrillzMaterialVariant | null;
+  option: GrillzMaterialOption | null;
   selectedTeeth: ToothID[];
 };
-export type TeethFormAsMetadata = {
+export type GrillzFormAsMetadata = {
   materialId: string;
   variantId: string;
   optionId: string;
   selectedTeethIds: string;
-  expressShipping: string;
 };
 
-export type FullTeethMaterial = TeethMaterial & {
-  options: TeethMaterialOption[];
-  variants: TeethMaterialVariant[];
+export type FullGrillzMaterial = GrillzMaterial & {
+  options: GrillzMaterialOption[];
+  variants: GrillzMaterialVariant[];
 };
 
 // Ring Kingz Specific
@@ -124,12 +127,17 @@ export interface RingFormState {
   selectedMaterial: RingMaterial | null;
   selectedFace: RingFace;
   selectedEngravings: Record<RingFace, RingEngraving | null>;
+  size: {
+    value: string;
+    format: string;
+  };
 }
 export type RingFormAsMetadata = {
   shapeID: string;
   materialID: string;
   engravingIDs: string;
-  expressShipping: string;
+  size: string;
+  sizeFormat: string;
 };
 export type CreatorStep = {
   index: number;

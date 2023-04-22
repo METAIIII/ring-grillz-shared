@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import {
   Box,
   ButtonGroup,
@@ -19,7 +20,6 @@ import { ReactElement } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Row, TableOptions, usePagination, useTable } from 'react-table';
 
-/* eslint-disable react/jsx-key */
 interface TableProps<T extends object> extends TableOptions<T> {
   onClick?: (row: Row<T>) => void;
   colorScheme?: ThemeTypings['colorSchemes'];
@@ -87,13 +87,7 @@ function PaginatedTable<T extends object>({
         <Text fontSize='sm' fontWeight='bold' mr={2}>
           Page {pageIndex + 1} of {pageCount}
         </Text>
-        <ButtonGroup
-          isAttached
-          colorScheme='yellow'
-          mr={2}
-          size='sm'
-          variant='ghost'
-        >
+        <ButtonGroup isAttached colorScheme='yellow' mr={2} size='sm' variant='ghost'>
           <Tooltip label='Previous Page'>
             <IconButton
               aria-label='Previous Page'
@@ -112,11 +106,7 @@ function PaginatedTable<T extends object>({
           </Tooltip>
         </ButtonGroup>
         <Box>
-          <Select
-            size='sm'
-            value={pageSize}
-            onChange={(e) => setPageSize(Number(e.target.value))}
-          >
+          <Select size='sm' value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
             <option value={10}>10</option>
             <option value={50}>50</option>
             <option value={100}>100</option>

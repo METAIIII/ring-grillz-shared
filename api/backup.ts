@@ -1,8 +1,8 @@
 import { RingEngraving, User } from '@prisma/client';
 
-import prisma from '../../lib/prisma';
-import { FullOrder, FullRing, FullTeethMaterial } from '../../types';
-import { BackupData, PresetData } from '../../types/apiResponses';
+import prisma from '../prisma';
+import { FullGrillzMaterial, FullOrder, FullRing } from '../types';
+import { BackupData, PresetData } from '../types/apiResponses';
 
 // SHARED
 
@@ -36,19 +36,17 @@ export const getAllOrders = async (): Promise<FullOrder[] | null> => {
 
 // DR GRILLZ
 
-// Fetch all TeethMaterials
-export const getAllTeethMaterials = async (): Promise<
-  FullTeethMaterial[] | null
-> => {
+// Fetch all GrillzMaterials
+export const getAllGrillzMaterials = async (): Promise<FullGrillzMaterial[] | null> => {
   try {
-    const teethMaterials = await prisma.teethMaterial.findMany({
+    const grillzMaterials = await prisma.grillzMaterial.findMany({
       include: {
         options: true,
         variants: true,
       },
     });
-    if (!teethMaterials) return null;
-    return JSON.parse(JSON.stringify(teethMaterials));
+    if (!grillzMaterials) return null;
+    return JSON.parse(JSON.stringify(grillzMaterials));
   } catch (error) {
     return null;
   }
@@ -57,9 +55,7 @@ export const getAllTeethMaterials = async (): Promise<
 // RING KINGZ
 
 // Fetch all engravings
-export const getAllRingEngravings = async (): Promise<
-  RingEngraving[] | null
-> => {
+export const getAllRingEngravings = async (): Promise<RingEngraving[] | null> => {
   try {
     const ringEngravings = await prisma.ringEngraving.findMany();
     if (!ringEngravings) return null;
@@ -84,33 +80,32 @@ export const getAllRings = async (): Promise<FullRing[] | null> => {
   }
 };
 
-export const getAllRingEngravingPresets =
-  async (): Promise<PresetData | null> => {
-    try {
-      const simple = await prisma.ringEngravingPreset.findMany({
-        where: {
-          shapes: {
-            some: {
-              name: 'Simple',
-            },
+export const getAllRingEngravingPresets = async (): Promise<PresetData | null> => {
+  try {
+    const simple = await prisma.ringEngravingPreset.findMany({
+      where: {
+        shapes: {
+          some: {
+            name: 'Simple',
           },
         },
-      });
-      const signet = await prisma.ringEngravingPreset.findMany({
-        where: {
-          shapes: {
-            none: {
-              name: 'Simple',
-            },
+      },
+    });
+    const signet = await prisma.ringEngravingPreset.findMany({
+      where: {
+        shapes: {
+          none: {
+            name: 'Simple',
           },
         },
-      });
-      if (!simple || !signet) return null;
-      return JSON.parse(JSON.stringify({ simple, signet }));
-    } catch (error) {
-      return null;
-    }
-  };
+      },
+    });
+    if (!simple || !signet) return null;
+    return JSON.parse(JSON.stringify({ simple, signet }));
+  } catch (error) {
+    return null;
+  }
+};
 
 // Return all data
 export const getAllData = async (): Promise<BackupData | null> => {
@@ -118,7 +113,7 @@ export const getAllData = async (): Promise<BackupData | null> => {
     const data = await Promise.all([
       getAllUsers(),
       getAllOrders(),
-      getAllTeethMaterials(),
+      getAllGrillzMaterials(),
       getAllRings(),
       getAllRingEngravings(),
       getAllRingEngravingPresets(),
@@ -127,7 +122,7 @@ export const getAllData = async (): Promise<BackupData | null> => {
     return {
       users: data[0] ?? [],
       orders: data[1] ?? [],
-      teethMaterials: data[2] ?? [],
+      grillzMaterials: data[2] ?? [],
       ringShapes: data[3] ?? [],
       ringEngravings: data[4] ?? [],
       ringEngravingPresets: data[5] ?? {

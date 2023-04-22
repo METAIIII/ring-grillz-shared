@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   ButtonGroup,
   Flex,
@@ -12,183 +11,132 @@ import {
   InputGroup,
   InputRightElement,
   SimpleGrid,
-  Text,
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import axios from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import useSWR, { useSWRConfig } from 'swr';
-import * as yup from 'yup';
-
+import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
+import { useUpdateUserMutation } from 'shared/reducers/api';
+import { z } from 'zod';
 import { FullUser } from '../../types';
+import { Panel } from '../UI/Panel';
 import DeleteAccount from './DeleteAccount';
 
-type Inputs = {
-  name: string;
-  street: string;
-  street2: string;
-  suburb: string;
-  state: 'WA' | 'NT' | 'SA' | 'QLD' | 'NSW' | 'VIC' | 'TAS' | 'ACT';
-  postcode: string;
-};
-
-const schema = yup.object().shape({
-  name: yup.string().required(),
-  street: yup.string().required(),
-  street2: yup.string(),
-  suburb: yup.string().required(),
-  state: yup
-    .string()
-    .oneOf(['WA', 'NT', 'SA', 'QLD', 'NSW', 'VIC', 'TAS', 'ACT'])
-    .required(),
-  postcode: yup.string().required(),
+const schema = z.object({
+  name: z.string(),
+  phone: z.string(),
+  street: z.string(),
+  street2: z.string().optional(),
+  suburb: z.string(),
+  state: z.enum(['WA', 'NT', 'SA', 'QLD', 'NSW', 'VIC', 'TAS', 'ACT']),
+  postcode: z.string(),
+  image: z.string().optional(),
+  stripeId: z.string().optional(),
 });
 
-const UserInfo: React.FC<{ user: FullUser }> = ({ user }) => {
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+export type UpdateUser = z.infer<typeof schema>;
+
+function UserInfo({ user }: { user: FullUser }) {
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes('admin');
+
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const { mutate } = useSWRConfig();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<Inputs>({
+  } = useForm<UpdateUser>({
     defaultValues: {
-      name: user?.name || '',
-      street: user?.street || '',
-      street2: user?.street2 || '',
-      suburb: user?.suburb || '',
-      state: user?.state || 'WA',
-      postcode: user?.postcode || '',
+      name: user.name || '',
+      phone: user.phone || '',
+      street: user.street || '',
+      street2: user.street2 || '',
+      suburb: user.suburb || '',
+      state: user.state || 'WA',
+      postcode: user.postcode || '',
     },
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
-  const { pathname } = useRouter();
-  const isAdmin = pathname.includes('admin');
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      await axios.patch(`/api/user/${user.email}`, data);
-      mutate(`/api/user/${user.email}`);
-      setSuccess('Updated user information.');
-    } catch (error) {
-      setError('Error updating user.');
-    }
-  };
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => setError(''), 3000);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => setSuccess(''), 3000);
-    }
-  }, [success]);
+  const [updateUser, { isError, isLoading, isSuccess }] = useUpdateUserMutation();
+  useSuccessFailToast({
+    isSuccess,
+    isFail: isError,
+    successMessage: 'Your details have been updated',
+    failMessage: 'There was an error updating your details',
+  });
 
   return (
-    <Box as='form' borderWidth={1} p={4} onSubmit={handleSubmit(onSubmit)}>
-      <Heading mb={2} size={{ base: 'sm', md: 'md' }}>
-        {isAdmin ? 'Customer' : 'My'} Details
-      </Heading>
-      <FormControl mb={4}>
-        <FormLabel>Name</FormLabel>
-        <Input {...register('name')} colorScheme='yellow' />
-        {errors.name && (
-          <FormErrorMessage>{errors.name.message}</FormErrorMessage>
-        )}
-      </FormControl>
-      <FormControl mb={4}>
-        <FormLabel>Email</FormLabel>
-        <InputGroup>
-          <Input
-            isDisabled
-            colorScheme='yellow'
-            value={user?.email || 'No email'}
-          />
-          <Tooltip label={user?.emailVerified ? 'Verified' : 'Not Verified'}>
-            <InputRightElement>
-              {user?.emailVerified ? (
-                <Icon as={FaCheck} color='yellow.500' />
-              ) : (
-                <Icon as={FaTimes} color='red.400' />
-              )}
-            </InputRightElement>
-          </Tooltip>
-        </InputGroup>
-      </FormControl>
-      <FormControl mb={4}>
-        <FormLabel>Street Address</FormLabel>
-        <Input {...register('street')} />
-        {errors.street && (
-          <FormErrorMessage>{errors.street.message}</FormErrorMessage>
-        )}
-      </FormControl>
-      <FormControl mb={4}>
-        <FormLabel>Street Address (Line 2)</FormLabel>
-        <Input {...register('street2')} />
-        {errors.street2 && (
-          <FormErrorMessage>{errors.street2.message}</FormErrorMessage>
-        )}
-      </FormControl>
-      <FormControl mb={4}>
-        <FormLabel>Suburb</FormLabel>
-        <Input {...register('suburb')} />
-        {errors.suburb && (
-          <FormErrorMessage>{errors.suburb.message}</FormErrorMessage>
-        )}
-      </FormControl>
-      <SimpleGrid columns={2} mb={4} spacing={4}>
-        <FormControl>
-          <FormLabel>State</FormLabel>
-          <Input {...register('state')} />
-          {errors.state && (
-            <FormErrorMessage>{errors.state.message}</FormErrorMessage>
-          )}
+    <Panel>
+      <form onSubmit={handleSubmit((data) => updateUser({ email: user.email ?? '', data }))}>
+        <Heading mb={2} size={{ base: 'sm', md: 'md' }}>
+          {isAdmin ? 'Customer' : 'My'} Details
+        </Heading>
+        <FormControl mb={4}>
+          <FormLabel>Name</FormLabel>
+          <Input {...register('name')} colorScheme='yellow' />
+          {errors.name && <FormErrorMessage>{errors.name.message}</FormErrorMessage>}
         </FormControl>
-        <FormControl>
-          <FormLabel>Postcode</FormLabel>
-          <Input {...register('postcode')} />
-          {errors.postcode && (
-            <FormErrorMessage>{errors.postcode.message}</FormErrorMessage>
-          )}
+        <FormControl mb={4}>
+          <FormLabel>Email</FormLabel>
+          <InputGroup>
+            <Input isDisabled colorScheme='yellow' value={user?.email || 'No email'} />
+            <Tooltip label={user?.emailVerified ? 'Verified' : 'Not Verified'}>
+              <InputRightElement>
+                {user?.emailVerified ? (
+                  <Icon as={FaCheck} color='yellow.500' />
+                ) : (
+                  <Icon as={FaTimes} color='red.400' />
+                )}
+              </InputRightElement>
+            </Tooltip>
+          </InputGroup>
         </FormControl>
-      </SimpleGrid>
-      {error && (
-        <Text py={2} textColor='red.400'>
-          {error}
-        </Text>
-      )}
-      {success && (
-        <Text py={2} textColor='green.400'>
-          {success}
-        </Text>
-      )}
-      <Flex justifyContent='flex-end'>
-        <ButtonGroup size='sm' variant='ghost'>
-          <Button colorScheme='red' onClick={onOpen}>
-            Delete Account
-          </Button>
-          <Button colorScheme='yellow' isLoading={isSubmitting} type='submit'>
-            Save Changes
-          </Button>
-        </ButtonGroup>
-      </Flex>
-      <DeleteAccount
-        email={user?.email ?? ''}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
-    </Box>
+        <FormControl mb={4}>
+          <FormLabel>Street Address</FormLabel>
+          <Input {...register('street')} />
+          {errors.street && <FormErrorMessage>{errors.street.message}</FormErrorMessage>}
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel>Street Address (Line 2)</FormLabel>
+          <Input {...register('street2')} />
+          {errors.street2 && <FormErrorMessage>{errors.street2.message}</FormErrorMessage>}
+        </FormControl>
+        <FormControl mb={4}>
+          <FormLabel>Suburb</FormLabel>
+          <Input {...register('suburb')} />
+          {errors.suburb && <FormErrorMessage>{errors.suburb.message}</FormErrorMessage>}
+        </FormControl>
+        <SimpleGrid columns={2} mb={4} spacing={4}>
+          <FormControl>
+            <FormLabel>State</FormLabel>
+            <Input {...register('state')} />
+            {errors.state && <FormErrorMessage>{errors.state.message}</FormErrorMessage>}
+          </FormControl>
+          <FormControl>
+            <FormLabel>Postcode</FormLabel>
+            <Input {...register('postcode')} />
+            {errors.postcode && <FormErrorMessage>{errors.postcode.message}</FormErrorMessage>}
+          </FormControl>
+        </SimpleGrid>
+        <Flex justifyContent='flex-end'>
+          <ButtonGroup size='sm' variant='ghost'>
+            <Button colorScheme='red' onClick={onOpen}>
+              Delete Account
+            </Button>
+            <Button colorScheme='yellow' isLoading={isSubmitting || isLoading} type='submit'>
+              Save Changes
+            </Button>
+          </ButtonGroup>
+        </Flex>
+        {user.email && <DeleteAccount email={user.email} isOpen={isOpen} onClose={onClose} />}
+      </form>
+    </Panel>
   );
-};
+}
 
 export default UserInfo;

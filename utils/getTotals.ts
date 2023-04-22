@@ -1,14 +1,25 @@
 import { RingMaterial, RingShape } from '@prisma/client';
 
-import { RingFormState, TeethForm } from '../types';
+import { GrillzForm, RingFormState } from '../types';
+import { formatAmountForDisplay } from './stripeHelpers';
+
+export function formatCouponDiscount(amount_off?: number | null, percent_off?: number | null) {
+  if (amount_off) {
+    return `- ${formatAmountForDisplay(amount_off)}`;
+  }
+  if (percent_off) {
+    return `- ${percent_off}%`;
+  }
+  return '';
+}
 
 // Dr Grillz Specific
-export const getTeethLabourCost = (data: TeethForm): number => {
+const getGrillzLabourCost = (data: GrillzForm): number => {
   const labourCost = data.material?.labourCost || 0;
   return labourCost;
 };
 
-export const getToothValue = (data: TeethForm): number => {
+const getToothValue = (data: GrillzForm): number => {
   let variantValue = 0;
   let optionValue = 0;
 
@@ -22,24 +33,14 @@ export const getToothValue = (data: TeethForm): number => {
   return variantValue + optionValue;
 };
 
-export const getTeethTotal = (
-  data: TeethForm,
-  options: { expressShipping: boolean }
-): number => {
+export const getGrillzTotal = (data: GrillzForm): number => {
   if (!data.material || !data.selectedTeeth) return 0;
-
-  let postage = 0;
-
-  if (options.expressShipping) {
-    // Add $20 for express shipping option
-    postage = 2000;
-  }
 
   const toothValue = getToothValue(data);
   const numOfTeeth = data.selectedTeeth.length;
-  const labourCost = getTeethLabourCost(data);
+  const labourCost = getGrillzLabourCost(data);
 
-  return toothValue * numOfTeeth + labourCost + postage;
+  return toothValue * numOfTeeth + labourCost;
 };
 
 // Ring Kingz Specific
@@ -51,9 +52,7 @@ export const getRingMaterialTotal = (material?: RingMaterial): number => {
   if (!material) return 0;
   return material.price;
 };
-export const getRingEngravingTotal = (
-  engravings?: RingFormState['selectedEngravings']
-): number => {
+export const getRingEngravingTotal = (engravings?: RingFormState['selectedEngravings']): number => {
   if (!engravings) return 0;
   let total = 0;
 
@@ -65,26 +64,10 @@ export const getRingEngravingTotal = (
   return total;
 };
 
-export const RING_LABOUR_COST = 40000;
-
-export const getRingTotal = (
-  form: RingFormState,
-  options: { expressShipping: boolean }
-) => {
-  let postage = 0;
-  if (options.expressShipping) {
-    // Add $20 for express shipping option
-    postage = 2000;
-  }
-
-  const shapeTotal = form?.selectedShape
-    ? getRingShapeTotal(form.selectedShape)
-    : 0;
-  const materialTotal = form?.selectedMaterial
-    ? getRingMaterialTotal(form.selectedMaterial)
-    : 0;
+export const getRingTotal = (form: RingFormState) => {
+  const labourCost = 30000;
+  const shapeTotal = form?.selectedShape ? getRingShapeTotal(form.selectedShape) : 0;
+  const materialTotal = form?.selectedMaterial ? getRingMaterialTotal(form.selectedMaterial) : 0;
   const engravingTotal = getRingEngravingTotal(form?.selectedEngravings);
-  return (
-    shapeTotal + materialTotal + engravingTotal + postage + RING_LABOUR_COST
-  );
+  return shapeTotal + materialTotal + engravingTotal + labourCost;
 };

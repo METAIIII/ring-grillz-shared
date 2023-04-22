@@ -1,13 +1,12 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
 }
 
 model Account {
@@ -28,6 +27,7 @@ model Account {
   userId             String
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -36,6 +36,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -53,12 +55,14 @@ model User {
   name          String?
   email         String?    @unique
   emailVerified DateTime?
+  phone         String?
   street        String?
   street2       String?
   suburb        String?
   state         StateEnum?
   postcode      String?
   image         String?
+  stripeId      String?
   role          UserRole   @default(CUSTOMER)
   orders        Order[]
   accounts      Account[]
@@ -69,19 +73,22 @@ model Order {
   id                  String            @id @default(cuid())
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
-  customerNotes       String?           @db.Text
   items               LineItem[]
-  total               Int
   status              OrderStatus
   type                OrderType
   paymentType         OrderPaymentType?
+  paymentAmount       Int
+  couponCode          String?
   email               String
+  phone               String?
+  customerNotes       String?           @db.Text
   hasSentOrderEmail   Boolean?
   hasSentReceiptEmail Boolean?
-  expressShipping     Boolean?
   stripeId            String?
   user                User?             @relation(fields: [userId], references: [id])
   userId              String?
+
+  @@index([userId])
 }
 
 model LineItem {
@@ -90,6 +97,8 @@ model LineItem {
   metadata String @db.MediumText
   order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId  String
+
+  @@index([orderId])
 }
 
 model RingShape {
@@ -114,6 +123,8 @@ model RingShapeExample {
   imageUrl    String    @db.VarChar(512)
   ringShape   RingShape @relation(fields: [ringShapeId], references: [id], onDelete: Cascade)
   ringShapeId String
+
+  @@index([ringShapeId])
 }
 
 model RingMaterial {
@@ -152,34 +163,38 @@ model RingEngravingPreset {
   order    Int         @default(0)
 }
 
-model TeethMaterial {
-  id             String                 @id @default(cuid())
-  name           String                 @unique
-  variants       TeethMaterialVariant[]
-  hasOptions     Boolean                @default(false)
+model GrillzMaterial {
+  id             String                  @id @default(cuid())
+  name           String                  @unique
+  variants       GrillzMaterialVariant[]
+  hasOptions     Boolean                 @default(false)
   labourCost     Int
-  options        TeethMaterialOption[]
+  options        GrillzMaterialOption[]
   optionsHeading String?
 }
 
-model TeethMaterialVariant {
-  id             String        @id @default(cuid())
+model GrillzMaterialVariant {
+  id             String         @id @default(cuid())
   name           String
-  previewImage   String        @db.VarChar(512)
+  previewImage   String         @db.VarChar(512)
   price          Int
-  singleRowOnly  Boolean       @default(false)
-  toothBgImage   String?       @db.VarChar(512)
-  baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
+  singleRowOnly  Boolean        @default(false)
+  bgImage        String?        @db.VarChar(512)
+  baseMaterial   GrillzMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
+
+  @@index([baseMaterialId])
 }
 
-model TeethMaterialOption {
-  id             String        @id @default(cuid())
+model GrillzMaterialOption {
+  id             String         @id @default(cuid())
   name           String
-  previewImage   String        @db.VarChar(512)
+  previewImage   String         @db.VarChar(512)
   price          Int
-  baseMaterial   TeethMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
+  baseMaterial   GrillzMaterial @relation(fields: [baseMaterialId], references: [id], onDelete: Cascade)
   baseMaterialId String
+
+  @@index([baseMaterialId])
 }
 
 enum UserRole {

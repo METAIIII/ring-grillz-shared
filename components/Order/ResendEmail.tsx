@@ -1,39 +1,25 @@
 import { Button, Icon } from '@chakra-ui/react';
-import axios from 'axios';
-import React, { useState } from 'react';
 import { FaEnvelope } from 'react-icons/fa';
-import { useSWRConfig } from 'swr';
+import { useSendOrderEmailMutation } from '../../reducers/api';
 
 interface Props {
   orderId: string;
   checkoutId: string;
 }
 
-const ResendEmail: React.FC<Props> = ({ orderId, checkoutId }) => {
-  const [loading, setLoading] = useState(false);
-  const { mutate } = useSWRConfig();
-
-  const handleClick = async () => {
-    setLoading(true);
-    try {
-      await axios.post(`/api/order/mail`, { orderId, checkoutId });
-      mutate(`/api/order/${orderId}`);
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  };
+function ResendEmail({ orderId, checkoutId }: Props) {
+  const [sendEmails, { isLoading }] = useSendOrderEmailMutation();
 
   return (
     <Button
-      isLoading={loading}
+      isLoading={isLoading}
       leftIcon={<Icon as={FaEnvelope} />}
       size='sm'
-      onClick={handleClick}
+      onClick={() => sendEmails({ orderId, checkoutId })}
     >
       Send Receipt Email
     </Button>
   );
-};
+}
 
 export default ResendEmail;

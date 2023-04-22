@@ -6,7 +6,7 @@ interface Props {
   onLogout?: () => void;
 }
 
-const LogoutButton: React.FC<Props> = ({ onLogout }) => {
+function LogoutButton({ onLogout }: Props) {
   return (
     <Tooltip label='Logout'>
       <IconButton
@@ -22,6 +22,6 @@ const LogoutButton: React.FC<Props> = ({ onLogout }) => {
       />
     </Tooltip>
   );
-};
+}
 
 export default LogoutButton;

@@ -1,4 +1,5 @@
-import { Box, Button, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+/* eslint-disable react/jsx-key */
+import { Button, Heading, Icon, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -9,9 +10,12 @@ import { Column, useTable } from 'react-table';
 
 import { formatAmountForDisplay } from '../../utils/stripeHelpers';
 import OrderStatusBadge from '../Order/OrderStatusBadge';
+import { Panel } from '../UI/Panel';
 
-/* eslint-disable react/jsx-key */
-const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
+function UserOrders({ orders }: { orders: Order[] }) {
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes('admin');
+
   const columns = useMemo<Column[]>(
     () => [
       {
@@ -21,7 +25,7 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
       },
       {
         Header: 'Amount',
-        accessor: 'total',
+        accessor: 'paymentAmount',
         Cell: ({ value }) => <>{formatAmountForDisplay(value)}</>,
       },
       {
@@ -33,15 +37,14 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
         Header: '',
         accessor: 'id',
         Cell: ({ value }) => (
-          <Link legacyBehavior passHref href={`/receipt?order_id=${value}`}>
+          <Link href={`/receipt?order_id=${value}`}>
             <Button
-              as='a'
               colorScheme='yellow'
               rightIcon={<Icon as={CgExternal} />}
               size='sm'
               variant='outline'
             >
-              Details
+              Receipt
             </Button>
           </Link>
         ),
@@ -50,17 +53,14 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data: orders });
-
-  const { pathname } = useRouter();
-  const isAdmin = pathname.includes('admin');
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: orders,
+  });
 
   return (
-    <Box borderWidth={1} p={4}>
-      <Heading size={{ base: 'sm', md: 'md' }}>
-        {isAdmin ? '' : 'My '}Orders
-      </Heading>
+    <Panel>
+      <Heading size={{ base: 'sm', md: 'md' }}>{isAdmin ? '' : 'My '}Orders</Heading>
       <Table {...getTableProps()} colorScheme='yellow'>
         <Thead>
           {
@@ -97,8 +97,8 @@ const MyOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
           }
         </Tbody>
       </Table>
-    </Box>
+    </Panel>
   );
-};
+}
 
-export default MyOrders;
+export default UserOrders;
