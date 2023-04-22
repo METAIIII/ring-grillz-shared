@@ -8,14 +8,14 @@ function OrderStatusBadge({ orderStatus, ...props }: BadgeProps & { orderStatus:
         orderStatus === 'PAID'
           ? 'green'
           : orderStatus === 'PENDING'
-          ? 'orange'
-          : orderStatus === 'CANCELED'
-          ? 'red'
-          : orderStatus === 'SHIPPED'
-          ? 'blue'
-          : orderStatus === 'UNPAID'
-          ? 'purple'
-          : 'grey'
+            ? 'orange'
+            : orderStatus === 'CANCELED'
+              ? 'red'
+              : orderStatus === 'SHIPPED'
+                ? 'blue'
+                : orderStatus === 'UNPAID'
+                  ? 'purple'
+                  : 'grey'
       }
       px={2}
       py={1}

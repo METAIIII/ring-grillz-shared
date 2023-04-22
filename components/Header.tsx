@@ -3,7 +3,6 @@ import {
   Container,
   Flex,
   Heading,
-  Image,
   Link,
   Tooltip,
   useBreakpointValue,
@@ -11,28 +10,31 @@ import {
 } from '@chakra-ui/react';
 import { OrderType } from '@prisma/client';
 import { useSession } from 'next-auth/react';
-import LogoutButton from '../../components/Account/LogoutButton';
-import DarkModeSwitch from '../../components/UI/DarkModeSwitch';
-import { FullUser } from '../../types';
-import Navigation from '../Navigation';
+import Image from 'next/image';
+import LogoutButton from './Account/LogoutButton';
+import Navigation from './Navigation';
+import DarkModeSwitch from './UI/DarkModeSwitch';
 
 interface Props {
   mode: OrderType;
-  user?: FullUser;
 }
 
-const DrGrillzLogo = () => (
-  <Image
-    alt='Dr Grillz'
-    height={75}
-    src='https://drgrillz.com/wp-content/uploads/2020/12/dr-grillz-transparent.png'
-    width={92}
-  />
-);
+function DrGrillzLogo() {
+  return (
+    <Image
+      alt='Dr Grillz'
+      height={75}
+      src='https://drgrillz.com/wp-content/uploads/2020/12/dr-grillz-transparent.png'
+      width={92}
+    />
+  );
+}
 
-const RingKingzLogo = () => <Image alt='Ring Kingz' p={2} src='/logo.svg' w='120px' />;
+function RingKingzLogo() {
+  return <Image alt='Ring Kingz' src='/logo.svg' width={120} />;
+}
 
-function Header({ mode, user }: Props) {
+function Header({ mode }: Props) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const isDark = useColorModeValue(false, true);
   const { data: sessionData } = useSession();
@@ -96,7 +98,7 @@ function Header({ mode, user }: Props) {
               )}
             </Flex>
           )}
-          <Navigation user={user} />
+          <Navigation />
           {sessionData && <LogoutButton />}
           <DarkModeSwitch />
           {isMobile && (

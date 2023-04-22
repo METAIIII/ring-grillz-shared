@@ -50,7 +50,7 @@ export interface CreateOrder {
   paymentType?: OrderPaymentType;
   couponCode?: string;
   ringData?: FullRing[];
-  teethData?: FullGrillzMaterial[];
+  grillzData?: FullGrillzMaterial[];
   status: OrderStatus;
   type: OrderType;
 }

@@ -13,11 +13,12 @@ import {
   RingFormState,
   UpdateOrder,
 } from '../types';
-import { OrderResponse, OrdersResponse } from '../types/apiResponses';
-import { getGrillzTotal, getRingTotal } from '../utils/getTotals';
-import { getGrillzFromMetadata, getRingFromMetadata } from '../utils/stripeHelpers';
+import { OrderResponse, OrdersResponse } from '../types/api-responses';
+import { getGrillzTotal, getRingTotal } from '../utils/get-totals';
+import { getGrillzFromMetadata, getRingFromMetadata } from '../utils/stripe-helpers';
 import { handleApiError } from './error';
 import { getUser } from './user';
+import { json } from 'shared/utils/json-parse';
 
 /**
  * Fetches multiple orders based on the provided type and status.
@@ -35,7 +36,7 @@ export const getOrders = async (type: OrderType, status?: OrderStatus): Promise<
       },
     });
     if (!orders) return null;
-    return JSON.parse(JSON.stringify(orders)) as Order[];
+    return json(orders);
   } catch (error) {
     return null;
   }
@@ -58,7 +59,7 @@ export const getOrder = async (id: string): Promise<FullOrder | null> => {
       },
     });
     if (!order) return null;
-    return JSON.parse(JSON.stringify(order)) as FullOrder;
+    return json(order);
   } catch (error) {
     return null;
   }
@@ -95,7 +96,7 @@ export const updateOrder = async (id: string, data: UpdateOrder): Promise<FullOr
       },
     });
     if (!updatedOrder) return null;
-    return JSON.parse(JSON.stringify(updatedOrder)) as FullOrder;
+    return json(updatedOrder);
   } catch (error) {
     return null;
   }
@@ -113,19 +114,17 @@ export const createOrder = async (
 ): Promise<FullOrder | null> => {
   const orderTotal = body.items
     .map((item) => {
-      const ringMetadata = JSON.parse(
-        JSON.stringify(item?.price_data?.product_data?.metadata)
-      ) as RingFormAsMetadata;
-
-      const teethMetadata = JSON.parse(
-        JSON.stringify(item?.price_data?.product_data?.metadata)
-      ) as GrillzFormAsMetadata;
-
       if (type === 'GRILLZ') {
-        return getGrillzTotal(getGrillzFromMetadata(teethMetadata, body?.teethData ?? []));
+        const metadata = json<GrillzFormAsMetadata>(
+          item?.price_data?.product_data?.metadata as GrillzFormAsMetadata
+        );
+        return getGrillzTotal(getGrillzFromMetadata(metadata, body?.grillzData ?? []));
       }
       if (type === 'RING') {
-        return getRingTotal(getRingFromMetadata(ringMetadata, body?.ringData ?? []));
+        const metadata = json<RingFormAsMetadata>(
+          item?.price_data?.product_data?.metadata as RingFormAsMetadata
+        );
+        return getRingTotal(getRingFromMetadata(metadata, body?.ringData ?? []));
       }
       return 0;
     })
@@ -144,22 +143,24 @@ export const createOrder = async (
         status: body.status,
         items: {
           create: body.items.map((item) => {
-            const ringMetadata = JSON.parse(
-              JSON.stringify(item?.price_data?.product_data?.metadata)
-            ) as RingFormState;
+            const ringMetadata = json<RingFormAsMetadata>(
+              item?.price_data?.product_data?.metadata as RingFormAsMetadata
+            );
 
-            const teethMetadata = JSON.parse(
-              JSON.stringify(item?.price_data?.product_data?.metadata)
-            ) as GrillzForm;
+            const grillzMetadata = json<GrillzFormAsMetadata>(
+              item?.price_data?.product_data?.metadata as GrillzFormAsMetadata
+            );
 
             return type === 'GRILLZ'
               ? {
-                  amount: getGrillzTotal(teethMetadata),
-                  metadata: JSON.stringify(teethMetadata),
+                  amount: getGrillzTotal(
+                    getGrillzFromMetadata(grillzMetadata, body?.grillzData ?? [])
+                  ),
+                  metadata: JSON.stringify(grillzMetadata),
                 }
               : // if 'RING'
                 {
-                  amount: getRingTotal(ringMetadata),
+                  amount: getRingTotal(getRingFromMetadata(ringMetadata, body?.ringData ?? [])),
                   metadata: JSON.stringify(ringMetadata),
                 };
           }),
@@ -182,7 +183,7 @@ export const createOrder = async (
         user: true,
       },
     });
-    return JSON.parse(JSON.stringify(order)) as FullOrder;
+    return json(order);
   } catch (error) {
     return null;
   }
@@ -239,11 +240,19 @@ export const handleOrderRequest = async (
             user: true,
           },
         });
-        res.status(200).json({ data: JSON.parse(JSON.stringify(order)) });
+        if (!order) {
+          res.status(404).json({ error: 'Order not found.' });
+          return;
+        }
+        res.status(200).json({ data: json(order) });
         return;
       case 'PATCH':
         const updatedOrder = await updateOrder(`${req.query.id}`, body);
-        res.status(201).json({ data: JSON.parse(JSON.stringify(updatedOrder)) });
+        if (!updatedOrder) {
+          res.status(404).json({ error: 'Order not found.' });
+          return;
+        }
+        res.status(201).json({ data: json(updatedOrder) });
         return;
       case 'DELETE':
         await prisma.order.delete({
@@ -252,7 +261,6 @@ export const handleOrderRequest = async (
         res.status(204).end();
         return;
       default:
-        res.end();
         return;
     }
   } catch (error) {

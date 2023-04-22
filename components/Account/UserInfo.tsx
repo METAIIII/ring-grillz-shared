@@ -1,6 +1,8 @@
 import {
   Button,
   ButtonGroup,
+  Card,
+  CardBody,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -18,11 +20,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
+import { useSuccessFailToast } from 'shared/hooks/use-toast';
 import { useUpdateUserMutation } from 'shared/reducers/api';
 import { z } from 'zod';
 import { FullUser } from '../../types';
-import { Panel } from '../UI/Panel';
 import DeleteAccount from './DeleteAccount';
 
 const schema = z.object({
@@ -71,71 +72,73 @@ function UserInfo({ user }: { user: FullUser }) {
   });
 
   return (
-    <Panel>
-      <form onSubmit={handleSubmit((data) => updateUser({ email: user.email ?? '', data }))}>
-        <Heading mb={2} size={{ base: 'sm', md: 'md' }}>
-          {isAdmin ? 'Customer' : 'My'} Details
-        </Heading>
-        <FormControl mb={4}>
-          <FormLabel>Name</FormLabel>
-          <Input {...register('name')} colorScheme='yellow' />
-          {errors.name && <FormErrorMessage>{errors.name.message}</FormErrorMessage>}
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Email</FormLabel>
-          <InputGroup>
-            <Input isDisabled colorScheme='yellow' value={user?.email || 'No email'} />
-            <Tooltip label={user?.emailVerified ? 'Verified' : 'Not Verified'}>
-              <InputRightElement>
-                {user?.emailVerified ? (
-                  <Icon as={FaCheck} color='yellow.500' />
-                ) : (
-                  <Icon as={FaTimes} color='red.400' />
-                )}
-              </InputRightElement>
-            </Tooltip>
-          </InputGroup>
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Street Address</FormLabel>
-          <Input {...register('street')} />
-          {errors.street && <FormErrorMessage>{errors.street.message}</FormErrorMessage>}
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Street Address (Line 2)</FormLabel>
-          <Input {...register('street2')} />
-          {errors.street2 && <FormErrorMessage>{errors.street2.message}</FormErrorMessage>}
-        </FormControl>
-        <FormControl mb={4}>
-          <FormLabel>Suburb</FormLabel>
-          <Input {...register('suburb')} />
-          {errors.suburb && <FormErrorMessage>{errors.suburb.message}</FormErrorMessage>}
-        </FormControl>
-        <SimpleGrid columns={2} mb={4} spacing={4}>
-          <FormControl>
-            <FormLabel>State</FormLabel>
-            <Input {...register('state')} />
-            {errors.state && <FormErrorMessage>{errors.state.message}</FormErrorMessage>}
+    <Card>
+      <CardBody>
+        <form onSubmit={handleSubmit((data) => updateUser({ email: user.email ?? '', data }))}>
+          <Heading mb={2} size={{ base: 'sm', md: 'md' }}>
+            {isAdmin ? 'Customer' : 'My'} Details
+          </Heading>
+          <FormControl mb={4}>
+            <FormLabel>Name</FormLabel>
+            <Input {...register('name')} colorScheme='yellow' />
+            {errors.name && <FormErrorMessage>{errors.name.message}</FormErrorMessage>}
           </FormControl>
-          <FormControl>
-            <FormLabel>Postcode</FormLabel>
-            <Input {...register('postcode')} />
-            {errors.postcode && <FormErrorMessage>{errors.postcode.message}</FormErrorMessage>}
+          <FormControl mb={4}>
+            <FormLabel>Email</FormLabel>
+            <InputGroup>
+              <Input isDisabled colorScheme='yellow' value={user?.email || 'No email'} />
+              <Tooltip label={user?.emailVerified ? 'Verified' : 'Not Verified'}>
+                <InputRightElement>
+                  {user?.emailVerified ? (
+                    <Icon as={FaCheck} color='yellow.500' />
+                  ) : (
+                    <Icon as={FaTimes} color='red.400' />
+                  )}
+                </InputRightElement>
+              </Tooltip>
+            </InputGroup>
           </FormControl>
-        </SimpleGrid>
-        <Flex justifyContent='flex-end'>
-          <ButtonGroup size='sm' variant='ghost'>
-            <Button colorScheme='red' onClick={onOpen}>
-              Delete Account
-            </Button>
-            <Button colorScheme='yellow' isLoading={isSubmitting || isLoading} type='submit'>
-              Save Changes
-            </Button>
-          </ButtonGroup>
-        </Flex>
-        {user.email && <DeleteAccount email={user.email} isOpen={isOpen} onClose={onClose} />}
-      </form>
-    </Panel>
+          <FormControl mb={4}>
+            <FormLabel>Street Address</FormLabel>
+            <Input {...register('street')} />
+            {errors.street && <FormErrorMessage>{errors.street.message}</FormErrorMessage>}
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel>Street Address (Line 2)</FormLabel>
+            <Input {...register('street2')} />
+            {errors.street2 && <FormErrorMessage>{errors.street2.message}</FormErrorMessage>}
+          </FormControl>
+          <FormControl mb={4}>
+            <FormLabel>Suburb</FormLabel>
+            <Input {...register('suburb')} />
+            {errors.suburb && <FormErrorMessage>{errors.suburb.message}</FormErrorMessage>}
+          </FormControl>
+          <SimpleGrid columns={2} mb={4} spacing={4}>
+            <FormControl>
+              <FormLabel>State</FormLabel>
+              <Input {...register('state')} />
+              {errors.state && <FormErrorMessage>{errors.state.message}</FormErrorMessage>}
+            </FormControl>
+            <FormControl>
+              <FormLabel>Postcode</FormLabel>
+              <Input {...register('postcode')} />
+              {errors.postcode && <FormErrorMessage>{errors.postcode.message}</FormErrorMessage>}
+            </FormControl>
+          </SimpleGrid>
+          <Flex justifyContent='flex-end'>
+            <ButtonGroup size='sm' variant='ghost'>
+              <Button colorScheme='red' onClick={onOpen}>
+                Delete Account
+              </Button>
+              <Button colorScheme='yellow' isLoading={isSubmitting || isLoading} type='submit'>
+                Save Changes
+              </Button>
+            </ButtonGroup>
+          </Flex>
+          {user.email && <DeleteAccount email={user.email} isOpen={isOpen} onClose={onClose} />}
+        </form>
+      </CardBody>
+    </Card>
   );
 }
 

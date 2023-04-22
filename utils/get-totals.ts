@@ -1,7 +1,7 @@
 import { RingMaterial, RingShape } from '@prisma/client';
 
 import { GrillzForm, RingFormState } from '../types';
-import { formatAmountForDisplay } from './stripeHelpers';
+import { formatAmountForDisplay } from './stripe-helpers';
 
 export function formatCouponDiscount(amount_off?: number | null, percent_off?: number | null) {
   if (amount_off) {

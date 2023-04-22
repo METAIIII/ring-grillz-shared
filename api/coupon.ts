@@ -4,13 +4,11 @@ import { getServerSession } from 'next-auth';
 import Stripe from 'stripe';
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
 import { authOptions } from '../config/auth';
-import { CouponResponse, CouponsResponse } from '../types/apiResponses';
+import { CouponResponse, CouponsResponse } from '../types/api-responses';
 import { handleApiError } from './error';
 import { getUser } from './user';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
-  apiVersion: '2022-11-15',
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', { apiVersion: '2023-10-16' });
 
 export const handleCoupons = async (
   req: NextApiRequest,

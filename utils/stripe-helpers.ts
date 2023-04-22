@@ -9,7 +9,8 @@ import {
   RingFormState,
   ToothID,
 } from '../types';
-import { getGrillzTotal, getRingTotal } from './getTotals';
+import { getGrillzTotal, getRingTotal } from './get-totals';
+import { json } from './json-parse';
 
 export function formatAmountForDisplay(amount: number): string {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
@@ -93,20 +94,31 @@ export const convertGrillzToLineItem = (
         name: `${form?.material?.name} ${form?.variant?.name} ${
           form?.option ? `${form.option?.name}` : ''
         } [${form?.selectedTeeth?.join(TOOTH_SEPARATOR)}]`,
-        metadata: convertGrillzToMetadata(form),
+        metadata: convertGrillzToMetadata(form, false),
       },
     },
   };
 };
 
-export const convertGrillzToMetadata = (form: GrillzForm): GrillzFormAsMetadata => {
-  return {
+// Overload signatures
+export function convertGrillzToMetadata(form: GrillzForm, stringify: true): string;
+export function convertGrillzToMetadata(form: GrillzForm, stringify: false): GrillzFormAsMetadata;
+
+export function convertGrillzToMetadata(
+  form: GrillzForm,
+  stringify: boolean = true
+): GrillzFormAsMetadata | string {
+  const metadata = {
     materialId: form.material?.id ?? '',
     variantId: form.variant?.id ?? '',
     optionId: form.material?.hasOptions && form.option ? form.option.id : '',
     selectedTeethIds: form?.selectedTeeth?.join(TOOTH_SEPARATOR) ?? '',
   };
-};
+
+  if (!stringify) return metadata;
+
+  return JSON.stringify(metadata);
+}
 
 export const getGrillzFromMetadata = (
   metadata: GrillzFormAsMetadata,
@@ -117,12 +129,10 @@ export const getGrillzFromMetadata = (
   const option = material?.options.find((option) => option.id === metadata.optionId);
   const selectedTeeth = metadata?.selectedTeethIds?.split(TOOTH_SEPARATOR) as ToothID[];
 
-  return JSON.parse(
-    JSON.stringify({
-      material,
-      variant,
-      option,
-      selectedTeeth,
-    })
-  ) as GrillzForm;
+  return json({
+    material,
+    variant,
+    option,
+    selectedTeeth,
+  });
 };

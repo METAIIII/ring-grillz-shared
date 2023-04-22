@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { HYDRATE } from 'next-redux-wrapper';
 import { UpdateUser } from '../components/Account/UserInfo';
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
 import { CreateOrder, FullOrder, UpdateOrder } from '../types';
@@ -13,28 +12,23 @@ import {
   RingsDataResponse,
   UserResponse,
   UsersResponse,
-} from '../types/apiResponses';
+} from '../types/api-responses';
 
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.NEXTAUTH_URL}/api/` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/` }),
   tagTypes: ['Data', 'User', 'Order', 'Coupon', 'Checkout'],
-  extractRehydrationInfo(action, { reducerPath }) {
-    if (action.type === HYDRATE) {
-      return action.payload[reducerPath];
-    }
-  },
   endpoints: (builder) => ({
     /**
      * DATA queries/mutations
      */
-    getGrillzData: builder.query<GrillzMaterialsResponse, string>({
-      query: (str) => `data`,
-      providesTags: () => [{ type: 'Data', code: 'GRILLZ' }],
+    getGrillzData: builder.query<GrillzMaterialsResponse, void>({
+      query: () => `data`,
+      providesTags: () => [{ type: 'Data', id: 'GRILLZ' }],
     }),
     getRingsData: builder.query<RingsDataResponse, string>({
-      query: (str) => `data`,
-      providesTags: () => [{ type: 'Data', code: 'RINGS' }],
+      query: () => `data`,
+      providesTags: () => [{ type: 'Data', id: 'RINGS' }],
     }),
     /**
      * ORDER queries/mutations
@@ -45,7 +39,7 @@ export const api = createApi({
     }),
     getOrdersByStatus: builder.query<OrdersResponse, string>({
       query: (status) => `order?status=${status}`,
-      providesTags: () => [{ type: 'Order', status: 'LIST' }],
+      providesTags: () => [{ type: 'Order', id: 'LIST' }],
     }),
     createOrder: builder.mutation<OrderResponse, { data: CreateOrder }>({
       query: ({ data }) => ({
@@ -62,7 +56,7 @@ export const api = createApi({
       }),
       invalidatesTags: (result, error, { id }) => [
         { type: 'Order', id },
-        { type: 'Order', status: 'LIST' },
+        { type: 'Order', id: 'LIST' },
       ],
     }),
     sendOrderEmail: builder.mutation<OrderResponse, { orderId: string; checkoutId: string }>({
@@ -71,7 +65,7 @@ export const api = createApi({
         method: 'POST',
         body: { orderId, checkoutId },
       }),
-      invalidatesTags: (result, error, { orderId }) => [{ type: 'Order', orderId }],
+      invalidatesTags: (result, error, { orderId }) => [{ type: 'Order', id: orderId }],
     }),
     /**
      * CHECKOUT queries/mutations
@@ -92,11 +86,11 @@ export const api = createApi({
      */
     getCoupons: builder.query<CouponsResponse, string>({
       query: (str) => `coupon`,
-      providesTags: () => [{ type: 'Coupon', code: 'LIST' }],
+      providesTags: () => [{ type: 'Coupon', id: 'LIST' }],
     }),
     getCouponByCode: builder.query<CouponResponse, string>({
       query: (code) => `coupon/${code ?? 'UNDEFINED'}`,
-      providesTags: (result, error, code) => [{ type: 'Coupon', code }],
+      providesTags: (result, error, id) => [{ type: 'Coupon', id }],
     }),
     createCoupon: builder.mutation<CouponResponse, CreateCoupon>({
       query: (data) => ({
@@ -104,16 +98,16 @@ export const api = createApi({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: () => [{ type: 'Coupon', code: 'LIST' }],
+      invalidatesTags: () => [{ type: 'Coupon', id: 'LIST' }],
     }),
     deleteCoupon: builder.mutation<null, string>({
       query: (code) => ({
         url: `coupon/${code}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, code) => [
-        { type: 'Coupon', code },
-        { type: 'Coupon', code: 'LIST' },
+      invalidatesTags: (result, error, id) => [
+        { type: 'Coupon', id },
+        { type: 'Coupon', id: 'LIST' },
       ],
     }),
     /**
@@ -121,11 +115,11 @@ export const api = createApi({
      */
     getAllUsers: builder.query<UsersResponse, string>({
       query: (str) => `user`,
-      providesTags: () => [{ type: 'User', email: 'LIST' }],
+      providesTags: () => [{ type: 'User', id: 'LIST' }],
     }),
     getUserByEmail: builder.query<UserResponse, string>({
       query: (email) => `user/${email}`,
-      providesTags: (result, error, email) => [{ type: 'User', email }],
+      providesTags: (result, error, id) => [{ type: 'User', id }],
     }),
     updateUser: builder.mutation<UserResponse, { email: string; data: UpdateUser }>({
       query: ({ email, data }) => ({
@@ -134,8 +128,8 @@ export const api = createApi({
         body: data,
       }),
       invalidatesTags: (result, error, { email }) => [
-        { type: 'User', email },
-        { type: 'User', email: 'LIST' },
+        { type: 'User', id: email },
+        { type: 'User', id: 'LIST' },
       ],
     }),
     deleteUser: builder.mutation<null, string>({
@@ -143,9 +137,9 @@ export const api = createApi({
         url: `user/${email}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, email) => [
-        { type: 'User', email },
-        { type: 'User', email: 'LIST' },
+      invalidatesTags: (result, error, id) => [
+        { type: 'User', id },
+        { type: 'User', id: 'LIST' },
       ],
     }),
   }),

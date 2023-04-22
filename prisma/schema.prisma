@@ -3,10 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  relationMode      = "prisma"
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model Account {
@@ -94,7 +93,7 @@ model Order {
 model LineItem {
   id       String @id @default(cuid())
   amount   Int
-  metadata String @db.MediumText
+  metadata Json
   order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId  String
 
@@ -146,7 +145,7 @@ model RingEngraving {
   type          RingEngravingType
   face          RingFace          @default(FRONT)
   imageUrl      String?           @db.VarChar(512)
-  canvasData    String?           @db.MediumText
+  canvasData    String?           @db.Text
   text          String?
   fontFamily    String?
   flippedX      Boolean?

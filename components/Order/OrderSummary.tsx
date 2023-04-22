@@ -8,7 +8,7 @@ import CustomerInfo from '../../components/Order/CustomerInfo';
 import ResendEmail from '../../components/Order/ResendEmail';
 import { useUpdateOrderMutation } from '../../reducers/api';
 import { FullOrder } from '../../types';
-import { formatAmountForDisplay } from '../../utils/stripeHelpers';
+import { formatAmountForDisplay } from '../../utils/stripe-helpers';
 
 interface Props {
   order: FullOrder;
@@ -44,8 +44,8 @@ function OrderSummary({ order, checkout, itemsList }: Props) {
                 order.status === 'PAID' || order.status === 'SHIPPED'
                   ? 'green'
                   : order.status === 'PENDING'
-                  ? 'orange'
-                  : 'red'
+                    ? 'orange'
+                    : 'red'
               }
             >
               {`Status: ${order?.status ?? ''}`}

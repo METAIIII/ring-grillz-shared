@@ -1,10 +1,25 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { User as PrismaUser } from '@prisma/client';
 import { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import prisma from 'shared/prisma';
 
+declare module 'next-auth' {
+  interface User {
+    role: PrismaUser['role'];
+  }
+  interface Session {
+    user: PrismaUser;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
-  // https://next-auth.js.org/configuration/providers
+  callbacks: {
+    session({ session, user }) {
+      session.user.role = user.role;
+      return session;
+    },
+  },
   providers: [
     EmailProvider({
       server: {
@@ -20,11 +35,9 @@ export const authOptions: NextAuthOptions = {
   ],
   adapter: PrismaAdapter(prisma),
   secret: `${process.env.SECRET}`,
-
-  // You can define custom pages to override the built-in ones. These will be regular Next.js pages
-  // so ensure that they are placed outside of the '/api' folder, e.g. signIn: '/auth/mycustom-signin'
-  // The routes shown here are the default URLs that will be used when a custom
-  // pages is not specified for that route.
-  // https://next-auth.js.org/configuration/pages
-  pages: {},
+  pages: {
+    signIn: '/auth/signin',
+    verifyRequest: '/auth/verify-request',
+    error: '/auth/error',
+  },
 };

@@ -5,14 +5,15 @@ import { UpdateUser } from '../components/Account/UserInfo';
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
 import { FullUser } from '../types';
-import { UserResponse, UsersResponse } from '../types/apiResponses';
+import { UserResponse, UsersResponse } from '../types/api-responses';
 import { handleApiError } from './error';
+import { json } from 'shared/utils/json-parse';
 
 /**
  * Fetches a user with the provided email and order type.
- * @param {string} email The email of the user to fetch.
- * @param {OrderType} orderType The order type to filter orders.
- * @returns {Promise<FullUser | null>} The fetched user, or null if not found or an error occurs.
+ * @param email The email of the user to fetch.
+ * @param orderType The order type to filter orders.
+ * @returns The fetched user, or null if not found or an error occurs.
  */
 export async function getUser(email: string, orderType: OrderType): Promise<FullUser | null> {
   try {
@@ -23,7 +24,7 @@ export async function getUser(email: string, orderType: OrderType): Promise<Full
       },
     });
     if (!user) return null;
-    return JSON.parse(JSON.stringify(user)) as FullUser;
+    return json(user);
   } catch (error) {
     return null;
   }
@@ -55,10 +56,10 @@ export async function checkUser(
 
 /**
  * Updates a user with the provided email and data, and returns the updated user.
- * @param {string} email The email of the user to update.
- * @param {UpdateUser} data The data to update the user with.
- * @param {OrderType} orderType The order type to filter orders.
- * @returns {Promise<FullUser | null>} The updated user, or null if not found or an error occurs.
+ * @param email The email of the user to update.
+ * @param data The data to update the user with.
+ * @param orderType The order type to filter orders.
+ * @returns The updated user, or null if not found or an error occurs.
  */
 export const updateUser = async (
   email: string,
@@ -78,7 +79,7 @@ export const updateUser = async (
 
     if (!updatedUser) return null;
 
-    return JSON.parse(JSON.stringify(updatedUser)) as FullUser;
+    return json(updatedUser);
   } catch (error) {
     return null;
   }
@@ -86,8 +87,8 @@ export const updateUser = async (
 
 /**
  * Deletes a user with the provided email.
- * @param {string} email The email of the user to delete.
- * @returns {Promise<void | null>} A promise that resolves when the user is deleted, or null if an error occurs.
+ * @param email The email of the user to delete.
+ * @returns A promise that resolves when the user is deleted, or null if an error occurs.
  */
 export const deleteUser = async (email: string) => {
   try {
@@ -121,7 +122,7 @@ export const handleUsersRequest = async (
     if (!isAdmin) {
       return await handleApiError(res, new Error('Unauthorised'), 403);
     }
-    const users = await prisma.user.findMany({ orderBy: { email: 'asc' } });
+    const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } });
     res.status(200).json({ data: users });
   } catch (error) {
     await handleApiError(res, Error(`${error}`));

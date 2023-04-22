@@ -2,7 +2,8 @@ import { RingEngraving, User } from '@prisma/client';
 
 import prisma from '../prisma';
 import { FullGrillzMaterial, FullOrder, FullRing } from '../types';
-import { BackupData, PresetData } from '../types/apiResponses';
+import { BackupData, PresetData } from '../types/api-responses';
+import { json } from 'shared/utils/json-parse';
 
 // SHARED
 
@@ -11,7 +12,7 @@ export const getAllUsers = async (): Promise<User[] | null> => {
   try {
     const users = await prisma.user.findMany();
     if (!users) return null;
-    return JSON.parse(JSON.stringify(users));
+    return json(users);
   } catch (error) {
     return null;
   }
@@ -28,7 +29,7 @@ export const getAllOrders = async (): Promise<FullOrder[] | null> => {
     });
     if (!orders) return null;
 
-    return JSON.parse(JSON.stringify(orders));
+    return json(orders);
   } catch (error) {
     return null;
   }
@@ -46,7 +47,7 @@ export const getAllGrillzMaterials = async (): Promise<FullGrillzMaterial[] | nu
       },
     });
     if (!grillzMaterials) return null;
-    return JSON.parse(JSON.stringify(grillzMaterials));
+    return json(grillzMaterials);
   } catch (error) {
     return null;
   }
@@ -59,7 +60,7 @@ export const getAllRingEngravings = async (): Promise<RingEngraving[] | null> =>
   try {
     const ringEngravings = await prisma.ringEngraving.findMany();
     if (!ringEngravings) return null;
-    return JSON.parse(JSON.stringify(ringEngravings));
+    return json(ringEngravings);
   } catch (error) {
     return null;
   }
@@ -74,7 +75,7 @@ export const getAllRings = async (): Promise<FullRing[] | null> => {
       },
     });
     if (!ringShapes) return null;
-    return JSON.parse(JSON.stringify(ringShapes));
+    return json(ringShapes);
   } catch (error) {
     return null;
   }
@@ -101,7 +102,7 @@ export const getAllRingEngravingPresets = async (): Promise<PresetData | null> =
       },
     });
     if (!simple || !signet) return null;
-    return JSON.parse(JSON.stringify({ simple, signet }));
+    return json({ simple, signet });
   } catch (error) {
     return null;
   }

@@ -8,7 +8,7 @@ import {
 } from '@prisma/client';
 
 import Stripe from 'stripe';
-import { FullGrillzMaterial, FullOrder, FullRing, FullUser } from './';
+import { FullGrillzMaterial, FullOrder, FullRing, FullUser } from '.';
 
 export type ApiResponse<T> = {
   data?: T;

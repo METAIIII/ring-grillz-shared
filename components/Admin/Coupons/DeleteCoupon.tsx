@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { FaTrashAlt } from 'react-icons/fa';
-import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
+import { useSuccessFailToast } from 'shared/hooks/use-toast';
 import { useDeleteCouponMutation } from 'shared/reducers/api';
 
 export function DeleteCoupon({

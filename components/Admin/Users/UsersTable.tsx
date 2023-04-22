@@ -1,17 +1,16 @@
-import { Badge, Button, Icon } from '@chakra-ui/react';
+import { Badge, Button, Card, CardBody, Icon } from '@chakra-ui/react';
 import { User } from '@prisma/client';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { Column } from 'react-table';
+import { CellProps, Column, Renderer } from 'react-table';
 
 import { useGetAllUsersQuery } from '../../../reducers/api';
-import { Panel } from '../../UI/Panel';
 import PaginatedTable from '../../UI/Table';
 
 function Customers() {
-  const { data } = useGetAllUsersQuery('');
+  const { data, isLoading } = useGetAllUsersQuery('');
 
   const userData = useMemo(() => {
     if (data?.data) {
@@ -20,6 +19,23 @@ function Customers() {
       return [];
     }
   }, [data]);
+
+  const renderEmailVerifiedCell: Renderer<CellProps<User>> = ({ value }) => (
+    <Icon as={value ? FaCheck : FaTimes} />
+  );
+
+  // @ts-ignore
+  const renderRoleCell: Renderer<CellProps<User>> = ({ value }) => {
+    <Badge colorScheme={value === 'ADMIN' ? 'red' : 'gray'}>{value}</Badge>;
+  };
+
+  const renderDetailsCell: Renderer<CellProps<User>> = ({ value }) => (
+    <Link href={`/admin/user/${value}`}>
+      <Button colorScheme='red' rightIcon={<Icon as={CgExternal} />} size='sm' variant='outline'>
+        Details
+      </Button>
+    </Link>
+  );
 
   const columns = useMemo<Column<User>[]>(
     () => [
@@ -38,39 +54,32 @@ function Customers() {
       {
         Header: 'Verified',
         accessor: 'emailVerified',
-        Cell: ({ value }) => <Icon as={value ? FaCheck : FaTimes} />,
+        Cell: renderEmailVerifiedCell,
       },
       {
         Header: 'Role',
         accessor: 'role',
-        Cell: ({ value }) => (
-          <Badge colorScheme={value === 'ADMIN' ? 'red' : 'gray'}>{value}</Badge>
-        ),
+        Cell: renderRoleCell,
       },
       {
         Header: '',
         accessor: 'id',
-        Cell: ({ value }) => (
-          <Link href={`/admin/user/${value}`}>
-            <Button
-              colorScheme='red'
-              rightIcon={<Icon as={CgExternal} />}
-              size='sm'
-              variant='outline'
-            >
-              Details
-            </Button>
-          </Link>
-        ),
+        Cell: renderDetailsCell,
       },
     ],
     []
   );
 
   return (
-    <Panel>
-      <PaginatedTable<User> colorScheme='red' columns={columns} data={userData} />
-    </Panel>
+    <Card>
+      <CardBody>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <PaginatedTable<User> colorScheme='red' columns={columns} data={userData} />
+        )}
+      </CardBody>
+    </Card>
   );
 }
 
