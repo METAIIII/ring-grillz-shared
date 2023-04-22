@@ -96,11 +96,11 @@ export type ToothID =
 
 export interface Tooth {
   id: ToothID;
+  isDisabled?: boolean;
   name: string;
   row: 'top' | 'bottom';
-  svgPathD: string;
-  openFacePathD: string;
-  disabled?: boolean;
+  pathD: string;
+  pathDOpenFace: string;
 }
 export type Teeth = Tooth[];
 export type GrillzForm = {
