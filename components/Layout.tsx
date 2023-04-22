@@ -14,13 +14,7 @@ interface LayoutProps {
 
 export const LayoutContext = createContext<{ mode?: OrderType }>({});
 
-const Layout: React.FC<PropsWithChildren<LayoutProps>> = ({
-  children,
-  mode,
-  maxW,
-  title,
-  user,
-}) => {
+function Layout({ children, mode, maxW, title, user }: PropsWithChildren<LayoutProps>) {
   return (
     <LayoutContext.Provider value={{ mode }}>
       <NextSeo title={title} />
@@ -30,6 +24,6 @@ const Layout: React.FC<PropsWithChildren<LayoutProps>> = ({
       </Container>
     </LayoutContext.Provider>
   );
-};
+}
 
 export default Layout;

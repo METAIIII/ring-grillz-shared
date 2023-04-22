@@ -39,7 +39,7 @@ const schema = z.object({
 
 export type UpdateUser = z.infer<typeof schema>;
 
-const UserInfo: React.FC<{ user: FullUser }> = ({ user }) => {
+function UserInfo({ user }: { user: FullUser }) {
   const { pathname } = useRouter();
   const isAdmin = pathname.includes('admin');
 
@@ -137,6 +137,6 @@ const UserInfo: React.FC<{ user: FullUser }> = ({ user }) => {
       </form>
     </Panel>
   );
-};
+}
 
 export default UserInfo;

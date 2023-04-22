@@ -10,7 +10,7 @@ import { FullRing } from '../../../types';
 
 // TODO: THIS FILE TO BE MOVED TO RING KINGZ REPO, NOT SHARED
 
-const Rings = () => {
+function RingsTable() {
   const { data } = useGetRingsDataQuery('');
 
   const ringsData = useMemo<FullRing[]>(() => {
@@ -58,6 +58,6 @@ const Rings = () => {
   );
 
   return <PaginatedTable<FullRing> columns={columns} data={ringsData} />;
-};
+}
 
-export default Rings;
+export default RingsTable;

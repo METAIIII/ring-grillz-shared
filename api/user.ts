@@ -1,5 +1,5 @@
 import { OrderType } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { UpdateUser } from '../components/Account/UserInfo';
 import { authOptions } from '../config/auth';
@@ -14,7 +14,7 @@ import { handleApiError } from './error';
  * @param {OrderType} orderType The order type to filter orders.
  * @returns {Promise<FullUser | null>} The fetched user, or null if not found or an error occurs.
  */
-export const getUser = async (email: string, orderType: OrderType): Promise<FullUser | null> => {
+export async function getUser(email: string, orderType: OrderType): Promise<FullUser | null> {
   try {
     const user = await prisma.user.findUnique({
       where: { email },
@@ -27,7 +27,31 @@ export const getUser = async (email: string, orderType: OrderType): Promise<Full
   } catch (error) {
     return null;
   }
-};
+}
+
+/**
+ * Checks if user is admin
+ */
+export async function checkUser(
+  req: GetServerSidePropsContext['req'],
+  res: GetServerSidePropsContext['res'],
+  orderType: OrderType
+) {
+  try {
+    const session = await getServerSession(req, res, authOptions);
+    const sessionUser = session?.user?.email ? await getUser(session.user.email, orderType) : null;
+    const isAdmin = sessionUser?.role === 'ADMIN';
+    return {
+      isAdmin,
+      user: sessionUser,
+    };
+  } catch (error) {
+    return {
+      isAdmin: false,
+      user: null,
+    };
+  }
+}
 
 /**
  * Updates a user with the provided email and data, and returns the updated user.

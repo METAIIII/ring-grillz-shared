@@ -1,5 +1,4 @@
 import { Button, Icon } from '@chakra-ui/react';
-import React from 'react';
 import { FaEnvelope } from 'react-icons/fa';
 import { useSendOrderEmailMutation } from '../../reducers/api';
 
@@ -8,7 +7,7 @@ interface Props {
   checkoutId: string;
 }
 
-const ResendEmail: React.FC<Props> = ({ orderId, checkoutId }) => {
+function ResendEmail({ orderId, checkoutId }: Props) {
   const [sendEmails, { isLoading }] = useSendOrderEmailMutation();
 
   return (
@@ -21,6 +20,6 @@ const ResendEmail: React.FC<Props> = ({ orderId, checkoutId }) => {
       Send Receipt Email
     </Button>
   );
-};
+}
 
 export default ResendEmail;

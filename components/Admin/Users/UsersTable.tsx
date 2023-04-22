@@ -10,7 +10,7 @@ import { useGetAllUsersQuery } from '../../../reducers/api';
 import { Panel } from '../../UI/Panel';
 import PaginatedTable from '../../UI/Table';
 
-const Customers = () => {
+function Customers() {
   const { data } = useGetAllUsersQuery('');
 
   const userData = useMemo(() => {
@@ -72,6 +72,6 @@ const Customers = () => {
       <PaginatedTable<User> colorScheme='red' columns={columns} data={userData} />
     </Panel>
   );
-};
+}
 
 export default Customers;

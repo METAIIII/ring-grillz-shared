@@ -18,7 +18,7 @@ interface DashboardProps {
 
 type DashboardTabs = 'users' | 'orders' | 'coupons' | 'materials' | 'rings';
 
-const Dashboard: React.FC<DashboardProps> = ({ mode, ringDataComponent, grillzDataComponent }) => {
+function Dashboard({ mode, ringDataComponent, grillzDataComponent }: DashboardProps) {
   const router = useRouter();
   const validTabs = ['users', 'orders', 'coupons', 'materials', 'rings'];
   const tab = router.query.tab as DashboardTabs | '';
@@ -105,6 +105,6 @@ const Dashboard: React.FC<DashboardProps> = ({ mode, ringDataComponent, grillzDa
       {page === 'rings' && <>{ringDataComponent}</>}
     </Box>
   );
-};
+}
 
 export default Dashboard;

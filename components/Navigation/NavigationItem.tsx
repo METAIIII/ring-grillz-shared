@@ -2,11 +2,15 @@ import { Link, useBreakpointValue } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-const NavigationItem: React.FC<{
+function NavigationItem({
+  href,
+  label,
+  isAdmin,
+}: {
   href: string;
   label: string;
   isAdmin?: boolean;
-}> = ({ href, label, isAdmin }) => {
+}) {
   const { pathname } = useRouter();
 
   const isActive =
@@ -40,6 +44,6 @@ const NavigationItem: React.FC<{
       </Link>
     </NextLink>
   );
-};
+}
 
 export default NavigationItem;

@@ -32,7 +32,7 @@ const DrGrillzLogo = () => (
 
 const RingKingzLogo = () => <Image alt='Ring Kingz' p={2} src='/logo.svg' w='120px' />;
 
-const Header: React.FC<Props> = ({ mode, user }) => {
+function Header({ mode, user }: Props) {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const isDark = useColorModeValue(false, true);
   const { data: sessionData } = useSession();
@@ -112,6 +112,6 @@ const Header: React.FC<Props> = ({ mode, user }) => {
       </Container>
     </Box>
   );
-};
+}
 
 export default Header;

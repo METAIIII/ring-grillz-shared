@@ -1,10 +1,7 @@
 import { Badge, BadgeProps } from '@chakra-ui/react';
 import { OrderStatus } from '@prisma/client';
 
-const OrderStatusBadge: React.FC<BadgeProps & { orderStatus: OrderStatus }> = ({
-  orderStatus,
-  ...props
-}) => {
+function OrderStatusBadge({ orderStatus, ...props }: BadgeProps & { orderStatus: OrderStatus }) {
   return (
     <Badge
       colorScheme={
@@ -27,6 +24,6 @@ const OrderStatusBadge: React.FC<BadgeProps & { orderStatus: OrderStatus }> = ({
       {orderStatus}
     </Badge>
   );
-};
+}
 
 export default OrderStatusBadge;

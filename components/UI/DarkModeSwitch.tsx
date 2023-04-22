@@ -1,7 +1,7 @@
 import { Icon, IconButton, Tooltip, useColorMode } from '@chakra-ui/react';
 import { BsMoonStarsFill, BsSun } from 'react-icons/bs';
 
-const DarkModeSwitch = () => {
+function DarkModeSwitch() {
   const { colorMode, toggleColorMode } = useColorMode();
   const isDark = colorMode === 'dark';
   return (
@@ -17,6 +17,6 @@ const DarkModeSwitch = () => {
       />
     </Tooltip>
   );
-};
+}
 
 export default DarkModeSwitch;

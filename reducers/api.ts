@@ -17,7 +17,7 @@ import {
 
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.NEXTAUTH_URL}/api/` }),
   tagTypes: ['Data', 'User', 'Order', 'Coupon', 'Checkout'],
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === HYDRATE) {

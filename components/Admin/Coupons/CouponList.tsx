@@ -6,7 +6,7 @@ import { useGetCouponsQuery } from 'shared/reducers/api';
 import { formatCouponDiscount } from 'shared/utils/getTotals';
 import { DeleteCoupon } from './DeleteCoupon';
 
-const CouponList = () => {
+function CouponList() {
   const { data } = useGetCouponsQuery('');
   const couponsData = useMemo(() => {
     if (data?.data) {
@@ -49,6 +49,6 @@ const CouponList = () => {
       ))}
     </Wrap>
   );
-};
+}
 
 export default CouponList;

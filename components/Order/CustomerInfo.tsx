@@ -7,7 +7,7 @@ interface CustomerInfoProps {
   showEdit?: boolean;
 }
 
-const CustomerInfo: React.FC<CustomerInfoProps> = ({ user, showEdit = false }) => {
+function CustomerInfo({ user, showEdit = false }: CustomerInfoProps) {
   return !user ? (
     <Text>No information.</Text>
   ) : (
@@ -33,6 +33,6 @@ const CustomerInfo: React.FC<CustomerInfoProps> = ({ user, showEdit = false }) =
       )}
     </Box>
   );
-};
+}
 
 export default CustomerInfo;

@@ -12,7 +12,7 @@ import { formatAmountForDisplay } from '../../utils/stripeHelpers';
 import OrderStatusBadge from '../Order/OrderStatusBadge';
 import { Panel } from '../UI/Panel';
 
-const UserOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
+function UserOrders({ orders }: { orders: Order[] }) {
   const { pathname } = useRouter();
   const isAdmin = pathname.includes('admin');
 
@@ -99,6 +99,6 @@ const UserOrders: React.FC<{ orders: Order[] }> = ({ orders }) => {
       </Table>
     </Panel>
   );
-};
+}
 
 export default UserOrders;

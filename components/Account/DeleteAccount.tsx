@@ -13,11 +13,15 @@ import {
 import { useSuccessFailToast } from 'shared/hooks/useSuccessFailToast';
 import { useDeleteUserMutation } from 'shared/reducers/api';
 
-const DeleteAccount: React.FC<{
+function DeleteAccount({
+  isOpen,
+  onClose,
+  email,
+}: {
   email: string;
   isOpen: boolean;
   onClose(): void;
-}> = ({ isOpen, onClose, email }) => {
+}) {
   const [deleteUser, { isError, isLoading, isSuccess }] = useDeleteUserMutation();
 
   useSuccessFailToast({
@@ -50,6 +54,6 @@ const DeleteAccount: React.FC<{
       </ModalContent>
     </Modal>
   );
-};
+}
 
 export default DeleteAccount;

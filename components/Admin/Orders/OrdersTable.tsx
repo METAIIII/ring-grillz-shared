@@ -12,7 +12,7 @@ import { Panel } from '../../UI/Panel';
 import PaginatedTable from '../../UI/Table';
 import MarkAsShipped from './MarkAsShipped';
 
-const Orders = () => {
+function OrdersTable() {
   const [status, setStatus] = useState<OrderStatus>('PAID');
   const { data } = useGetOrdersByStatusQuery(status);
 
@@ -104,6 +104,6 @@ const Orders = () => {
       <PaginatedTable<Order> colorScheme='red' columns={columns} data={orderData} />
     </Panel>
   );
-};
+}
 
-export default Orders;
+export default OrdersTable;

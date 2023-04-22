@@ -16,7 +16,7 @@ interface Props {
   itemsList: React.ReactNode;
 }
 
-const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
+function OrderSummary({ order, checkout, itemsList }: Props) {
   const customer = checkout?.customer_details;
   const [updateOrder, { isLoading }] = useUpdateOrderMutation();
 
@@ -97,6 +97,6 @@ const OrderSummary: React.FC<Props> = ({ order, checkout, itemsList }) => {
       </Box>
     </SimpleGrid>
   );
-};
+}
 
 export default OrderSummary;

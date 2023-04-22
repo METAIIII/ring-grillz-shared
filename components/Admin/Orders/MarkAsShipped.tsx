@@ -7,7 +7,7 @@ interface Props {
   order: Order;
 }
 
-const MarkAsShipped: React.FC<Props> = ({ order }) => {
+function MarkAsShipped({ order }: Props) {
   const [updateOrder, { isLoading }] = useUpdateOrderMutation();
   const isShipped = order.status === 'SHIPPED';
 
@@ -23,6 +23,6 @@ const MarkAsShipped: React.FC<Props> = ({ order }) => {
       {isShipped ? 'Shipped' : 'Mark as sent'}
     </Button>
   );
-};
+}
 
 export default MarkAsShipped;

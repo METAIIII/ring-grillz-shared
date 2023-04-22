@@ -104,9 +104,9 @@ export interface Tooth {
 }
 export type Teeth = Tooth[];
 export type GrillzForm = {
-  material?: GrillzMaterial;
-  variant?: GrillzMaterialVariant;
-  option?: GrillzMaterialOption;
+  material: GrillzMaterial | null;
+  variant: GrillzMaterialVariant | null;
+  option: GrillzMaterialOption | null;
   selectedTeeth: ToothID[];
 };
 export type GrillzFormAsMetadata = {
