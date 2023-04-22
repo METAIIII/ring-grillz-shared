@@ -20,9 +20,7 @@ export const handleCoupons = async (
   const session = await getServerSession(req, res, authOptions);
   const sessionUser = session?.user?.email ? await getUser(session.user.email, orderType) : null;
   const isAdmin = sessionUser?.role === 'ADMIN';
-  if (!isAdmin) {
-    return await handleApiError(res, new Error('Unauthorised'), 403);
-  }
+  if (!isAdmin) return await handleApiError(res, new Error('Unauthorised'), 403);
 
   const couponList = await stripe.coupons.list({
     limit: 100,
@@ -30,9 +28,7 @@ export const handleCoupons = async (
     ending_before: req.query.ending_before?.toString(),
   });
 
-  if (!couponList) {
-    return res.status(200).json({ data: null, error: 'No coupons found' });
-  }
+  if (!couponList) return res.status(200).json({ data: null, error: 'No coupons found' });
 
   const promotionCodes = await Promise.all(
     couponList.data.map(async (coupon) => {

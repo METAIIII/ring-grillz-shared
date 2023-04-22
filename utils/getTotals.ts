@@ -64,6 +64,8 @@ export const getRingEngravingTotal = (engravings?: RingFormState['selectedEngrav
   return total;
 };
 
+export const RING_LABOUR_COST = 30000;
+
 export const getRingTotal = (form: RingFormState) => {
   const labourCost = 30000;
   const shapeTotal = form?.selectedShape ? getRingShapeTotal(form.selectedShape) : 0;

@@ -62,8 +62,6 @@ export const convertRingToMetadata = (form: RingFormState): RingFormAsMetadata =
       SIDE2: form.selectedEngravings.SIDE2?.id,
       INNER: form.selectedEngravings.INNER?.id,
     }),
-    size: form.size?.value.toString() ?? '',
-    sizeFormat: form.size?.format ?? 'US',
   };
 };
 
@@ -80,10 +78,6 @@ export const getRingFromMetadata = (
     selectedMaterial: material,
     selectedEngravings: JSON.parse(parsedMetadata.engravingIDs),
     selectedFace: 'FRONT',
-    size: {
-      value: parsedMetadata.size,
-      format: parsedMetadata.sizeFormat,
-    },
   } as RingFormState;
 };
 

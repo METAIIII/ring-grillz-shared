@@ -39,7 +39,7 @@ export const handleCheckout = async (
     const order = req.body as FullOrder;
 
     if (!(order.paymentAmount >= MIN_AMOUNT && order.paymentAmount <= MAX_AMOUNT)) {
-      await handleApiError(res, new Error(`Invalid amount: ${order.paymentAmount}`));
+      return await handleApiError(res, new Error(`Invalid amount: ${order.paymentAmount}`));
     }
     try {
       let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];

@@ -38,6 +38,8 @@ export type GrillzMaterialOptionResponse = ApiResponse<GrillzMaterialOption>;
 
 // Ring Kingz Specific
 export type RingResponse = ApiResponse<FullRing>;
+export type RingsResponse = ApiResponse<FullRing[]>;
+export type RingPresetResponse = ApiResponse<RingEngravingPreset>;
 export type EngravingResponse = ApiResponse<RingEngraving>;
 export type PresetData = {
   simple: RingEngravingPreset[];

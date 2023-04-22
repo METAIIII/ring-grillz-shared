@@ -127,17 +127,11 @@ export interface RingFormState {
   selectedMaterial: RingMaterial | null;
   selectedFace: RingFace;
   selectedEngravings: Record<RingFace, RingEngraving | null>;
-  size: {
-    value: string;
-    format: string;
-  };
 }
 export type RingFormAsMetadata = {
   shapeID: string;
   materialID: string;
   engravingIDs: string;
-  size: string;
-  sizeFormat: string;
 };
 export type CreatorStep = {
   index: number;
