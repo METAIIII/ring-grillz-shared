@@ -1,14 +1,7 @@
 import Stripe from 'stripe';
+
 import { CURRENCY, TOOTH_SEPARATOR } from '../config/stripe';
-import {
-  FullGrillzMaterial,
-  FullRing,
-  GrillzForm,
-  GrillzFormAsMetadata,
-  RingFormAsMetadata,
-  RingFormState,
-  ToothID,
-} from '../types';
+import { FullGrillzMaterial, GrillzForm, RingFormState, ToothID } from '../types';
 import { getGrillzTotal, getRingTotal } from './get-totals';
 import { json } from './json-parse';
 
@@ -38,7 +31,7 @@ export function formatAmountForStripe(amount: number): number {
 }
 
 export const convertRingToLineItem = (
-  form: RingFormState
+  form: RingFormState,
 ): Stripe.Checkout.SessionCreateParams.LineItem => {
   return {
     quantity: 1,
@@ -53,7 +46,9 @@ export const convertRingToLineItem = (
   };
 };
 
-export const convertRingToMetadata = (form: RingFormState): RingFormAsMetadata => {
+export const convertRingToMetadata = (
+  form: RingFormState,
+): Record<string, string | number | null> => {
   return {
     shapeID: form.selectedShape?.id ?? '',
     materialID: form.selectedMaterial?.id ?? '',
@@ -66,24 +61,8 @@ export const convertRingToMetadata = (form: RingFormState): RingFormAsMetadata =
   };
 };
 
-export const getRingFromMetadata = (
-  parsedMetadata: RingFormAsMetadata,
-  data: FullRing[]
-): RingFormState => {
-  const shape = data.find((shape) => shape.id === parsedMetadata.shapeID);
-
-  const material = shape?.materials.find((material) => material.id === parsedMetadata.materialID);
-
-  return {
-    selectedShape: shape,
-    selectedMaterial: material,
-    selectedEngravings: JSON.parse(parsedMetadata.engravingIDs),
-    selectedFace: 'FRONT',
-  } as RingFormState;
-};
-
 export const convertGrillzToLineItem = (
-  form: GrillzForm
+  form: GrillzForm,
 ): Stripe.Checkout.SessionCreateParams.LineItem => {
   return {
     quantity: 1,
@@ -102,12 +81,15 @@ export const convertGrillzToLineItem = (
 
 // Overload signatures
 export function convertGrillzToMetadata(form: GrillzForm, stringify: true): string;
-export function convertGrillzToMetadata(form: GrillzForm, stringify: false): GrillzFormAsMetadata;
+export function convertGrillzToMetadata(
+  form: GrillzForm,
+  stringify: false,
+): Record<string, string | number | null>;
 
 export function convertGrillzToMetadata(
   form: GrillzForm,
-  stringify: boolean = true
-): GrillzFormAsMetadata | string {
+  stringify = true,
+): Record<string, string | number | null> | string {
   const metadata = {
     materialId: form.material?.id ?? '',
     variantId: form.variant?.id ?? '',
@@ -121,13 +103,13 @@ export function convertGrillzToMetadata(
 }
 
 export const getGrillzFromMetadata = (
-  metadata: GrillzFormAsMetadata,
-  data: FullGrillzMaterial[]
+  metadata: Record<string, string | number | boolean | null> | null,
+  data: FullGrillzMaterial[],
 ): GrillzForm => {
-  const material = data.find((material) => material.id === metadata.materialId);
-  const variant = material?.variants.find((variant) => variant.id === metadata.variantId);
-  const option = material?.options.find((option) => option.id === metadata.optionId);
-  const selectedTeeth = metadata?.selectedTeethIds?.split(TOOTH_SEPARATOR) as ToothID[];
+  const material = data.find((material) => material.id === metadata?.materialId);
+  const variant = material?.variants.find((variant) => variant.id === metadata?.variantId);
+  const option = material?.options.find((option) => option.id === metadata?.optionId);
+  const selectedTeeth = (metadata?.selectedTeethIds as string)?.split(TOOTH_SEPARATOR) as ToothID[];
 
   return json({
     material,

@@ -49,8 +49,6 @@ export interface CreateOrder {
   paymentAmount?: number;
   paymentType?: OrderPaymentType;
   couponCode?: string;
-  ringData?: FullRing[];
-  grillzData?: FullGrillzMaterial[];
   status: OrderStatus;
   type: OrderType;
 }
@@ -70,6 +68,8 @@ export interface CheckoutOptions {
   paymentType?: OrderPaymentType;
   couponCode?: string;
 }
+
+export type FullCoupon = Stripe.Coupon & { promotion: Stripe.PromotionCode };
 
 // Dr Grillz Specific
 export type ToothID =
@@ -103,18 +103,12 @@ export interface Tooth {
   pathDOpenFace: string;
 }
 export type Teeth = Tooth[];
-export type GrillzForm = {
+export interface GrillzForm {
   material: GrillzMaterial | null;
   variant: GrillzMaterialVariant | null;
   option: GrillzMaterialOption | null;
   selectedTeeth: ToothID[];
-};
-export type GrillzFormAsMetadata = {
-  materialId: string;
-  variantId: string;
-  optionId: string;
-  selectedTeethIds: string;
-};
+}
 
 export type FullGrillzMaterial = GrillzMaterial & {
   options: GrillzMaterialOption[];
@@ -128,16 +122,12 @@ export interface RingFormState {
   selectedFace: RingFace;
   selectedEngravings: Record<RingFace, RingEngraving | null>;
 }
-export type RingFormAsMetadata = {
-  shapeID: string;
-  materialID: string;
-  engravingIDs: string;
-};
-export type CreatorStep = {
+
+export interface CreatorStep {
   index: number;
   label: string;
   icon: IconType;
-};
+}
 
 export type RingFormValues =
   | RingShape

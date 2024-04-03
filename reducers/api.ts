@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
 import { UpdateUser } from '../components/Account/UserInfo';
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
 import { CreateOrder, FullOrder, UpdateOrder } from '../types';
@@ -6,10 +7,8 @@ import {
   CouponResponse,
   CouponsResponse,
   FullCheckoutResponse,
-  GrillzMaterialsResponse,
   OrderResponse,
   OrdersResponse,
-  RingsDataResponse,
   UserResponse,
   UsersResponse,
 } from '../types/api-responses';
@@ -20,26 +19,15 @@ export const api = createApi({
   tagTypes: ['Data', 'User', 'Order', 'Coupon', 'Checkout'],
   endpoints: (builder) => ({
     /**
-     * DATA queries/mutations
-     */
-    getGrillzData: builder.query<GrillzMaterialsResponse, void>({
-      query: () => `data`,
-      providesTags: () => [{ type: 'Data', id: 'GRILLZ' }],
-    }),
-    getRingsData: builder.query<RingsDataResponse, string>({
-      query: () => `data`,
-      providesTags: () => [{ type: 'Data', id: 'RINGS' }],
-    }),
-    /**
      * ORDER queries/mutations
      */
+    getOrders: builder.query<OrdersResponse, { take: number; skip: number }>({
+      query: ({ take, skip }) => `order?take=${take}&skip=${skip}`,
+      providesTags: () => [{ type: 'Order', id: 'LIST' }],
+    }),
     getOrderById: builder.query<OrderResponse, string>({
       query: (id) => `order/${id}`,
       providesTags: (result, error, id) => [{ type: 'Order', id }],
-    }),
-    getOrdersByStatus: builder.query<OrdersResponse, string>({
-      query: (status) => `order?status=${status}`,
-      providesTags: () => [{ type: 'Order', id: 'LIST' }],
     }),
     createOrder: builder.mutation<OrderResponse, { data: CreateOrder }>({
       query: ({ data }) => ({
@@ -84,8 +72,8 @@ export const api = createApi({
     /**
      * COUPON queries/mutations
      */
-    getCoupons: builder.query<CouponsResponse, string>({
-      query: (str) => `coupon`,
+    getCoupons: builder.query<CouponsResponse, void>({
+      query: () => 'coupon',
       providesTags: () => [{ type: 'Coupon', id: 'LIST' }],
     }),
     getCouponByCode: builder.query<CouponResponse, string>({
@@ -113,8 +101,8 @@ export const api = createApi({
     /**
      * USER queries/mutations
      */
-    getAllUsers: builder.query<UsersResponse, string>({
-      query: (str) => `user`,
+    getAllUsers: builder.query<UsersResponse, void>({
+      query: () => 'user',
       providesTags: () => [{ type: 'User', id: 'LIST' }],
     }),
     getUserByEmail: builder.query<UserResponse, string>({
@@ -146,24 +134,16 @@ export const api = createApi({
 });
 
 export const {
-  useGetGrillzDataQuery,
-  useGetRingsDataQuery,
-  useGetCouponsQuery,
-  useGetCouponByCodeQuery,
-  useCreateCouponMutation,
-  useDeleteCouponMutation,
-  useGetOrderByIdQuery,
-  useGetOrdersByStatusQuery,
-  useCreateOrderMutation,
-  useUpdateOrderMutation,
-  useSendOrderEmailMutation,
-  useGetCheckoutSessionQuery,
   useCreateCheckoutSessionMutation,
-  useGetAllUsersQuery,
-  useGetUserByEmailQuery,
-  useUpdateUserMutation,
+  useCreateCouponMutation,
+  useCreateOrderMutation,
+  useDeleteCouponMutation,
   useDeleteUserMutation,
-  util: { getRunningQueriesThunk },
+  useGetCheckoutSessionQuery,
+  useGetCouponByCodeQuery,
+  useGetOrderByIdQuery,
+  useGetUserByEmailQuery,
+  useSendOrderEmailMutation,
+  useUpdateOrderMutation,
+  useUpdateUserMutation,
 } = api;
-
-export const { getGrillzData } = api.endpoints;

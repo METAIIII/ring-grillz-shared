@@ -1,108 +1,99 @@
 import { Box, Button, ButtonGroup, Flex, Icon } from '@chakra-ui/react';
-import { OrderType } from '@prisma/client';
-import { useEffect, useMemo } from 'react';
+import { Order, OrderType, User } from '@prisma/client';
+import { useState } from 'react';
 import { FaBox, FaTicketAlt, FaTooth, FaUser } from 'react-icons/fa';
 import { GiRing } from 'react-icons/gi';
+import { FullCoupon } from 'shared/types';
 
-import { useRouter } from 'next/router';
-import CouponList from './Coupons/CouponList';
+import { CouponList } from './Coupons/CouponList';
 import { CreateCouponForm } from './Coupons/CreateCoupon';
-import OrdersTable from './Orders/OrdersTable';
-import UsersTable from './Users/UsersTable';
+import { OrdersTable } from './Orders/OrdersTable';
+import { UsersTable } from './Users/UsersTable';
 
 interface DashboardProps {
   mode: OrderType;
+  orders: Order[];
+  users: User[];
+  coupons: FullCoupon[];
   grillzDataComponent?: React.ReactNode;
   ringDataComponent?: React.ReactNode;
 }
 
-type DashboardTabs = 'users' | 'orders' | 'coupons' | 'materials' | 'rings';
+type DashboardTab = 'users' | 'orders' | 'coupons' | 'materials' | 'rings';
 
-function Dashboard({ mode, ringDataComponent, grillzDataComponent }: DashboardProps) {
-  const router = useRouter();
-  const validTabs = ['users', 'orders', 'coupons', 'materials', 'rings'];
-  const tab = router.query.tab as DashboardTabs | '';
-
-  useEffect(() => {
-    if (tab && validTabs.includes(tab)) {
-      router.replace(`?tab=${tab}`);
-    } else {
-      router.replace('?tab=orders');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.tab]);
-
-  const page = useMemo(() => {
-    return tab;
-  }, [tab]);
-
-  const setPage = (tab: DashboardTabs) => {
-    router.push(`?tab=${tab}`);
-  };
+function Dashboard({
+  mode,
+  orders,
+  users,
+  coupons,
+  ringDataComponent,
+  grillzDataComponent,
+}: DashboardProps) {
+  const [tab, setTab] = useState<DashboardTab>('orders');
 
   return (
     <Box p={4}>
       <ButtonGroup isAttached my={4} size='sm'>
         <Button
-          _dark={{ color: page === 'users' ? 'gray.50' : 'gray.500' }}
-          _light={{ color: page === 'users' ? 'gray.900' : 'gray.500' }}
+          _dark={{ color: tab === 'users' ? 'gray.50' : 'gray.500' }}
+          _light={{ color: tab === 'users' ? 'gray.900' : 'gray.500' }}
           leftIcon={<Icon as={FaUser} />}
-          variant={page === 'users' ? 'solid' : 'outline'}
-          onClick={() => setPage('users')}
+          variant={tab === 'users' ? 'solid' : 'outline'}
+          onClick={() => setTab('users')}
         >
           Customers
         </Button>
         <Button
-          _dark={{ color: page === 'orders' ? 'gray.50' : 'gray.500' }}
-          _light={{ color: page === 'orders' ? 'gray.900' : 'gray.500' }}
+          _dark={{ color: tab === 'orders' ? 'gray.50' : 'gray.500' }}
+          _light={{ color: tab === 'orders' ? 'gray.900' : 'gray.500' }}
           leftIcon={<Icon as={FaBox} />}
-          variant={page === 'orders' ? 'solid' : 'outline'}
-          onClick={() => setPage('orders')}
+          variant={tab === 'orders' ? 'solid' : 'outline'}
+          onClick={() => setTab('orders')}
         >
           Orders
         </Button>
         <Button
-          _dark={{ color: page === 'coupons' ? 'gray.50' : 'gray.500' }}
-          _light={{ color: page === 'coupons' ? 'gray.900' : 'gray.500' }}
+          _dark={{ color: tab === 'coupons' ? 'gray.50' : 'gray.500' }}
+          _light={{ color: tab === 'coupons' ? 'gray.900' : 'gray.500' }}
           leftIcon={<Icon as={FaTicketAlt} />}
-          variant={page === 'coupons' ? 'solid' : 'outline'}
-          onClick={() => setPage('coupons')}
+          variant={tab === 'coupons' ? 'solid' : 'outline'}
+          onClick={() => setTab('coupons')}
         >
           Coupons
         </Button>
         {mode === 'GRILLZ' && (
           <Button
-            _dark={{ color: page === 'materials' ? 'gray.50' : 'gray.500' }}
-            _light={{ color: page === 'materials' ? 'gray.900' : 'gray.500' }}
+            _dark={{ color: tab === 'materials' ? 'gray.50' : 'gray.500' }}
+            _light={{ color: tab === 'materials' ? 'gray.900' : 'gray.500' }}
             leftIcon={<Icon as={FaTooth} />}
-            variant={page === 'materials' ? 'solid' : 'outline'}
-            onClick={() => setPage('materials')}
+            variant={tab === 'materials' ? 'solid' : 'outline'}
+            onClick={() => setTab('materials')}
           >
             Materials
           </Button>
         )}
         {mode === 'RING' && (
           <Button
-            _dark={{ color: page === 'rings' ? 'gray.50' : 'gray.500' }}
-            _light={{ color: page === 'rings' ? 'gray.900' : 'gray.500' }}
+            _dark={{ color: tab === 'rings' ? 'gray.50' : 'gray.500' }}
+            _light={{ color: tab === 'rings' ? 'gray.900' : 'gray.500' }}
             leftIcon={<Icon as={GiRing} />}
-            variant={page === 'rings' ? 'solid' : 'outline'}
-            onClick={() => setPage('rings')}
+            variant={tab === 'rings' ? 'solid' : 'outline'}
+            onClick={() => setTab('rings')}
           >
             Rings
           </Button>
         )}
       </ButtonGroup>
-      {page === 'users' && <UsersTable />}
-      {page === 'orders' && <OrdersTable />}
-      {page === 'coupons' && (
-        <Flex alignItems='flex-start'>
-          <CreateCouponForm maxW='96' mr={4} />
-          <CouponList />
+      {tab === 'users' && <UsersTable users={users} />}
+      {tab === 'orders' && <OrdersTable orders={orders} />}
+      {tab === 'coupons' && (
+        <Flex alignItems='flex-start' flexDir={{ base: 'column', lg: 'row' }} gap={6}>
+          <CreateCouponForm flex={1} maxW='96' mr={4} />
+          <CouponList coupons={coupons} />
         </Flex>
       )}
-      {page === 'materials' && <>{grillzDataComponent}</>}
-      {page === 'rings' && <>{ringDataComponent}</>}
+      {tab === 'materials' && <>{grillzDataComponent}</>}
+      {tab === 'rings' && <>{ringDataComponent}</>}
     </Box>
   );
 }

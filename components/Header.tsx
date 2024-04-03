@@ -11,6 +11,7 @@ import {
 import { OrderType } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+
 import LogoutButton from './Account/LogoutButton';
 import Navigation from './Navigation';
 import DarkModeSwitch from './UI/DarkModeSwitch';

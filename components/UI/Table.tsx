@@ -16,20 +16,31 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Row, TableOptions, usePagination, useTable } from 'react-table';
+
+interface Filter<T> {
+  key: keyof T;
+  value: any;
+}
 
 interface TableProps<T extends object> extends TableOptions<T> {
   onClick?: (row: Row<T>) => void;
   colorScheme?: ThemeTypings['colorSchemes'];
+  filters?: Filter<T>[];
 }
 
 function PaginatedTable<T extends object>({
   columns,
   data,
   colorScheme,
+  filters = [],
 }: TableProps<T>): ReactElement {
+  const filteredData = useMemo(() => {
+    return data.filter((item) => filters.every((filter) => item[filter.key] === filter.value));
+  }, [data, filters]);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -43,7 +54,7 @@ function PaginatedTable<T extends object>({
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
-  } = useTable<T>({ columns, data }, usePagination);
+  } = useTable<T>({ columns, data: filteredData }, usePagination);
 
   return (
     <>
@@ -63,24 +74,20 @@ function PaginatedTable<T extends object>({
           }
         </Thead>
         <Tbody {...getTableBodyProps()}>
-          {
-            // Loop over the table rows
-            page.map((row) => {
-              // Prepare the row for display
-              prepareRow(row);
-              return (
-                <Tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <Td {...cell.getCellProps()}>
-                        <>{cell.render('Cell')}</>
-                      </Td>
-                    );
-                  })}
-                </Tr>
-              );
-            })
-          }
+          {page.map((row) => {
+            prepareRow(row);
+            return (
+              <Tr {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return (
+                    <Td {...cell.getCellProps()}>
+                      <>{cell.render('Cell')}</>
+                    </Td>
+                  );
+                })}
+              </Tr>
+            );
+          })}
         </Tbody>
       </Table>
       <Flex alignItems='center' justifyContent='flex-end' p={4}>

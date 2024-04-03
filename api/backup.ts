@@ -1,25 +1,24 @@
 import { RingEngraving, User } from '@prisma/client';
+import { json } from 'shared/utils/json-parse';
+import { getGrillzMaterials } from 'utils/tooth-utils';
 
 import prisma from '../prisma';
-import { FullGrillzMaterial, FullOrder, FullRing } from '../types';
+import { FullOrder, FullRing } from '../types';
 import { BackupData, PresetData } from '../types/api-responses';
-import { json } from 'shared/utils/json-parse';
-
-// SHARED
 
 // Fetch all users
-export const getAllUsers = async (): Promise<User[] | null> => {
+export const getAllUsers = async (): Promise<User[]> => {
   try {
     const users = await prisma.user.findMany();
-    if (!users) return null;
+    if (!users) return [];
     return json(users);
   } catch (error) {
-    return null;
+    return [];
   }
 };
 
 // Fetch all orders
-export const getAllOrders = async (): Promise<FullOrder[] | null> => {
+export const getAllOrders = async (): Promise<FullOrder[]> => {
   try {
     const orders = await prisma.order.findMany({
       include: {
@@ -27,46 +26,26 @@ export const getAllOrders = async (): Promise<FullOrder[] | null> => {
         user: true,
       },
     });
-    if (!orders) return null;
+    if (!orders) return [];
 
     return json(orders);
   } catch (error) {
-    return null;
+    return [];
   }
 };
-
-// DR GRILLZ
-
-// Fetch all GrillzMaterials
-export const getAllGrillzMaterials = async (): Promise<FullGrillzMaterial[] | null> => {
-  try {
-    const grillzMaterials = await prisma.grillzMaterial.findMany({
-      include: {
-        options: true,
-        variants: true,
-      },
-    });
-    if (!grillzMaterials) return null;
-    return json(grillzMaterials);
-  } catch (error) {
-    return null;
-  }
-};
-
-// RING KINGZ
 
 // Fetch all engravings
-export const getAllRingEngravings = async (): Promise<RingEngraving[] | null> => {
+export const getAllRingEngravings = async (): Promise<RingEngraving[]> => {
   try {
     const ringEngravings = await prisma.ringEngraving.findMany();
-    if (!ringEngravings) return null;
+    if (!ringEngravings) return [];
     return json(ringEngravings);
   } catch (error) {
-    return null;
+    return [];
   }
 };
 // Fetch all rings
-export const getAllRings = async (): Promise<FullRing[] | null> => {
+export const getAllRings = async (): Promise<FullRing[]> => {
   try {
     const ringShapes = await prisma.ringShape.findMany({
       include: {
@@ -74,10 +53,10 @@ export const getAllRings = async (): Promise<FullRing[] | null> => {
         examples: true,
       },
     });
-    if (!ringShapes) return null;
+    if (!ringShapes) return [];
     return json(ringShapes);
   } catch (error) {
-    return null;
+    return [];
   }
 };
 
@@ -114,7 +93,7 @@ export const getAllData = async (): Promise<BackupData | null> => {
     const data = await Promise.all([
       getAllUsers(),
       getAllOrders(),
-      getAllGrillzMaterials(),
+      getGrillzMaterials(),
       getAllRings(),
       getAllRingEngravings(),
       getAllRingEngravingPresets(),

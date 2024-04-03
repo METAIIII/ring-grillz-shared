@@ -1,23 +1,13 @@
 import { Badge, Card, CardBody, Flex, Heading, Text, Wrap } from '@chakra-ui/react';
-import { useMemo } from 'react';
-
-import { useGetCouponsQuery } from 'shared/reducers/api';
+import { FullCoupon } from 'shared/types';
 import { formatCouponDiscount } from 'shared/utils/get-totals';
+
 import { DeleteCoupon } from './DeleteCoupon';
 
-function CouponList() {
-  const { data } = useGetCouponsQuery('');
-  const couponsData = useMemo(() => {
-    if (data?.data) {
-      return data.data;
-    } else {
-      return [];
-    }
-  }, [data]);
-
+export function CouponList({ coupons }: { coupons: FullCoupon[] }) {
   return (
     <Wrap spacing={4}>
-      {couponsData.map((coupon) => (
+      {coupons.map((coupon) => (
         <Card key={coupon.id} minW='64'>
           <CardBody>
             <Flex alignItems='center' mb={1}>
@@ -51,5 +41,3 @@ function CouponList() {
     </Wrap>
   );
 }
-
-export default CouponList;

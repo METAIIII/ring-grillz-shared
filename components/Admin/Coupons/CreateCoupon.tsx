@@ -44,7 +44,7 @@ const schema = z
     {
       message: 'Invalid combination of mode and amount_off/percent_off',
       path: ['mode'],
-    }
+    },
   );
 
 export type CreateCoupon = z.infer<typeof schema>;

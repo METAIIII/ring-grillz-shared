@@ -1,5 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
+declare global {
+  namespace PrismaJson {
+    interface GrillzFormAsMetadata {
+      materialId: string;
+      variantId: string;
+      optionId: string;
+      selectedTeethIds: string;
+    }
+    interface RingFormAsMetadata {
+      shapeID: string;
+      materialID: string;
+      engravingIDs: string;
+    }
+  }
+}
+
 const prismaClientPropertyName = `__prevent-name-collision__prisma`;
 type GlobalThisWithPrismaClient = typeof globalThis & {
   [prismaClientPropertyName]: PrismaClient;

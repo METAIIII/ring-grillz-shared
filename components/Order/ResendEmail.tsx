@@ -1,5 +1,6 @@
 import { Button, Icon } from '@chakra-ui/react';
 import { FaEnvelope } from 'react-icons/fa';
+
 import { useSendOrderEmailMutation } from '../../reducers/api';
 
 interface Props {

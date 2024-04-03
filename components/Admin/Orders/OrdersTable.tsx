@@ -5,29 +5,20 @@ import NextLink from 'next/link';
 import { useMemo, useState } from 'react';
 import { CgExternal } from 'react-icons/cg';
 import { CellProps, Column, Renderer } from 'react-table';
-import { useGetOrdersByStatusQuery } from '../../../reducers/api';
+
 import { formatAmountForDisplay } from '../../../utils/stripe-helpers';
 import OrderStatusBadge from '../../Order/OrderStatusBadge';
 import PaginatedTable from '../../UI/Table';
 import MarkAsShipped from './MarkAsShipped';
 
-function OrdersTable() {
-  const [status, setStatus] = useState<OrderStatus>('PENDING');
-  const { data, isLoading, isFetching } = useGetOrdersByStatusQuery(status);
-
-  const orderData = useMemo(() => {
-    if (data?.data) {
-      return data.data;
-    } else {
-      return [];
-    }
-  }, [data]);
+export function OrdersTable({ orders }: { orders: Order[] }) {
+  const [status, setStatus] = useState<OrderStatus>('PAID');
 
   const renderCreatedAtCell: Renderer<CellProps<Order>> = ({ value }) => (
     <>{dayjs(value).format('L')}</>
   );
   const renderEmailCell: Renderer<CellProps<Order>> = ({ value, row }) => (
-    <Link href={`/admin/user/${row.original.userId}`}>{value}</Link>
+    <Link href={`/admin/user/${row.original.email}`}>{value}</Link>
   );
   const renderAmountCell: Renderer<CellProps<Order>> = ({ value }) => (
     <>{formatAmountForDisplay(value)}</>
@@ -37,12 +28,12 @@ function OrdersTable() {
   );
   const renderDetailsCell: Renderer<CellProps<Order>> = ({ value, row }) => (
     <ButtonGroup size='sm' variant='outline'>
-      {row.original.status === 'PAID' && <MarkAsShipped order={row.original} />}
       <NextLink href={`/receipt?order_id=${value}`}>
         <Button colorScheme='red' rightIcon={<Icon as={CgExternal} />}>
           Details
         </Button>
       </NextLink>
+      {row.original.status === 'PAID' && <MarkAsShipped order={row.original} />}
     </ButtonGroup>
   );
 
@@ -74,7 +65,7 @@ function OrdersTable() {
         Cell: renderDetailsCell,
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -113,14 +104,13 @@ function OrdersTable() {
             Canceled
           </Button>
         </ButtonGroup>
-        {isLoading || isFetching ? (
-          <p>Loading...</p>
-        ) : (
-          <PaginatedTable<Order> colorScheme='red' columns={columns} data={orderData} />
-        )}
+        <PaginatedTable<Order>
+          colorScheme='red'
+          columns={columns}
+          data={orders}
+          filters={[{ key: 'status', value: status }]}
+        />
       </CardBody>
     </Card>
   );
 }
-
-export default OrdersTable;

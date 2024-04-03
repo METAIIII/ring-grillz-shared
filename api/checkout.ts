@@ -1,17 +1,18 @@
 import { OrderType } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
+import { getGrillzMaterials } from 'utils/tooth-utils';
+
 import prisma from '../prisma';
-import { FullOrder, GrillzFormAsMetadata } from '../types';
+import { FullOrder } from '../types';
 import { CheckoutResponse, FullCheckoutResponse } from '../types/api-responses';
 import { convertGrillzToLineItem, getGrillzFromMetadata } from '../utils/stripe-helpers';
 import { handleApiError } from './error';
-import { json } from 'shared/utils/json-parse';
 
 export const handleCheckout = async (
   req: NextApiRequest,
   res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
-  orderType: OrderType
+  orderType: OrderType,
 ) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', { apiVersion: '2023-10-16' });
 
@@ -32,7 +33,7 @@ const handlePostCheckout = async (
   req: NextApiRequest,
   res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
   stripe: Stripe,
-  orderType: OrderType
+  orderType: OrderType,
 ) => {
   const order = req.body as FullOrder;
 
@@ -50,16 +51,12 @@ const handlePostCheckout = async (
       couponId = promotionCodes.data[0].coupon.id;
     }
 
-    const grillzData = await prisma.grillzMaterial.findMany({
-      include: {
-        variants: true,
-        options: true,
-      },
-    });
+    const materials = await getGrillzMaterials();
+
     if (orderType === 'GRILLZ') {
       lineItems = order.items.map((item) => {
-        const metadata = json<GrillzFormAsMetadata>(item.metadata);
-        return convertGrillzToLineItem(getGrillzFromMetadata(metadata, grillzData));
+        const metadata = item.metadata as Record<string, string | number | boolean>;
+        return convertGrillzToLineItem(getGrillzFromMetadata(metadata, materials));
       });
     }
     if (orderType === 'RING') {
@@ -143,7 +140,7 @@ const handlePostCheckout = async (
 const handleGetCheckout = async (
   req: NextApiRequest,
   res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
-  stripe: Stripe
+  stripe: Stripe,
 ) => {
   const sessionId = `${req.query.id}`;
 

@@ -3,13 +3,14 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import { IoTicketOutline } from 'react-icons/io5';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from 'reducers/store';
+
 import useDebounce from '../../hooks/use-debounce';
 import { useGetCouponByCodeQuery } from '../../reducers/api';
 import { setCouponCode } from '../../reducers/cart';
 
 export function CouponInput() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [code, setCode] = useState('');
   const queryCode = useDebounce(code, 500);
 

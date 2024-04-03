@@ -13,7 +13,7 @@ const logError = (message: string) => {
 export const handleApiError = (
   res: NextApiResponse,
   error: string | Error,
-  status: number = 500
+  status = 500,
 ): Promise<never> => {
   const errorMessage = error instanceof Error ? error.message : `${JSON.stringify(error)}`;
   const response: ApiErrorResponse = {

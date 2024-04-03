@@ -74,7 +74,7 @@ function UserOrders({ orders }: { orders: Order[] }) {
         Cell: renderReceiptButtonCell,
       },
     ],
-    []
+    [],
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<Order>({

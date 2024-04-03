@@ -1,20 +1,48 @@
-import { OrderType } from '@prisma/client';
+import { OrderType, User } from '@prisma/client';
 import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
+import { json } from 'shared/utils/json-parse';
+
 import { UpdateUser } from '../components/Account/UserInfo';
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
 import { FullUser } from '../types';
 import { UserResponse, UsersResponse } from '../types/api-responses';
 import { handleApiError } from './error';
-import { json } from 'shared/utils/json-parse';
 
-/**
- * Fetches a user with the provided email and order type.
- * @param email The email of the user to fetch.
- * @param orderType The order type to filter orders.
- * @returns The fetched user, or null if not found or an error occurs.
- */
+export interface GetUsersResult {
+  users: User[];
+  pageCount: number;
+}
+
+export const getUsers = async ({
+  take,
+  skip,
+}: {
+  take: number;
+  skip: number;
+}): Promise<GetUsersResult> => {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      take,
+      skip,
+    });
+    const totalUsersCount = await prisma.user.count();
+    if (!users)
+      return {
+        users: [],
+        pageCount: 0,
+      };
+    return json({
+      users,
+      pageCount: Math.ceil(totalUsersCount / take),
+    });
+  } catch (error) {
+    return { users: [], pageCount: 0 };
+  }
+};
+
 export async function getUser(email: string, orderType: OrderType): Promise<FullUser | null> {
   try {
     const user = await prisma.user.findUnique({
@@ -36,7 +64,7 @@ export async function getUser(email: string, orderType: OrderType): Promise<Full
 export async function checkUser(
   req: GetServerSidePropsContext['req'],
   res: GetServerSidePropsContext['res'],
-  orderType: OrderType
+  orderType: OrderType,
 ) {
   try {
     const session = await getServerSession(req, res, authOptions);
@@ -64,7 +92,7 @@ export async function checkUser(
 export const updateUser = async (
   email: string,
   data: UpdateUser,
-  orderType: OrderType
+  orderType: OrderType,
 ): Promise<FullUser | null> => {
   try {
     const updatedUser = await prisma.user.update({
@@ -108,7 +136,7 @@ export const deleteUser = async (email: string) => {
 export const handleUsersRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<UsersResponse>,
-  orderType: OrderType
+  orderType: OrderType,
 ) => {
   const method = req.method;
   if (method !== 'GET') {
@@ -122,8 +150,11 @@ export const handleUsersRequest = async (
     if (!isAdmin) {
       return await handleApiError(res, new Error('Unauthorised'), 403);
     }
-    const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } });
-    res.status(200).json({ data: users });
+    const { users, pageCount } = await getUsers({
+      take: 500,
+      skip: 0,
+    });
+    res.status(200).json({ data: { users, pageCount } });
   } catch (error) {
     await handleApiError(res, Error(`${error}`));
   }
@@ -135,7 +166,7 @@ export const handleUsersRequest = async (
 export const handleUserRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<UserResponse>,
-  orderType: OrderType
+  orderType: OrderType,
 ) => {
   const method = req.method;
   const body = req.body as UpdateUser;

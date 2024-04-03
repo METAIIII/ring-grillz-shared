@@ -13,9 +13,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { OrderType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import { AiOutlineMail } from 'react-icons/ai';
-import { FullGrillzMaterial, FullRing } from 'shared/types';
 import Stripe from 'stripe';
 import { z } from 'zod';
+
 import { useSuccessFailToast } from '../../hooks/use-toast';
 import { useCreateCheckoutSessionMutation, useCreateOrderMutation } from '../../reducers/api';
 import { CouponInput } from './CouponInput';
@@ -29,13 +29,11 @@ export type CustomerInfo = z.infer<typeof schema>;
 
 interface Props {
   couponCode?: string;
-  grillzData?: FullGrillzMaterial[];
-  ringData?: FullRing[];
   lineItems: Stripe.Checkout.SessionCreateParams.LineItem[];
   orderType: OrderType;
 }
 
-function Checkout({ lineItems, couponCode, grillzData, ringData, orderType }: Props) {
+function Checkout({ lineItems, couponCode, orderType }: Props) {
   const [createCheckoutSession] = useCreateCheckoutSessionMutation();
   const [createOrder, { isLoading, isError, data: checkoutData }] = useCreateOrderMutation();
 
@@ -59,8 +57,6 @@ function Checkout({ lineItems, couponCode, grillzData, ringData, orderType }: Pr
         items: lineItems,
         paymentType: 'FULL_PAYMENT',
         couponCode,
-        grillzData,
-        ringData,
         status: 'UNPAID',
         type: orderType,
       },

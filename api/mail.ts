@@ -1,6 +1,7 @@
 import { OrderType } from '@prisma/client';
 import sgMail, { MailDataRequired } from '@sendgrid/mail';
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import prisma from '../prisma';
 import { handleApiError } from './error';
 
@@ -61,7 +62,7 @@ const sendReceiptEmail = async (params: {
 export const handleMail = async (
   req: NextApiRequest,
   res: NextApiResponse,
-  orderType: OrderType
+  orderType: OrderType,
 ) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');

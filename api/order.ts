@@ -1,58 +1,60 @@
-import { Order, OrderStatus, OrderType } from '@prisma/client';
-
+import { Order, OrderType } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
+import { json } from 'shared/utils/json-parse';
+import { getGrillzMaterials } from 'utils/tooth-utils';
+
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
-import {
-  CreateOrder,
-  FullOrder,
-  GrillzForm,
-  GrillzFormAsMetadata,
-  RingFormAsMetadata,
-  RingFormState,
-  UpdateOrder,
-} from '../types';
+import { CreateOrder, FullOrder, UpdateOrder } from '../types';
 import { OrderResponse, OrdersResponse } from '../types/api-responses';
-import { getGrillzTotal, getRingTotal } from '../utils/get-totals';
-import { getGrillzFromMetadata, getRingFromMetadata } from '../utils/stripe-helpers';
+import { getGrillzTotal } from '../utils/get-totals';
+import { getGrillzFromMetadata } from '../utils/stripe-helpers';
 import { handleApiError } from './error';
 import { getUser } from './user';
-import { json } from 'shared/utils/json-parse';
 
-/**
- * Fetches multiple orders based on the provided type and status.
- * @param {OrderType} type The type of orders to fetch.
- * @param {OrderStatus} [status] The status of orders to fetch (optional).
- * @returns {Promise<Order[] | null>} An array of Order objects or null if not found or an error occurs.
- */
-export const getOrders = async (type: OrderType, status?: OrderStatus): Promise<Order[] | null> => {
+export interface GetOrdersResult {
+  orders: Order[];
+  pageCount: number;
+}
+
+export const getOrders = async ({
+  type,
+  take,
+  skip,
+}: {
+  type: OrderType;
+  take: number;
+  skip: number;
+}): Promise<GetOrdersResult> => {
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
-      where: {
-        type,
-        status,
-      },
+      where: { type },
+      take,
+      skip,
     });
-    if (!orders) return null;
-    return json(orders);
+    const totalOrdersCount = await prisma.order.count({
+      where: { type },
+    });
+    if (!orders)
+      return {
+        orders: [],
+        pageCount: 0,
+      };
+    return json({
+      orders,
+      pageCount: Math.ceil(totalOrdersCount / take),
+    });
   } catch (error) {
-    return null;
+    return { orders: [], pageCount: 0 };
   }
 };
 
-/**
- * Fetches a single order based on the provided order ID.
- * @param {string} id The ID of the order to fetch.
- * @returns {Promise<FullOrder | null>} A FullOrder object or null if not found or an error occurs.
- */
 export const getOrder = async (id: string): Promise<FullOrder | null> => {
   try {
     const order = await prisma.order.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
       include: {
         items: true,
         user: true,
@@ -110,22 +112,20 @@ export const updateOrder = async (id: string, data: UpdateOrder): Promise<FullOr
  */
 export const createOrder = async (
   body: CreateOrder,
-  type: OrderType
+  type: OrderType,
 ): Promise<FullOrder | null> => {
+  const grillzData = await getGrillzMaterials();
   const orderTotal = body.items
     .map((item) => {
+      if (!item?.price_data?.product_data?.metadata) return 0;
       if (type === 'GRILLZ') {
-        const metadata = json<GrillzFormAsMetadata>(
-          item?.price_data?.product_data?.metadata as GrillzFormAsMetadata
-        );
-        return getGrillzTotal(getGrillzFromMetadata(metadata, body?.grillzData ?? []));
+        const metadata = item.price_data.product_data.metadata;
+        return getGrillzTotal(getGrillzFromMetadata(metadata, grillzData));
       }
-      if (type === 'RING') {
-        const metadata = json<RingFormAsMetadata>(
-          item?.price_data?.product_data?.metadata as RingFormAsMetadata
-        );
-        return getRingTotal(getRingFromMetadata(metadata, body?.ringData ?? []));
-      }
+      // if (type === 'RING') {
+      //   const metadata = json<RingFormAsMetadata>(item.price_data.product_data.metadata);
+      //   return getRingTotal(getRingFromMetadata(metadata, ringData));
+      // }
       return 0;
     })
     .reduce((acc, curr) => acc + curr, 0);
@@ -143,26 +143,24 @@ export const createOrder = async (
         status: body.status,
         items: {
           create: body.items.map((item) => {
-            const ringMetadata = json<RingFormAsMetadata>(
-              item?.price_data?.product_data?.metadata as RingFormAsMetadata
-            );
+            const grillzMetadata = item?.price_data?.product_data?.metadata!;
 
-            const grillzMetadata = json<GrillzFormAsMetadata>(
-              item?.price_data?.product_data?.metadata as GrillzFormAsMetadata
-            );
+            if (type === 'GRILLZ') {
+              return {
+                amount: getGrillzTotal(getGrillzFromMetadata(grillzMetadata, grillzData)),
+                metadata: grillzMetadata,
+              };
+            }
 
-            return type === 'GRILLZ'
-              ? {
-                  amount: getGrillzTotal(
-                    getGrillzFromMetadata(grillzMetadata, body?.grillzData ?? [])
-                  ),
-                  metadata: JSON.stringify(grillzMetadata),
-                }
-              : // if 'RING'
-                {
-                  amount: getRingTotal(getRingFromMetadata(ringMetadata, body?.ringData ?? [])),
-                  metadata: JSON.stringify(ringMetadata),
-                };
+            // const ringMetadata =  item?.price_data?.product_data?.metadata!;
+            // if (type === 'RING') {
+            //   return {
+            //     amount: getRingTotal(getRingFromMetadata(ringMetadata, body?.ringData ?? [])),
+            //     metadata: ringMetadata,
+            //   };
+            // }
+
+            return { amount: 0, metadata: '' };
           }),
         },
         user: body.email
@@ -193,7 +191,7 @@ export const createOrder = async (
 export const handleOrdersRequest = async (
   req: NextApiRequest,
   res: NextApiResponse<OrdersResponse | OrderResponse>,
-  orderType: OrderType
+  orderType: OrderType,
 ) => {
   const session = await getServerSession(req, res, authOptions);
   const sessionUser = session?.user?.email ? await getUser(session.user.email, orderType) : null;
@@ -204,9 +202,17 @@ export const handleOrdersRequest = async (
     switch (method) {
       case 'GET':
         if (!isAdmin) return await handleApiError(res, new Error('Unauthorised'), 403);
-        const orders = await getOrders(orderType, req.query.status as OrderStatus);
-        if (!orders) throw new Error('No orders found');
-        res.status(200).json({ data: orders });
+        const { orders, pageCount } = await getOrders({
+          type: orderType,
+          take: Number(req.query.take),
+          skip: Number(req.query.skip),
+        });
+        res.status(200).json({
+          data: {
+            orders,
+            pageCount,
+          },
+        });
         return;
       case 'POST':
         const order = await createOrder(body, orderType);
@@ -224,7 +230,7 @@ export const handleOrdersRequest = async (
 /** Handles requests to the /api/orders/[id] endpoint. */
 export const handleOrderRequest = async (
   req: NextApiRequest,
-  res: NextApiResponse<OrderResponse>
+  res: NextApiResponse<OrderResponse>,
 ) => {
   const method = req.method;
   const body = req.body as UpdateOrder;

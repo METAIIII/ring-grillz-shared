@@ -10,9 +10,10 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import { FaBars } from 'react-icons/fa';
-import NavigationItem from './NavigationItem';
 import { useSession } from 'next-auth/react';
+import { FaBars } from 'react-icons/fa';
+
+import NavigationItem from './NavigationItem';
 
 function Navigation() {
   const isMobile = useBreakpointValue({ base: true, md: false });

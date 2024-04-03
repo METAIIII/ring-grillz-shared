@@ -23,6 +23,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import { useSuccessFailToast } from 'shared/hooks/use-toast';
 import { useUpdateUserMutation } from 'shared/reducers/api';
 import { z } from 'zod';
+
 import { FullUser } from '../../types';
 import DeleteAccount from './DeleteAccount';
 

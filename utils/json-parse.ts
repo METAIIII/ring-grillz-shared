@@ -5,7 +5,7 @@ export function json<T>(data: undefined | null): Partial<T>;
 export function json<T>(data: string | object | Prisma.JsonValue): T;
 
 export function json<T>(
-  data?: string | object | Prisma.JsonValue | undefined | null
+  data?: string | object | Prisma.JsonValue | undefined | null,
 ): T | Partial<T> {
   if (!data) {
     return {} as Partial<T>;

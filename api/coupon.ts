@@ -1,7 +1,9 @@
 import { OrderType } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
+import { FullCoupon } from 'shared/types';
 import Stripe from 'stripe';
+
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
 import { authOptions } from '../config/auth';
 import { CouponResponse, CouponsResponse } from '../types/api-responses';
@@ -10,23 +12,20 @@ import { getUser } from './user';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', { apiVersion: '2023-10-16' });
 
-export const handleCoupons = async (
-  req: NextApiRequest,
-  res: NextApiResponse<CouponsResponse>,
-  orderType: OrderType
-) => {
-  const session = await getServerSession(req, res, authOptions);
-  const sessionUser = session?.user?.email ? await getUser(session.user.email, orderType) : null;
-  const isAdmin = sessionUser?.role === 'ADMIN';
-  if (!isAdmin) return await handleApiError(res, new Error('Unauthorised'), 403);
-
+export async function getCoupons({
+  limit = 100,
+  starting_after,
+  ending_before,
+}: {
+  limit?: number;
+  starting_after?: string;
+  ending_before?: string;
+}) {
   const couponList = await stripe.coupons.list({
-    limit: 100,
-    starting_after: req.query.starting_after?.toString(),
-    ending_before: req.query.ending_before?.toString(),
+    limit,
+    starting_after,
+    ending_before,
   });
-
-  if (!couponList) return res.status(200).json({ data: null, error: 'No coupons found' });
 
   const promotionCodes = await Promise.all(
     couponList.data.map(async (coupon) => {
@@ -36,15 +35,34 @@ export const handleCoupons = async (
       });
 
       return promotionCode.data.length ? promotionCode.data[0] : null;
-    })
+    }),
   );
 
-  const coupons: (Stripe.Coupon & { promotion: Stripe.PromotionCode })[] = couponList.data
+  const coupons: FullCoupon[] = couponList.data
     .map((coupon, index) => {
       const promotionCode = promotionCodes[index];
       return promotionCode ? { ...coupon, promotion: promotionCode } : null;
     })
-    .filter((coupon): coupon is Stripe.Coupon & { promotion: Stripe.PromotionCode } => !!coupon);
+    .filter((coupon): coupon is FullCoupon => !!coupon);
+
+  return coupons;
+}
+
+export const handleCoupons = async (
+  req: NextApiRequest,
+  res: NextApiResponse<CouponsResponse>,
+  orderType: OrderType,
+) => {
+  const session = await getServerSession(req, res, authOptions);
+  const sessionUser = session?.user?.email ? await getUser(session.user.email, orderType) : null;
+  const isAdmin = sessionUser?.role === 'ADMIN';
+  if (!isAdmin) return await handleApiError(res, new Error('Unauthorised'), 403);
+
+  const coupons = await getCoupons({
+    limit: 100,
+    starting_after: req.query.starting_after as string,
+    ending_before: req.query.ending_before as string,
+  });
 
   res.status(200).json({ data: coupons });
 };
@@ -66,7 +84,7 @@ export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<Cou
         active: true,
       });
 
-      res.status(200).json({ data: newPromotionCode ? newCoupon : null });
+      res.status(200).json({ data: { ...newCoupon, promotion: newPromotionCode } });
     }
 
     if (req.method === 'GET') {
@@ -83,7 +101,7 @@ export const handleCoupon = async (req: NextApiRequest, res: NextApiResponse<Cou
       if (!promotionCode) {
         return res.status(200).json({ data: null, error: 'Promotion code not found' });
       }
-      const coupon = promotionCode?.coupon;
+      const coupon = { ...promotionCode?.coupon, promotion: promotionCode };
       if (!coupon) {
         return res.status(200).json({ data: null, error: 'Coupon not found' });
       }

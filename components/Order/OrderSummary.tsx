@@ -2,8 +2,8 @@ import { Badge, Box, Button, Heading, Icon, SimpleGrid, Stack, Text } from '@cha
 import dayjs from 'dayjs';
 import React from 'react';
 import { FaClock, FaEnvelope, FaShippingFast } from 'react-icons/fa';
-
 import Stripe from 'stripe';
+
 import CustomerInfo from '../../components/Order/CustomerInfo';
 import ResendEmail from '../../components/Order/ResendEmail';
 import { useUpdateOrderMutation } from '../../reducers/api';
@@ -91,7 +91,7 @@ function OrderSummary({ order, checkout, itemsList }: Props) {
           </Text>
           {itemsList}
           <Text fontSize='2xl' fontWeight={700} textAlign='right'>
-            {formatAmountForDisplay(checkout?.amount_total ?? order.paymentAmount ?? 0)}
+            {formatAmountForDisplay(checkout?.amount_total || order.paymentAmount || 0)}
           </Text>
         </Box>
       </Box>

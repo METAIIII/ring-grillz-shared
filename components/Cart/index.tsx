@@ -3,8 +3,10 @@ import { OrderType } from '@prisma/client';
 import { useMemo } from 'react';
 import { GiShoppingCart } from 'react-icons/gi';
 import { IoTicketOutline } from 'react-icons/io5';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from 'reducers/store';
+import { FullCoupon } from 'shared/types';
 import Stripe from 'stripe';
+
 import { removeItem } from '../../reducers/cart';
 import { formatCouponDiscount } from '../../utils/get-totals';
 import { formatAmountForDisplay } from '../../utils/stripe-helpers';
@@ -15,7 +17,7 @@ interface Props {
   cartItems: CartItem[];
   cartItemComponent: (item: CartItem) => JSX.Element;
   cartTotal: number;
-  coupon: Stripe.Coupon | null;
+  coupon: FullCoupon | null;
   couponCode: string;
   lineItems: Stripe.Checkout.SessionCreateParams.LineItem[];
   orderType: OrderType;
@@ -30,7 +32,8 @@ function Cart({
   lineItems,
   orderType,
 }: Props) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
   const total = useMemo(() => {
     if (coupon) {
       if (!coupon.valid) {

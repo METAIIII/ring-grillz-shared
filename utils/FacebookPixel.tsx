@@ -6,7 +6,7 @@ interface MyWindow extends Window {
   fbq: any;
 }
 
-declare var window: MyWindow;
+declare let window: MyWindow;
 
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 

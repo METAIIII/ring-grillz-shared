@@ -93,6 +93,7 @@ model Order {
 model LineItem {
   id       String @id @default(cuid())
   amount   Int
+  /// [GrillzFormAsMetadata]
   metadata Json
   order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId  String

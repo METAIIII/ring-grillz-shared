@@ -1,33 +1,31 @@
 import {
   GrillzMaterialOption,
   GrillzMaterialVariant,
-  Order,
   RingEngraving,
   RingEngravingPreset,
   User,
 } from '@prisma/client';
-
+import { GetOrdersResult } from 'shared/api/order';
+import { GetUsersResult } from 'shared/api/user';
 import Stripe from 'stripe';
-import { FullGrillzMaterial, FullOrder, FullRing, FullUser } from '.';
 
-export type ApiResponse<T> = {
+import { FullCoupon, FullGrillzMaterial, FullOrder, FullRing, FullUser } from '.';
+
+export interface ApiResponse<T> {
   data?: T;
   error?: string;
-};
+}
 
 export type UserResponse = ApiResponse<FullUser>;
-export type UsersResponse = ApiResponse<User[]>;
+export type UsersResponse = ApiResponse<GetUsersResult>;
 
 export type OrderResponse = ApiResponse<FullOrder>;
-export type OrdersResponse = ApiResponse<Order[]>;
+export type OrdersResponse = ApiResponse<GetOrdersResult>;
 
-export type CouponResponse = ApiResponse<Stripe.Coupon | null>;
-export type CouponsResponse = ApiResponse<
-  (Stripe.Coupon & { promotion?: Stripe.PromotionCode })[] | null
->;
+export type CouponResponse = ApiResponse<FullCoupon | null>;
+export type CouponsResponse = ApiResponse<FullCoupon[]>;
 
 export type CheckoutResponse = ApiResponse<{ url: string } | null>;
-
 export type FullCheckoutResponse = ApiResponse<Stripe.Response<Stripe.Checkout.Session>>;
 
 // Dr Grillz Specific
@@ -41,21 +39,21 @@ export type RingResponse = ApiResponse<FullRing>;
 export type RingsResponse = ApiResponse<FullRing[]>;
 export type RingPresetResponse = ApiResponse<RingEngravingPreset>;
 export type EngravingResponse = ApiResponse<RingEngraving>;
-export type PresetData = {
+export interface PresetData {
   simple: RingEngravingPreset[];
   signet: RingEngravingPreset[];
-};
+}
 export type RingsDataResponse = ApiResponse<{
   rings: FullRing[];
   presets: PresetData;
 }>;
 
-export type BackupData = {
+export interface BackupData {
   users: User[];
   orders: FullOrder[];
   grillzMaterials: FullGrillzMaterial[];
   ringShapes: FullRing[];
   ringEngravings: RingEngraving[];
   ringEngravingPresets: PresetData;
-};
+}
 export type BackupResponse = ApiResponse<BackupData>;
