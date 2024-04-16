@@ -9,7 +9,7 @@ export const DR_GRILLZ_DEFAULT_SEO: DefaultSeoProps = {
     type: 'website',
     description: drGrillzDesc,
     locale: 'en_IE',
-    url: process.env.NEXTAUTH_URL,
+    url: process.env.NEXT_PUBLIC_APP_URL,
     site_name: 'Dr Grillz',
   },
 };
@@ -23,7 +23,7 @@ export const RING_KINGZ_DEFAULT_SEO: DefaultSeoProps = {
     type: 'website',
     description: ringKingzDesc,
     locale: 'en_IE',
-    url: process.env.NEXTAUTH_URL,
+    url: process.env.NEXT_PUBLIC_APP_URL,
     site_name: 'Ring Kingz',
   },
 };

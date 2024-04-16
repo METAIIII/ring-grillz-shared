@@ -5,7 +5,6 @@ import { FaClock, FaEnvelope, FaShippingFast } from 'react-icons/fa';
 import Stripe from 'stripe';
 
 import CustomerInfo from '../../components/Order/CustomerInfo';
-import ResendEmail from '../../components/Order/ResendEmail';
 import { useUpdateOrderMutation } from '../../reducers/api';
 import { FullOrder } from '../../types';
 import { formatAmountForDisplay } from '../../utils/stripe-helpers';
@@ -80,11 +79,6 @@ function OrderSummary({ order, checkout, itemsList }: Props) {
                 Cancel order
               </Button>
             </Stack>
-          )}
-          {checkout && order.status === 'PAID' && !order.hasSentReceiptEmail && (
-            <Box pt={2}>
-              <ResendEmail checkoutId={checkout.id} orderId={order.id} />
-            </Box>
           )}
           <Text borderBottomWidth={1} fontWeight='bold' mt={2} py={1}>
             Items

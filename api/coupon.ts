@@ -2,6 +2,7 @@ import { OrderType } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { FullCoupon } from 'shared/types';
+import { STRIPE_API_VERSION, STRIPE_SECRET_KEY } from 'shared/utils/stripe-helpers';
 import Stripe from 'stripe';
 
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
@@ -10,7 +11,7 @@ import { CouponResponse, CouponsResponse } from '../types/api-responses';
 import { handleApiError } from './error';
 import { getUser } from './user';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', { apiVersion: '2023-10-16' });
+const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: STRIPE_API_VERSION });
 
 export async function getCoupons({
   limit = 100,

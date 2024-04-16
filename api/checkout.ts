@@ -6,7 +6,12 @@ import { getGrillzMaterials } from 'utils/tooth-utils';
 import prisma from '../prisma';
 import { FullOrder } from '../types';
 import { CheckoutResponse, FullCheckoutResponse } from '../types/api-responses';
-import { convertGrillzToLineItem, getGrillzFromMetadata } from '../utils/stripe-helpers';
+import {
+  convertGrillzToLineItem,
+  getGrillzFromMetadata,
+  STRIPE_API_VERSION,
+  STRIPE_SECRET_KEY,
+} from '../utils/stripe-helpers';
 import { handleApiError } from './error';
 
 export const handleCheckout = async (
@@ -14,7 +19,7 @@ export const handleCheckout = async (
   res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
   orderType: OrderType,
 ) => {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', { apiVersion: '2023-10-16' });
+  const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: STRIPE_API_VERSION });
 
   switch (req.method) {
     case 'GET':

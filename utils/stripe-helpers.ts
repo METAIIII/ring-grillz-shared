@@ -5,6 +5,9 @@ import { FullGrillzMaterial, GrillzForm, RingFormState, ToothID } from '../types
 import { getGrillzTotal, getRingTotal } from './get-totals';
 import { json } from './json-parse';
 
+export const STRIPE_API_VERSION = '2024-06-20';
+export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY ?? '';
+
 export function formatAmountForDisplay(amount: number): string {
   const numberFormat = new Intl.NumberFormat(['en-US'], {
     style: 'currency',

@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { EmailRequestBody } from 'shared/types/email';
 
 import { UpdateUser } from '../components/Account/UserInfo';
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
 import { CreateOrder, FullOrder, UpdateOrder } from '../types';
 import {
+  ApiResponse,
   CouponResponse,
   CouponsResponse,
   FullCheckoutResponse,
@@ -47,13 +49,18 @@ export const api = createApi({
         { type: 'Order', id: 'LIST' },
       ],
     }),
-    sendOrderEmail: builder.mutation<OrderResponse, { orderId: string; checkoutId: string }>({
-      query: ({ orderId, checkoutId }) => ({
-        url: `order/mail`,
+    /**
+     * EMAIL queries/mutations
+     */
+    sendEmail: builder.mutation<ApiResponse<string>, EmailRequestBody>({
+      query: (req) => ({
+        url: `mail`,
         method: 'POST',
-        body: { orderId, checkoutId },
+        body: req,
       }),
-      invalidatesTags: (result, error, { orderId }) => [{ type: 'Order', id: orderId }],
+      invalidatesTags: (result, error, { vars }) => [
+        { type: 'Order', id: 'orderID' in vars ? vars.orderID : '' },
+      ],
     }),
     /**
      * CHECKOUT queries/mutations
@@ -143,7 +150,7 @@ export const {
   useGetCouponByCodeQuery,
   useGetOrderByIdQuery,
   useGetUserByEmailQuery,
-  useSendOrderEmailMutation,
+  useSendEmailMutation,
   useUpdateOrderMutation,
   useUpdateUserMutation,
 } = api;

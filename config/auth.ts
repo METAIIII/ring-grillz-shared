@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
           pass: `${process.env.SMTP_PASS}`,
         },
       },
-      from: `${process.env.SMTP_FROM}`,
+      from: `${process.env.SMTP_USER}`,
     }),
   ],
   adapter: PrismaAdapter(prisma),
