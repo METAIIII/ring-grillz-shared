@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key */
-import { Button, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Button, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -69,10 +69,7 @@ function UserOrders({ orders }: { orders: Order[] }) {
   });
 
   return (
-    <Card>
-      <Heading size={{ base: 'sm', md: 'md' }}>
-        {orders.length === 0 ? 'No ' : isAdmin ? '' : 'My '}Orders
-      </Heading>
+    <Card title={`${orders.length === 0 ? 'No ' : isAdmin ? '' : 'My '}Orders`}>
       {orders.length > 0 && (
         <Table {...getTableProps()} colorScheme='yellow' pt={2}>
           <Thead>

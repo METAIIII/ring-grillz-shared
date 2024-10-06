@@ -1,6 +1,6 @@
 import { Icon, IconButton, Tooltip } from '@chakra-ui/react';
 import { signOut } from 'next-auth/react';
-import { BiLogOutCircle } from 'react-icons/bi';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 interface Props {
   onLogout?: () => void;
@@ -11,8 +11,7 @@ function LogoutButton({ onLogout }: Props) {
     <Tooltip label='Logout'>
       <IconButton
         aria-label='Logout'
-        colorScheme='yellow'
-        icon={<Icon as={BiLogOutCircle} />}
+        icon={<Icon as={FaSignOutAlt} />}
         size='sm'
         variant='ghost'
         onClick={() => {

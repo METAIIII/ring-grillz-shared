@@ -34,7 +34,7 @@ function DeleteAccount({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent fontFamily='body'>
+      <ModalContent>
         <ModalCloseButton />
         <ModalHeader>Are you sure?</ModalHeader>
         <ModalBody>

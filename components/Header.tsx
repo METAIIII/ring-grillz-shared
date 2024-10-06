@@ -47,7 +47,7 @@ function Header({ mode }: Props) {
         >
           {!isMobile && (
             <Flex alignItems='center' mr='auto'>
-              <Tooltip hasArrow label='Back home' placement='bottom'>
+              <Tooltip label='Back home' placement='bottom'>
                 <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
                   {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
                 </Link>
@@ -69,7 +69,7 @@ function Header({ mode }: Props) {
           <DarkModeSwitch />
           {isMobile && (
             <Box mr='auto'>
-              <Tooltip hasArrow label='Back home' placement='bottom'>
+              <Tooltip label='Back home' placement='bottom'>
                 <Link href={process.env.NEXT_PUBLIC_HOME_URL} target='_blank'>
                   {mode === 'GRILLZ' ? <DrGrillzLogo /> : <RingKingzLogo />}
                 </Link>

@@ -99,25 +99,19 @@ export function CreateCouponForm(props: BoxProps) {
   });
 
   return (
-    <Card
-      shine
-      cardBodyProps={{ pt: 0 }}
-      isLoading={isLoading || isSubmitting}
-      title='Create Coupon'
-      {...props}
-    >
+    <Card shine isLoading={isLoading || isSubmitting} title='Create Coupon' {...props}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <InputGroup mb={2}>
+        <InputGroup mb={4}>
           <Input {...register('name')} isInvalid={!!errors.name} placeholder='Name' />
         </InputGroup>
-        <InputGroup mb={2}>
+        <InputGroup mb={4}>
           <Input
             {...register('promotion_code')}
             isInvalid={!!errors.promotion_code}
             placeholder='Promotion Code'
           />
         </InputGroup>
-        <Flex mb={2}>
+        <Flex mb={4}>
           <IconButton
             aria-label={mode === 'fixed' ? 'Fixed' : 'Percentage'}
             icon={mode === 'fixed' ? <FaDollarSign /> : <FaPercentage />}

@@ -34,7 +34,7 @@ function Layout<T extends OrderType>({
     <LayoutContext.Provider value={{ mode }}>
       <NextSeo title={title} />
       {showHeader && <Header mode={mode} />}
-      <Container as='main' fontFamily='body' maxW={maxW} p={8}>
+      <Container as='main' maxW={maxW} p={8}>
         {children}
       </Container>
     </LayoutContext.Provider>

@@ -59,7 +59,6 @@ function Cart({
           Your Cart {cartItems.length > 0 && `(${cartItems.length})`}
         </Heading>
         <Tooltip
-          hasArrow
           hidden={!isCouponApplied}
           label={`Was ${formatAmountForDisplay(cartTotal)}`}
           placement='top'

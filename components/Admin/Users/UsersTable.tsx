@@ -48,17 +48,16 @@ export function UsersTable() {
   );
 
   const renderEmailCell: Renderer<CellProps<User>> = ({ value, row }) => (
-    <Tooltip
-      hasArrow
-      isDisabled={!!row.original.emailVerified}
-      label='Email not verified'
-      placement='top-start'
-    >
-      <Flex alignItems='center' gap={2}>
-        {value}
-        {!row.original.emailVerified && <Icon as={FaTimes} color='red.400' />}
-      </Flex>
-    </Tooltip>
+    <Flex alignItems='center' gap={2}>
+      {value}
+      {!row.original.emailVerified && (
+        <Tooltip label='Email not verified' placement='top'>
+          <Box mb='-1.5'>
+            <Icon as={FaTimes} color='red.400' />
+          </Box>
+        </Tooltip>
+      )}
+    </Flex>
   );
 
   const renderActionsCell: Renderer<CellProps<User>> = ({ row }) => (

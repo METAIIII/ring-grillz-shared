@@ -5,7 +5,6 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
   Icon,
   Input,
   InputGroup,
@@ -72,11 +71,8 @@ function UserInfo({ user }: { user: FullUser }) {
   });
 
   return (
-    <Card shine>
+    <Card title={`${isAdmin ? 'Customer' : 'My'} Details`}>
       <form onSubmit={handleSubmit((data) => updateUser({ email: user.email ?? '', data }))}>
-        <Heading mb={4} size={{ base: 'sm', md: 'md' }}>
-          {isAdmin ? 'Customer' : 'My'} Details
-        </Heading>
         <FormControl mb={4}>
           <FormLabel>Name</FormLabel>
           <Input {...register('name')} colorScheme='yellow' />

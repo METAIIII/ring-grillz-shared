@@ -22,13 +22,13 @@ function OrderSummary({ order, checkout, itemsList }: Props) {
   return (
     <SimpleGrid columns={{ base: 1, md: 2 }} mb={4} spacing={8}>
       <Box>
-        <Heading borderBottomWidth={1} fontFamily='body' mb={2} p={2} size='md'>
+        <Heading borderBottomWidth={1} mb={2} p={2} size='md'>
           Customer Details
         </Heading>
         <CustomerInfo user={customer} />
       </Box>
       <Box>
-        <Heading borderBottomWidth={1} fontFamily='body' mb={2} p={2} size='md'>
+        <Heading borderBottomWidth={1} mb={2} p={2} size='md'>
           Order Details
         </Heading>
         <Box px={2}>
