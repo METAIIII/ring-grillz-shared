@@ -11,6 +11,33 @@ import Stripe from 'stripe';
 
 import { FullCoupon, FullGrillzMaterial, FullOrder, FullRing, FullUser } from '.';
 
+export interface Filter {
+  key: string;
+  value: string;
+  operation:
+    | 'equals'
+    | 'not'
+    | 'contains'
+    | 'startsWith'
+    | 'endsWith'
+    | 'lt'
+    | 'lte'
+    | 'gt'
+    | 'gte';
+}
+
+export interface Sort {
+  key: string;
+  order: 'asc' | 'desc';
+}
+
+export type PaginatedRequest<T> = {
+  pageIndex: number;
+  pageSize: number;
+  filters: Filter[];
+  sortBy: Sort[];
+} & T;
+
 export interface ApiResponse<T> {
   data?: T;
   error?: string;

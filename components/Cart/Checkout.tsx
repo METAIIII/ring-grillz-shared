@@ -1,18 +1,19 @@
 import {
-  Box,
   Button,
-  Flex,
   FormControl,
   FormErrorMessage,
+  Icon,
   Input,
   InputGroup,
   InputLeftElement,
+  Stack,
   Textarea,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OrderType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import { AiOutlineMail } from 'react-icons/ai';
+import { FaStripeS } from 'react-icons/fa';
 import Stripe from 'stripe';
 import { z } from 'zod';
 
@@ -75,8 +76,8 @@ function Checkout({ lineItems, couponCode, orderType }: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box pb={2} px={2}>
-        <FormControl isInvalid={'email' in errors} mb={2}>
+      <Stack gap={2} pb={2} px={2}>
+        <FormControl isInvalid={'email' in errors}>
           <InputGroup>
             <InputLeftElement color='gray.300' pointerEvents='none'>
               <AiOutlineMail />
@@ -90,7 +91,7 @@ function Checkout({ lineItems, couponCode, orderType }: Props) {
           </InputGroup>
           {'email' in errors && <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>}
         </FormControl>
-        <FormControl mb={2}>
+        <FormControl>
           <Textarea
             noOfLines={3}
             {...register('notes')}
@@ -98,19 +99,18 @@ function Checkout({ lineItems, couponCode, orderType }: Props) {
             placeholder='Notes (optional)'
           />
         </FormControl>
-        <Flex flexDir={{ base: 'column', md: 'row' }} justifyContent='flex-end'>
-          <CouponInput />
-          <Button
-            colorScheme='yellow'
-            isDisabled={'email' in errors || 'phone' in errors}
-            isLoading={isLoading || isSubmitting}
-            mt={{ base: 2, md: 0 }}
-            type='submit'
-          >
-            Checkout
-          </Button>
-        </Flex>
-      </Box>
+        <CouponInput />
+        <Button
+          colorScheme='yellow'
+          isDisabled={'email' in errors || 'phone' in errors}
+          isLoading={isLoading || isSubmitting}
+          leftIcon={<Icon as={FaStripeS} />}
+          type='submit'
+          width='100%'
+        >
+          Checkout
+        </Button>
+      </Stack>
     </form>
   );
 }

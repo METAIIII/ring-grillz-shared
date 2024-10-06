@@ -49,7 +49,7 @@ function NavigationItems() {
 
   return (
     <Stack alignItems='flex-end' direction={{ base: 'column', md: 'row' }} mr={{ base: 0, md: 4 }}>
-      {isAdmin && <NavigationItem isAdmin href='/admin' label='Admin' />}
+      {isAdmin && <NavigationItem isAdmin href='/admin/orders' label='Admin' />}
       <NavigationItem href='/' label='Create' />
       <NavigationItem
         href={data?.user ? '/account' : '/auth/signin'}

@@ -17,8 +17,8 @@ function OrderStatusBadge({ orderStatus, ...props }: BadgeProps & { orderStatus:
                   ? 'purple'
                   : 'grey'
       }
-      px={2}
-      py={1}
+      px={1}
+      py={0}
       {...props}
     >
       {orderStatus}

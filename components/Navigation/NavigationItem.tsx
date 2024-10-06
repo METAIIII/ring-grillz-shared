@@ -26,9 +26,9 @@ function NavigationItem({
           borderColor: isAdmin && isActive ? 'red.400' : isActive ? 'yellow.500' : 'transparent',
         }}
         _light={{
-          _hover: { color: isAdmin ? 'red.700' : 'yellow.700', textDecoration: 'none' },
-          color: isAdmin && isActive ? 'red.600' : isActive ? 'yellow.600' : 'gray.500',
-          borderColor: isAdmin && isActive ? 'red.600' : isActive ? 'yellow.600' : 'transparent',
+          _hover: { color: isAdmin ? 'red.500' : 'yellow.600', textDecoration: 'none' },
+          color: isAdmin && isActive ? 'red.500' : isActive ? 'yellow.600' : 'gray.500',
+          borderColor: isAdmin && isActive ? 'red.500' : isActive ? 'yellow.600' : 'transparent',
         }}
         as='span'
         borderBottomWidth={isMobile ? 0 : 3}

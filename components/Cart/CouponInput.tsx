@@ -36,7 +36,7 @@ export function CouponInput() {
   };
 
   return (
-    <InputGroup mr={2}>
+    <InputGroup>
       <InputLeftElement color='gray.300' pointerEvents='none'>
         <IoTicketOutline />
       </InputLeftElement>

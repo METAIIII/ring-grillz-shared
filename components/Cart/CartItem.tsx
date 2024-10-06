@@ -12,8 +12,8 @@ type CartItemProps = PropsWithChildren<{
 function CartItem({ children, cartItem, onRemove }: CartItemProps) {
   return (
     <ListItem
-      _dark={{ _hover: { bg: 'gray.700' } }}
-      _light={{ _hover: { bg: 'white' } }}
+      _dark={{ _hover: { bgColor: 'rgba(45, 51, 57, 0.5)' } }}
+      _light={{ _hover: { bgColor: 'rgba(215, 219, 224, 0.5)' } }}
       alignItems='center'
       borderRadius={4}
       display='flex'

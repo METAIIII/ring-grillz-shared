@@ -10,7 +10,6 @@ function DarkModeSwitch() {
         aria-label={isDark ? 'Light Mode' : 'Dark Mode'}
         colorScheme='yellow'
         icon={<Icon as={isDark ? BsSun : BsMoonStarsFill} />}
-        mx={2}
         size='sm'
         variant='ghost'
         onClick={toggleColorMode}

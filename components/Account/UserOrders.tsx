@@ -1,24 +1,12 @@
 /* eslint-disable react/jsx-key */
-import {
-  Button,
-  Card,
-  CardBody,
-  Heading,
-  Icon,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react';
+import { Button, Heading, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import { CgExternal } from 'react-icons/cg';
 import { CellProps, Column, Renderer, useTable } from 'react-table';
+import { Card } from 'shared/components/card';
 
 import { formatAmountForDisplay } from '../../utils/stripe-helpers';
 import OrderStatusBadge from '../Order/OrderStatusBadge';
@@ -45,9 +33,7 @@ function UserOrders({ orders }: { orders: Order[] }) {
   // @ts-ignore
   const renderReceiptButtonCell: Renderer<CellProps<Order>> = ({ value }) => (
     <Link href={`/receipt?order_id=${value}`}>
-      <Button colorScheme='yellow' rightIcon={<Icon as={CgExternal} />} size='sm' variant='outline'>
-        Receipt
-      </Button>
+      <Button size='sm'>View Receipt</Button>
     </Link>
   );
 
@@ -84,9 +70,11 @@ function UserOrders({ orders }: { orders: Order[] }) {
 
   return (
     <Card>
-      <CardBody>
-        <Heading size={{ base: 'sm', md: 'md' }}>{isAdmin ? '' : 'My '}Orders</Heading>
-        <Table {...getTableProps()} colorScheme='yellow'>
+      <Heading size={{ base: 'sm', md: 'md' }}>
+        {orders.length === 0 ? 'No ' : isAdmin ? '' : 'My '}Orders
+      </Heading>
+      {orders.length > 0 && (
+        <Table {...getTableProps()} colorScheme='yellow' pt={2}>
           <Thead>
             {headerGroups.map((headerGroup) => (
               <Tr {...headerGroup.getHeaderGroupProps()}>
@@ -115,7 +103,7 @@ function UserOrders({ orders }: { orders: Order[] }) {
             })}
           </Tbody>
         </Table>
-      </CardBody>
+      )}
     </Card>
   );
 }

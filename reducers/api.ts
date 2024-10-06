@@ -11,6 +11,7 @@ import {
   FullCheckoutResponse,
   OrderResponse,
   OrdersResponse,
+  PaginatedRequest,
   UserResponse,
   UsersResponse,
 } from '../types/api-responses';
@@ -23,8 +24,28 @@ export const api = createApi({
     /**
      * ORDER queries/mutations
      */
-    getOrders: builder.query<OrdersResponse, { take: number; skip: number }>({
-      query: ({ take, skip }) => `order?take=${take}&skip=${skip}`,
+    getOrders: builder.query<OrdersResponse, PaginatedRequest<Record<string, any>>>({
+      query: ({ pageIndex, pageSize, filters, sortBy }) => {
+        let queryString = `order?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+
+        // Add filters to the query string
+        if (filters && filters.length > 0) {
+          const filterParams = filters
+            .map((f) => `filter=${encodeURIComponent(JSON.stringify(f))}`)
+            .join('&');
+          queryString += `&${filterParams}`;
+        }
+
+        // Add sorting to the query string
+        if (sortBy && sortBy.length > 0) {
+          const sortParams = sortBy
+            .map((s) => `sort=${encodeURIComponent(JSON.stringify(s))}`)
+            .join('&');
+          queryString += `&${sortParams}`;
+        }
+
+        return queryString;
+      },
       providesTags: () => [{ type: 'Order', id: 'LIST' }],
     }),
     getOrderById: builder.query<OrderResponse, string>({
@@ -108,8 +129,28 @@ export const api = createApi({
     /**
      * USER queries/mutations
      */
-    getAllUsers: builder.query<UsersResponse, void>({
-      query: () => 'user',
+    getUsers: builder.query<UsersResponse, PaginatedRequest<Record<string, any>>>({
+      query: ({ pageIndex, pageSize, filters, sortBy }) => {
+        let queryString = `user?pageIndex=${pageIndex}&pageSize=${pageSize}`;
+
+        // Add filters to the query string
+        if (filters && filters.length > 0) {
+          const filterParams = filters
+            .map((f) => `filter=${encodeURIComponent(JSON.stringify(f))}`)
+            .join('&');
+          queryString += `&${filterParams}`;
+        }
+
+        // Add sorting to the query string
+        if (sortBy && sortBy.length > 0) {
+          const sortParams = sortBy
+            .map((s) => `sort=${encodeURIComponent(JSON.stringify(s))}`)
+            .join('&');
+          queryString += `&${sortParams}`;
+        }
+
+        return queryString;
+      },
       providesTags: () => [{ type: 'User', id: 'LIST' }],
     }),
     getUserByEmail: builder.query<UserResponse, string>({
@@ -148,8 +189,11 @@ export const {
   useDeleteUserMutation,
   useGetCheckoutSessionQuery,
   useGetCouponByCodeQuery,
+  useGetCouponsQuery,
   useGetOrderByIdQuery,
+  useGetOrdersQuery,
   useGetUserByEmailQuery,
+  useGetUsersQuery,
   useSendEmailMutation,
   useUpdateOrderMutation,
   useUpdateUserMutation,

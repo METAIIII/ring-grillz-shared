@@ -1,14 +1,4 @@
-import {
-  BoxProps,
-  Button,
-  Card,
-  CardBody,
-  Flex,
-  Heading,
-  IconButton,
-  Input,
-  InputGroup,
-} from '@chakra-ui/react';
+import { BoxProps, Button, Flex, IconButton, Input, InputGroup } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,6 +6,8 @@ import { FaDollarSign, FaPercentage } from 'react-icons/fa';
 import { useSuccessFailToast } from 'shared/hooks/use-toast';
 import { useCreateCouponMutation } from 'shared/reducers/api';
 import { z } from 'zod';
+
+import { Card } from '../../card';
 
 const schema = z
   .object({
@@ -107,59 +99,60 @@ export function CreateCouponForm(props: BoxProps) {
   });
 
   return (
-    <Card {...props}>
-      <CardBody>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Heading as='h2' fontSize='xl' mb={4}>
-            Create Coupon
-          </Heading>
-          <InputGroup mb={2}>
-            <Input {...register('name')} isInvalid={!!errors.name} placeholder='Name' />
-          </InputGroup>
-          <InputGroup mb={2}>
-            <Input
-              {...register('promotion_code')}
-              isInvalid={!!errors.promotion_code}
-              placeholder='Promotion Code'
-            />
-          </InputGroup>
-          <Flex mb={2}>
-            <IconButton
-              aria-label={mode === 'fixed' ? 'Fixed' : 'Percentage'}
-              icon={mode === 'fixed' ? <FaDollarSign /> : <FaPercentage />}
-              mr={2}
-              onClick={() => setValue('mode', mode === 'fixed' ? 'percentage' : 'fixed')}
-            />
-            <Input
-              {...register('amount_off', { valueAsNumber: true })}
-              flex={1}
-              isDisabled={mode === 'percentage'}
-              isInvalid={!!errors.amount_off}
-              mr={2}
-              placeholder='Amount Off'
-              type='number'
-            />
-            <Input
-              flex={1}
-              {...register('percent_off', { valueAsNumber: true })}
-              isDisabled={mode === 'fixed'}
-              isInvalid={!!errors.percent_off}
-              placeholder='Percent Off'
-              type='number'
-            />
-          </Flex>
-          {errors.amount_off && <p>{errors.amount_off.message}</p>}
-          {errors.percent_off && <p>{errors.percent_off.message}</p>}
-          <Button
-            colorScheme='green'
-            isLoading={isLoading || isSubmitting}
-            type='submit'
-            width='full'
-          >
-            Create
-          </Button>
-        </form>
-      </CardBody>
+    <Card
+      shine
+      cardBodyProps={{ pt: 0 }}
+      isLoading={isLoading || isSubmitting}
+      title='Create Coupon'
+      {...props}
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <InputGroup mb={2}>
+          <Input {...register('name')} isInvalid={!!errors.name} placeholder='Name' />
+        </InputGroup>
+        <InputGroup mb={2}>
+          <Input
+            {...register('promotion_code')}
+            isInvalid={!!errors.promotion_code}
+            placeholder='Promotion Code'
+          />
+        </InputGroup>
+        <Flex mb={2}>
+          <IconButton
+            aria-label={mode === 'fixed' ? 'Fixed' : 'Percentage'}
+            icon={mode === 'fixed' ? <FaDollarSign /> : <FaPercentage />}
+            mr={2}
+            onClick={() => setValue('mode', mode === 'fixed' ? 'percentage' : 'fixed')}
+          />
+          <Input
+            {...register('amount_off', { valueAsNumber: true })}
+            flex={1}
+            isDisabled={mode === 'percentage'}
+            isInvalid={!!errors.amount_off}
+            mr={2}
+            placeholder='Amount Off'
+            type='number'
+          />
+          <Input
+            flex={1}
+            {...register('percent_off', { valueAsNumber: true })}
+            isDisabled={mode === 'fixed'}
+            isInvalid={!!errors.percent_off}
+            placeholder='Percent Off'
+            type='number'
+          />
+        </Flex>
+        {errors.amount_off && <p>{errors.amount_off.message}</p>}
+        {errors.percent_off && <p>{errors.percent_off.message}</p>}
+        <Button
+          colorScheme='green'
+          isLoading={isLoading || isSubmitting}
+          type='submit'
+          width='full'
+        >
+          Create
+        </Button>
+      </form>
     </Card>
   );
 }

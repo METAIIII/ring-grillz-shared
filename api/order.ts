@@ -7,7 +7,7 @@ import { getGrillzMaterials } from 'utils/tooth-utils';
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
 import { CreateOrder, FullOrder, UpdateOrder } from '../types';
-import { OrderResponse, OrdersResponse } from '../types/api-responses';
+import { Filter, OrderResponse, OrdersResponse, Sort } from '../types/api-responses';
 import { getGrillzTotal } from '../utils/get-totals';
 import { getGrillzFromMetadata } from '../utils/stripe-helpers';
 import { handleApiError } from './error';
@@ -16,38 +16,45 @@ import { getUser } from './user';
 export interface GetOrdersResult {
   orders: Order[];
   pageCount: number;
+  totalCount: number;
 }
 
 export const getOrders = async ({
   type,
+  where,
+  orderBy,
   take,
   skip,
 }: {
   type: OrderType;
+  where?: Record<string, any>;
+  orderBy?: Record<string, any>;
   take: number;
   skip: number;
 }): Promise<GetOrdersResult> => {
   try {
     const orders = await prisma.order.findMany({
-      orderBy: { createdAt: 'desc' },
-      where: { type },
+      where: { type, ...where },
+      orderBy: orderBy || { createdAt: 'desc' },
       take,
       skip,
     });
     const totalOrdersCount = await prisma.order.count({
-      where: { type },
+      where: { type, ...where },
     });
     if (!orders)
       return {
         orders: [],
         pageCount: 0,
+        totalCount: 0,
       };
     return json({
       orders,
       pageCount: Math.ceil(totalOrdersCount / take),
+      totalCount: totalOrdersCount,
     });
   } catch (error) {
-    return { orders: [], pageCount: 0 };
+    return { orders: [], pageCount: 0, totalCount: 0 };
   }
 };
 
@@ -202,15 +209,50 @@ export const handleOrdersRequest = async (
     switch (method) {
       case 'GET':
         if (!isAdmin) return await handleApiError(res, new Error('Unauthorised'), 403);
-        const { orders, pageCount } = await getOrders({
+
+        const { pageIndex, pageSize, filter, sort } = req.query;
+
+        const pageIndexNum = Number(pageIndex) || 0;
+        const pageSizeNum = Number(pageSize) || 10;
+
+        let filters: Filter[] = [];
+        let sortBy: Sort[] = [];
+
+        if (typeof filter === 'string') {
+          filters = [JSON.parse(filter)];
+        } else if (Array.isArray(filter)) {
+          filters = filter.map((f) => JSON.parse(f));
+        }
+
+        if (typeof sort === 'string') {
+          sortBy = [JSON.parse(sort)];
+        } else if (Array.isArray(sort)) {
+          sortBy = sort.map((s) => JSON.parse(s));
+        }
+
+        const where = filters.reduce<Record<string, any>>((acc, f) => {
+          acc[f.key] = { [f.operation]: f.value };
+          return acc;
+        }, {});
+
+        const orderBy = sortBy.reduce<Record<string, 'asc' | 'desc'>>((acc, s) => {
+          acc[s.key] = s.order;
+          return acc;
+        }, {});
+
+        const { orders, pageCount, totalCount } = await getOrders({
           type: orderType,
-          take: Number(req.query.take),
-          skip: Number(req.query.skip),
+          where,
+          orderBy,
+          skip: pageIndexNum * pageSizeNum,
+          take: pageSizeNum,
         });
+
         res.status(200).json({
           data: {
             orders,
             pageCount,
+            totalCount,
           },
         });
         return;

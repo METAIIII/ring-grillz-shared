@@ -13,9 +13,10 @@ function MarkAsShipped({ order }: Props) {
 
   return (
     <Button
-      colorScheme='blue'
+      colorScheme={isShipped ? 'blue' : 'gray'}
       isLoading={isLoading}
       leftIcon={isShipped ? <Icon as={FaCheck} /> : undefined}
+      variant={isShipped ? 'solid' : 'outline'}
       onClick={() =>
         updateOrder({ id: order.id, data: { status: isShipped ? 'PAID' : 'SHIPPED' } })
       }

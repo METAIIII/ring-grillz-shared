@@ -7,39 +7,47 @@ import { UpdateUser } from '../components/Account/UserInfo';
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
 import { FullUser } from '../types';
-import { UserResponse, UsersResponse } from '../types/api-responses';
+import { Filter, Sort, UserResponse, UsersResponse } from '../types/api-responses';
 import { handleApiError } from './error';
 
 export interface GetUsersResult {
   users: User[];
   pageCount: number;
+  totalCount: number;
 }
 
 export const getUsers = async ({
+  where,
+  orderBy,
   take,
   skip,
 }: {
+  where?: Record<string, any>;
+  orderBy?: Record<string, any>;
   take: number;
   skip: number;
 }): Promise<GetUsersResult> => {
   try {
     const users = await prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
+      where,
+      orderBy,
       take,
       skip,
     });
-    const totalUsersCount = await prisma.user.count();
+    const totalUsersCount = await prisma.user.count({ where });
     if (!users)
       return {
         users: [],
         pageCount: 0,
+        totalCount: 0,
       };
     return json({
       users,
       pageCount: Math.ceil(totalUsersCount / take),
+      totalCount: totalUsersCount,
     });
   } catch (error) {
-    return { users: [], pageCount: 0 };
+    return { users: [], pageCount: 0, totalCount: 0 };
   }
 };
 
@@ -150,11 +158,45 @@ export const handleUsersRequest = async (
     if (!isAdmin) {
       return await handleApiError(res, new Error('Unauthorised'), 403);
     }
-    const { users, pageCount } = await getUsers({
-      take: 500,
-      skip: 0,
+
+    const { pageIndex, pageSize, filter, sort } = req.query;
+
+    const pageIndexNum = Number(pageIndex) || 0;
+    const pageSizeNum = Number(pageSize) || 10;
+
+    let filters: Filter[] = [];
+    let sortBy: Sort[] = [];
+
+    if (typeof filter === 'string') {
+      filters = [JSON.parse(filter)];
+    } else if (Array.isArray(filter)) {
+      filters = filter.map((f) => JSON.parse(f));
+    }
+
+    if (typeof sort === 'string') {
+      sortBy = [JSON.parse(sort)];
+    } else if (Array.isArray(sort)) {
+      sortBy = sort.map((s) => JSON.parse(s));
+    }
+
+    const where = filters.reduce<Record<string, any>>((acc, f) => {
+      acc[f.key] = { [f.operation]: f.value };
+      return acc;
+    }, {});
+
+    const orderBy = sortBy.reduce<Record<string, 'asc' | 'desc'>>((acc, s) => {
+      acc[s.key] = s.order;
+      return acc;
+    }, {});
+
+    const { users, pageCount, totalCount } = await getUsers({
+      where,
+      orderBy,
+      skip: pageIndexNum * pageSizeNum,
+      take: pageSizeNum,
     });
-    res.status(200).json({ data: { users, pageCount } });
+
+    res.status(200).json({ data: { users, pageCount, totalCount } });
   } catch (error) {
     await handleApiError(res, Error(`${error}`));
   }

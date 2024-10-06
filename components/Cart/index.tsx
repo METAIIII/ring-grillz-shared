@@ -96,8 +96,8 @@ function Cart({
           {cartItems.map((cartItem, i) => {
             return (
               <CartItem
-                cartItem={cartItem}
                 key={`${i}-cartItem`}
+                cartItem={cartItem}
                 onRemove={() => dispatch(removeItem(cartItem))}
               >
                 {cartItemComponent(cartItem)}
