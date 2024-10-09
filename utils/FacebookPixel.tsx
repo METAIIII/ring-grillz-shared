@@ -1,6 +1,6 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
-import { useEffect } from 'react';
 
 interface MyWindow extends Window {
   fbq: any;

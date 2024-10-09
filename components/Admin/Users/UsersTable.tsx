@@ -1,10 +1,11 @@
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import {
   Badge,
   Box,
   Button,
   ButtonGroup,
   Flex,
-  FormLabel,
   Icon,
   Input,
   InputGroup,
@@ -12,12 +13,10 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { User, UserRole } from '@prisma/client';
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 import { CellProps, Column, Renderer } from 'react-table';
-import { useGetUsersQuery } from 'shared/reducers/api';
 
+import { useGetUsersQuery } from '../../../reducers/api';
 import { Card } from '../../card';
 import PaginatedTable from '../../UI/paginated-table';
 
@@ -97,36 +96,35 @@ export function UsersTable() {
 
   return (
     <Card isLoading={isLoading || isFetching}>
-      <FormLabel fontWeight='bold' mb={1}>
-        Filter results
-      </FormLabel>
-      <InputGroup mb={2} size='sm'>
-        <InputLeftElement>
-          <Icon as={FaSearch} />
-        </InputLeftElement>
-        <Input
-          borderRadius={6}
-          placeholder='Search by email'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </InputGroup>
-      <ButtonGroup mb={4} size='xs'>
-        <Button
-          colorScheme={role === 'CUSTOMER' ? 'blue' : 'gray'}
-          variant={role === 'CUSTOMER' ? 'solid' : 'outline'}
-          onClick={() => setRole('CUSTOMER')}
-        >
-          Customers
-        </Button>
-        <Button
-          colorScheme={role === 'ADMIN' ? 'red' : 'gray'}
-          variant={role === 'ADMIN' ? 'solid' : 'outline'}
-          onClick={() => setRole('ADMIN')}
-        >
-          Admins
-        </Button>
-      </ButtonGroup>
+      <Flex alignItems='center' justifyContent='space-between' mb={4}>
+        <ButtonGroup size='xs'>
+          <Button
+            colorScheme={role === 'CUSTOMER' ? 'blue' : 'gray'}
+            variant={role === 'CUSTOMER' ? 'solid' : 'outline'}
+            onClick={() => setRole('CUSTOMER')}
+          >
+            Customers
+          </Button>
+          <Button
+            colorScheme={role === 'ADMIN' ? 'red' : 'gray'}
+            variant={role === 'ADMIN' ? 'solid' : 'outline'}
+            onClick={() => setRole('ADMIN')}
+          >
+            Admins
+          </Button>
+        </ButtonGroup>
+        <InputGroup size='sm'>
+          <InputLeftElement>
+            <Icon as={FaSearch} />
+          </InputLeftElement>
+          <Input
+            borderRadius={6}
+            placeholder='Search by email'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </InputGroup>
+      </Flex>
       <PaginatedTable<User>
         columns={columns}
         data={users}

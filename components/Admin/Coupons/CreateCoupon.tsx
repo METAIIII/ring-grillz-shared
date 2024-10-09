@@ -1,12 +1,12 @@
+import { useEffect } from 'react';
 import { BoxProps, Button, Flex, IconButton, Input, InputGroup } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaDollarSign, FaPercentage } from 'react-icons/fa';
-import { useSuccessFailToast } from 'shared/hooks/use-toast';
-import { useCreateCouponMutation } from 'shared/reducers/api';
 import { z } from 'zod';
 
+import { useSuccessFailToast } from '../../../hooks/use-toast';
+import { useCreateCouponMutation } from '../../../reducers/api';
 import { Card } from '../../card';
 
 const schema = z

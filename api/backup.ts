@@ -1,10 +1,10 @@
 import { RingEngraving, User } from '@prisma/client';
-import { json } from 'shared/utils/json-parse';
-import { getGrillzMaterials } from 'utils/tooth-utils';
 
 import prisma from '../prisma';
 import { FullOrder, FullRing } from '../types';
 import { BackupData, PresetData } from '../types/api-responses';
+import { getGrillzMaterials } from '../utils/grillz-utils';
+import { json } from '../utils/json-parse';
 
 // Fetch all users
 export const getAllUsers = async (): Promise<User[]> => {

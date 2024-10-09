@@ -1,5 +1,5 @@
-import { Box, Button, Text } from '@chakra-ui/react';
 import Link from 'next/link';
+import { Box, Button, Text } from '@chakra-ui/react';
 import Stripe from 'stripe';
 
 interface CustomerInfoProps {

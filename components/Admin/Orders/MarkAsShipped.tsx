@@ -1,7 +1,8 @@
 import { Button, Icon } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import { FaCheck } from 'react-icons/fa';
-import { useUpdateOrderMutation } from 'shared/reducers/api';
+
+import { useUpdateOrderMutation } from '../../../reducers/api';
 
 interface Props {
   order: Order;

@@ -1,6 +1,6 @@
+import { useRouter } from 'next/router';
 import { Button, Flex, Icon } from '@chakra-ui/react';
 import { OrderType } from '@prisma/client';
-import { useRouter } from 'next/router';
 import { FaBox, FaTicketAlt, FaTooth, FaUser } from 'react-icons/fa';
 import { GiRing } from 'react-icons/gi';
 

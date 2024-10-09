@@ -1,13 +1,13 @@
-import { OrderType, User } from '@prisma/client';
 import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 'next';
+import { OrderType, User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
-import { json } from 'shared/utils/json-parse';
 
 import { UpdateUser } from '../components/Account/UserInfo';
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
 import { FullUser } from '../types';
 import { Filter, Sort, UserResponse, UsersResponse } from '../types/api-responses';
+import { json } from '../utils/json-parse';
 import { handleApiError } from './error';
 
 export interface GetUsersResult {

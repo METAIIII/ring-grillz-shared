@@ -1,8 +1,10 @@
+import { useMemo, useState } from 'react';
+import NextLink from 'next/link';
 import {
   Box,
   Button,
   ButtonGroup,
-  FormLabel,
+  Flex,
   Icon,
   Input,
   InputGroup,
@@ -11,12 +13,10 @@ import {
 } from '@chakra-ui/react';
 import { Order, OrderStatus } from '@prisma/client';
 import dayjs from 'dayjs';
-import NextLink from 'next/link';
-import { useMemo, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { CellProps, Column, Renderer } from 'react-table';
-import { useGetOrdersQuery } from 'shared/reducers/api';
 
+import { useGetOrdersQuery } from '../../../reducers/api';
 import { formatAmountForDisplay } from '../../../utils/stripe-helpers';
 import { Card } from '../../card';
 import OrderStatusBadge from '../../Order/OrderStatusBadge';
@@ -103,50 +103,49 @@ export function OrdersTable() {
 
   return (
     <Card isLoading={isLoading || isFetching}>
-      <FormLabel fontWeight='bold' mb={1}>
-        Filter results
-      </FormLabel>
-      <InputGroup mb={2} size='sm'>
-        <InputLeftElement>
-          <Icon as={FaSearch} />
-        </InputLeftElement>
-        <Input
-          borderRadius={6}
-          placeholder='Search by email'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </InputGroup>
-      <ButtonGroup mb={4} size='xs'>
-        <Button
-          colorScheme={status === 'PAID' ? 'green' : 'gray'}
-          variant={status === 'PAID' ? 'solid' : 'outline'}
-          onClick={() => setStatus('PAID')}
-        >
-          Paid
-        </Button>
-        <Button
-          colorScheme={status === 'PENDING' ? 'yellow' : 'gray'}
-          variant={status === 'PENDING' ? 'solid' : 'outline'}
-          onClick={() => setStatus('PENDING')}
-        >
-          Pending
-        </Button>
-        <Button
-          colorScheme={status === 'SHIPPED' ? 'blue' : 'gray'}
-          variant={status === 'SHIPPED' ? 'solid' : 'outline'}
-          onClick={() => setStatus('SHIPPED')}
-        >
-          Shipped
-        </Button>
-        <Button
-          colorScheme={status === 'CANCELED' ? 'red' : 'gray'}
-          variant={status === 'CANCELED' ? 'solid' : 'outline'}
-          onClick={() => setStatus('CANCELED')}
-        >
-          Canceled
-        </Button>
-      </ButtonGroup>
+      <Flex alignItems='center' justifyContent='space-between' mb={4}>
+        <ButtonGroup size='xs'>
+          <Button
+            colorScheme={status === 'PAID' ? 'green' : 'gray'}
+            variant={status === 'PAID' ? 'solid' : 'outline'}
+            onClick={() => setStatus('PAID')}
+          >
+            Paid
+          </Button>
+          <Button
+            colorScheme={status === 'PENDING' ? 'yellow' : 'gray'}
+            variant={status === 'PENDING' ? 'solid' : 'outline'}
+            onClick={() => setStatus('PENDING')}
+          >
+            Pending
+          </Button>
+          <Button
+            colorScheme={status === 'SHIPPED' ? 'blue' : 'gray'}
+            variant={status === 'SHIPPED' ? 'solid' : 'outline'}
+            onClick={() => setStatus('SHIPPED')}
+          >
+            Shipped
+          </Button>
+          <Button
+            colorScheme={status === 'CANCELED' ? 'red' : 'gray'}
+            variant={status === 'CANCELED' ? 'solid' : 'outline'}
+            onClick={() => setStatus('CANCELED')}
+          >
+            Canceled
+          </Button>
+        </ButtonGroup>
+        <InputGroup size='sm'>
+          <InputLeftElement>
+            <Icon as={FaSearch} />
+          </InputLeftElement>
+          <Input
+            borderRadius={6}
+            placeholder='Search by email'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </InputGroup>
+      </Flex>
       <PaginatedTable<Order>
         columns={columns}
         data={orders}

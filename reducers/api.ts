@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { EmailRequestBody } from 'shared/types/email';
 
 import { UpdateUser } from '../components/Account/UserInfo';
 import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
@@ -15,6 +14,7 @@ import {
   UserResponse,
   UsersResponse,
 } from '../types/api-responses';
+import { EmailRequestBody } from '../types/email';
 
 export const api = createApi({
   reducerPath: 'api',

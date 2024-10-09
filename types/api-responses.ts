@@ -1,3 +1,4 @@
+import { FullCoupon, FullGrillzMaterial, FullOrder, FullRing, FullUser } from '.';
 import {
   GrillzMaterialOption,
   GrillzMaterialVariant,
@@ -5,11 +6,10 @@ import {
   RingEngravingPreset,
   User,
 } from '@prisma/client';
-import { GetOrdersResult } from 'shared/api/order';
-import { GetUsersResult } from 'shared/api/user';
 import Stripe from 'stripe';
 
-import { FullCoupon, FullGrillzMaterial, FullOrder, FullRing, FullUser } from '.';
+import { GetOrdersResult } from '../api/order';
+import { GetUsersResult } from '../api/user';
 
 export interface Filter {
   key: string;

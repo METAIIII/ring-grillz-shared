@@ -1,11 +1,11 @@
-import { OrderType } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { OrderType } from '@prisma/client';
 import Stripe from 'stripe';
-import { getGrillzMaterials } from 'utils/tooth-utils';
 
 import prisma from '../prisma';
 import { FullOrder } from '../types';
 import { CheckoutResponse, FullCheckoutResponse } from '../types/api-responses';
+import { getGrillzMaterials } from '../utils/grillz-utils';
 import {
   convertGrillzToLineItem,
   getGrillzFromMetadata,

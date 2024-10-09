@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-key */
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Button, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { Order } from '@prisma/client';
 import dayjs from 'dayjs';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useMemo } from 'react';
 import { CellProps, Column, Renderer, useTable } from 'react-table';
-import { Card } from 'shared/components/card';
 
 import { formatAmountForDisplay } from '../../utils/stripe-helpers';
+import { Card } from '../card';
 import OrderStatusBadge from '../Order/OrderStatusBadge';
 
 function UserOrders({ orders }: { orders: Order[] }) {

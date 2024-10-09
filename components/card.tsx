@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import {
   Box,
   BoxProps,
@@ -13,7 +14,6 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
-import { useEffect, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
 
 const rotateAnimation = keyframes`  
@@ -30,6 +30,7 @@ export function Card({
   shine,
   onClick,
   isLoading,
+  isError,
   cardBodyProps,
   cardFooterProps,
   cardHeaderProps,
@@ -42,6 +43,7 @@ export function Card({
   glow?: boolean;
   shine?: boolean;
   isLoading?: boolean;
+  isError?: boolean;
   cardBodyProps?: CardBodyProps;
   cardFooterProps?: CardFooterProps;
   cardHeaderProps?: CardHeaderProps;
@@ -137,6 +139,8 @@ export function Card({
       }
     : {};
 
+  const errorStyle: SystemStyleObject = isError ? { borderColor: 'red !important' } : {};
+
   return (
     <Box
       position='relative'
@@ -151,6 +155,7 @@ export function Card({
         sx={{
           ...glowStyle,
           ...shineStyle,
+          ...errorStyle,
           _hover: { boxShadow: onClick ? 'md' : 'sm' },
           cursor: onClick ? 'pointer' : 'default',
         }}

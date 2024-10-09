@@ -10,8 +10,9 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { useSuccessFailToast } from 'shared/hooks/use-toast';
-import { useDeleteUserMutation } from 'shared/reducers/api';
+
+import { useSuccessFailToast } from '../../hooks/use-toast';
+import { useDeleteUserMutation } from '../../reducers/api';
 
 function DeleteAccount({
   isOpen,

@@ -1,11 +1,12 @@
 import path from 'path';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
 import { nodemailerMjmlPlugin } from 'nodemailer-mjml';
-import { ApiResponse } from 'shared/types/api-responses';
-import { EmailRequestBody } from 'shared/types/email';
+
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../prisma';
+import { ApiResponse } from '../types/api-responses';
+import { EmailRequestBody } from '../types/email';
 import { getBusinessType } from '../utils/get-business-type';
 
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;

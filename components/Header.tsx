@@ -1,7 +1,7 @@
+import Image from 'next/image';
 import { Box, Container, Flex, Heading, Link, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import { OrderType } from '@prisma/client';
 import { useSession } from 'next-auth/react';
-import Image from 'next/image';
 
 import LogoutButton from './Account/LogoutButton';
 import Navigation from './Navigation';

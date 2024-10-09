@@ -1,5 +1,5 @@
-import { Icon, IconButton, ListItem } from '@chakra-ui/react';
 import { PropsWithChildren } from 'react';
+import { Icon, IconButton, ListItem } from '@chakra-ui/react';
 import { FaTimes } from 'react-icons/fa';
 
 import type { CartItem } from '../../reducers/cart';

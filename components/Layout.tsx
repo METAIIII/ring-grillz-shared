@@ -1,7 +1,7 @@
+import { createContext, PropsWithChildren, useContext } from 'react';
 import { Container } from '@chakra-ui/react';
 import { OrderType } from '@prisma/client';
 import { NextSeo } from 'next-seo';
-import { createContext, PropsWithChildren, useContext } from 'react';
 
 import Header from './Header';
 

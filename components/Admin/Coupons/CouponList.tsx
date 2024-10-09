@@ -1,7 +1,7 @@
 import { Badge, Flex, Heading, Text, Wrap } from '@chakra-ui/react';
-import { useGetCouponsQuery } from 'shared/reducers/api';
-import { formatCouponDiscount } from 'shared/utils/get-totals';
 
+import { useGetCouponsQuery } from '../../../reducers/api';
+import { formatCouponDiscount } from '../../../utils/get-totals';
 import { Card } from '../../card';
 import { DeleteCoupon } from './DeleteCoupon';
 

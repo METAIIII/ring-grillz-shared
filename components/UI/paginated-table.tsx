@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-key */
+import { ReactElement } from 'react';
 import {
   Box,
   ButtonGroup,
@@ -17,7 +18,6 @@ import {
   Tooltip,
   Tr,
 } from '@chakra-ui/react';
-import { ReactElement } from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Row, TableOptions, usePagination, useTable } from 'react-table';
 

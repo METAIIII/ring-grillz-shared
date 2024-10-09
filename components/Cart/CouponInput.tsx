@@ -1,16 +1,16 @@
-import { Input, InputGroup, InputLeftElement, InputRightElement, Spinner } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Input, InputGroup, InputLeftElement, InputRightElement, Spinner } from '@chakra-ui/react';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import { IoTicketOutline } from 'react-icons/io5';
-import { useAppDispatch } from 'reducers/store';
+import { useDispatch } from 'react-redux';
 
 import useDebounce from '../../hooks/use-debounce';
 import { useGetCouponByCodeQuery } from '../../reducers/api';
 import { setCouponCode } from '../../reducers/cart';
 
 export function CouponInput() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   const [code, setCode] = useState('');
   const queryCode = useDebounce(code, 500);
 

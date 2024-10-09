@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import {
   Button,
   ButtonGroup,
@@ -14,15 +15,14 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import { Card } from 'shared/components/card';
-import { useSuccessFailToast } from 'shared/hooks/use-toast';
-import { useUpdateUserMutation } from 'shared/reducers/api';
 import { z } from 'zod';
 
+import { useSuccessFailToast } from '../../hooks/use-toast';
+import { useUpdateUserMutation } from '../../reducers/api';
 import { FullUser } from '../../types';
+import { Card } from '../card';
 import DeleteAccount from './DeleteAccount';
 
 const schema = z.object({

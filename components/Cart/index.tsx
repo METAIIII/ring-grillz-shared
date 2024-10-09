@@ -1,13 +1,13 @@
+import { useMemo } from 'react';
 import { Box, Flex, Heading, Icon, List, Text, Tooltip } from '@chakra-ui/react';
 import { OrderType } from '@prisma/client';
-import { useMemo } from 'react';
 import { GiShoppingCart } from 'react-icons/gi';
 import { IoTicketOutline } from 'react-icons/io5';
-import { useAppDispatch } from 'reducers/store';
-import { FullCoupon } from 'shared/types';
+import { useDispatch } from 'react-redux';
 import Stripe from 'stripe';
 
 import { removeItem } from '../../reducers/cart';
+import { FullCoupon } from '../../types';
 import { formatCouponDiscount } from '../../utils/get-totals';
 import { formatAmountForDisplay } from '../../utils/stripe-helpers';
 import CartItem from './CartItem';
@@ -32,7 +32,7 @@ function Cart({
   lineItems,
   orderType,
 }: Props) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const total = useMemo(() => {
     if (coupon) {

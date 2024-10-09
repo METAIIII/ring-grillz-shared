@@ -1,6 +1,6 @@
+import React from 'react';
 import { Badge, Box, Button, Heading, Icon, SimpleGrid, Stack, Text } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import React from 'react';
 import { FaClock, FaEnvelope, FaShippingFast } from 'react-icons/fa';
 import Stripe from 'stripe';
 

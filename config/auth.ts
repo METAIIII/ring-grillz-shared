@@ -5,7 +5,8 @@ import { NextAuthOptions } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import nodemailer from 'nodemailer';
 import nodemailerMjmlPlugin from 'nodemailer-mjml';
-import prisma from 'shared/prisma';
+
+import prisma from '../prisma';
 
 declare module 'next-auth' {
   interface User {
