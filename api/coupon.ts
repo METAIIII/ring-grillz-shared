@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
+import { CreateCoupon } from '../components/admin-only/coupon/create-coupon/use-create-coupon';
 import { authOptions } from '../config/auth';
 import { FullCoupon } from '../types';
 import { CouponResponse, CouponsResponse } from '../types/api-responses';

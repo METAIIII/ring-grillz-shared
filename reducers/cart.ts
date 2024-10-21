@@ -30,11 +30,11 @@ export const cartSlice = createSlice({
   reducers: {
     addItem: (state, action: PayloadAction<CartItem>) => {
       state.cartItems.push(action.payload);
-      state.total = state.total + action.payload.amount;
+      state.total = Math.max(state.total + action.payload.amount, 0);
     },
     removeItem: (state, action: PayloadAction<CartItem>) => {
       state.cartItems = state.cartItems.filter((item) => item.id !== action.payload.id);
-      state.total = state.total - action.payload.amount;
+      state.total = Math.max(state.total - action.payload.amount, 0);
     },
     clearCart: (state) => {
       state.cartItems = [];

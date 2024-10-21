@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { CURRENCY, TOOTH_SEPARATOR } from '../config/stripe';
 import { FullGrillzMaterial, GrillzForm, RingFormState, ToothID } from '../types';
 import { getGrillzTotal, getRingTotal } from './get-totals';
+import { getGrillzMaterials } from './grillz-utils';
 import { json } from './json-parse';
 
 export const STRIPE_API_VERSION = '2024-09-30.acacia';
@@ -114,10 +115,73 @@ export const getGrillzFromMetadata = (
   const option = material?.options.find((option) => option.id === metadata?.optionId);
   const selectedTeeth = (metadata?.selectedTeethIds as string)?.split(TOOTH_SEPARATOR) as ToothID[];
 
-  return json({
-    material,
-    variant,
-    option,
+  const formData: GrillzForm = {
+    material: material ?? null,
+    variant: variant ?? null,
+    option: option ?? null,
     selectedTeeth,
-  });
+    isAddToCartDisabled: false,
+    isTopRowDisabled: false,
+    isBottomRowDisabled: false,
+    itemsTotal: 0,
+    formDataAsMetadata: JSON.stringify(metadata),
+  };
+
+  return json(formData);
 };
+
+export async function createStripeCheckoutSession(order: any) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: STRIPE_API_VERSION });
+
+  let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+  let couponId;
+
+  if (order.couponCode) {
+    const promotionCodes = await stripe.promotionCodes.list({
+      code: order.couponCode,
+      limit: 1,
+    });
+    if (promotionCodes.data.length) {
+      couponId = promotionCodes.data[0].coupon.id;
+    }
+  }
+
+  const materials = await getGrillzMaterials();
+
+  // TODO: Handle ring orders
+  // Assuming the order type is GRILLZ for now
+  lineItems = order.items.map((item: any) => {
+    const metadata = item.metadata as Record<string, string | number | boolean>;
+    return convertGrillzToLineItem(getGrillzFromMetadata(metadata, materials));
+  });
+
+  const params: Stripe.Checkout.SessionCreateParams = {
+    customer_email: order.email,
+    client_reference_id: order.id,
+    expand: ['customer_details', 'line_items'],
+    shipping_address_collection: { allowed_countries: ['AU'] },
+    mode: 'payment',
+    payment_method_types: ['card', 'afterpay_clearpay'],
+    discounts: couponId ? [{ coupon: couponId }] : undefined,
+    line_items: lineItems,
+    custom_text: {
+      shipping_address: {
+        message: `Express postage is included with every order.`,
+      },
+      submit: {
+        message: `We'll email you instructions on how to get started.`,
+      },
+    },
+    customer_creation: 'always',
+    phone_number_collection: {
+      enabled: true,
+    },
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/receipt?order_id=${order.id}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/receipt?order_id=${order.id}`,
+    consent_collection: {
+      terms_of_service: 'required',
+    },
+  };
+
+  return stripe.checkout.sessions.create(params);
+}

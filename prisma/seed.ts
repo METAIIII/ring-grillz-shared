@@ -121,11 +121,11 @@ async function seedGrillzMaterials() {
         await prisma.grillzMaterialVariant.create({
           data: {
             name: variant,
-            previewImage: faker.image.url(),
+            previewImage: `/img/examples/${_.camelCase(material)}_${_.camelCase(variant)}.jpg`,
             price: faker.number.int({ min: 200, max: 2000 }),
             singleRowOnly: faker.datatype.boolean(),
             baseMaterialId: grillzMaterial.id,
-            bgImage: `/img/toothmasks/${_.camelCase(material)}_${_.camelCase(variant)}.jpg`,
+            bgImage: `/img/toothmasks/${_.camelCase(material)}_polished.jpg`,
           },
         });
       }
@@ -137,7 +137,7 @@ async function seedGrillzMaterials() {
         await prisma.grillzMaterialVariant.create({
           data: {
             name: variant,
-            previewImage: faker.image.url(),
+            previewImage: `/img/examples/${_.camelCase(material)}_${_.camelCase(variant)}.jpg`,
             price: faker.number.int({ min: 200, max: 2000 }),
             singleRowOnly: faker.datatype.boolean(),
             baseMaterialId: grillzMaterial.id,
@@ -158,7 +158,7 @@ async function seedGrillzMaterials() {
             name: option.name,
             price: option.price,
             baseMaterialId: grillzMaterial.id,
-            previewImage: faker.image.url(),
+            previewImage: `/img/examples/${_.camelCase(material)}_${_.camelCase(option.name)}.jpg`,
           },
         });
       }
@@ -170,7 +170,7 @@ async function seedGrillzMaterials() {
         await prisma.grillzMaterialVariant.create({
           data: {
             name: variant,
-            previewImage: faker.image.url(),
+            previewImage: `/img/examples/${_.camelCase(material)}_${_.camelCase(variant)}.jpg`,
             price: faker.number.int({ min: 200, max: 2000 }),
             singleRowOnly: faker.datatype.boolean(),
             baseMaterialId: grillzMaterial.id,

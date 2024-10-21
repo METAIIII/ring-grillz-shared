@@ -19,6 +19,8 @@ import {
 import { IconType } from 'react-icons/lib';
 import Stripe from 'stripe';
 
+import type { JSX } from 'react';
+
 // Shared Database Models
 export interface FullUser extends User {
   orders: Order[];
@@ -108,6 +110,12 @@ export interface GrillzForm {
   variant: GrillzMaterialVariant | null;
   option: GrillzMaterialOption | null;
   selectedTeeth: ToothID[];
+  // Derived values
+  isAddToCartDisabled: boolean;
+  isTopRowDisabled: boolean;
+  isBottomRowDisabled: boolean;
+  itemsTotal: number;
+  formDataAsMetadata: string;
 }
 
 export type FullGrillzMaterial = GrillzMaterial & {

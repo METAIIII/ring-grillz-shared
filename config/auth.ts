@@ -17,7 +17,7 @@ declare module 'next-auth' {
   }
 }
 
-const TEMPLATE_FOLDER = path.join(process.cwd(), 'email-templates');
+const TEMPLATE_FOLDER = path.join(process.cwd(), 'src', 'email-templates');
 const transport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),

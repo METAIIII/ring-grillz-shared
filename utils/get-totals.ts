@@ -14,12 +14,12 @@ export function formatCouponDiscount(amount_off?: number | null, percent_off?: n
 }
 
 // Dr Grillz Specific
-const getGrillzLabourCost = (data: GrillzForm): number => {
+export const getGrillzLabourCost = (data: GrillzForm): number => {
   const labourCost = data.material?.labourCost || 0;
   return labourCost;
 };
 
-const getToothValue = (data: GrillzForm): number => {
+export const getToothValue = (data: GrillzForm): number => {
   let variantValue = 0;
   let optionValue = 0;
 
@@ -34,7 +34,7 @@ const getToothValue = (data: GrillzForm): number => {
 };
 
 export const getGrillzTotal = (data: GrillzForm): number => {
-  if (!data.material || !data.selectedTeeth) return 0;
+  if (!data.material || !data.selectedTeeth || data.selectedTeeth.length === 0) return 0;
 
   const toothValue = getToothValue(data);
   const numOfTeeth = data.selectedTeeth.length;

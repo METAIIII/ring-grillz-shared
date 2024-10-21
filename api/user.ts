@@ -2,7 +2,7 @@ import { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 'next
 import { OrderType, User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
-import { UpdateUser } from '../components/Account/UserInfo';
+import { UpdateUser } from '../components/my-account/edit-profile/use-edit-profile';
 import { authOptions } from '../config/auth';
 import prisma from '../prisma';
 import { FullUser } from '../types';

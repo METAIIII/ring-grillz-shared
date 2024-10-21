@@ -10,7 +10,7 @@ import { EmailRequestBody } from '../types/email';
 import { getBusinessType } from '../utils/get-business-type';
 
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-const TEMPLATE_FOLDER = path.join(process.cwd(), 'email-templates');
+const TEMPLATE_FOLDER = path.join(process.cwd(), 'src', 'email-templates');
 
 const transport = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

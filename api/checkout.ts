@@ -1,23 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { OrderType } from '@prisma/client';
+import { buffer } from 'micro';
 import Stripe from 'stripe';
 
+import { sendOrderConfirmationEmails } from '../email/send-order-email';
 import prisma from '../prisma';
-import { FullOrder } from '../types';
+import { transitionOrderStatus } from '../prisma/order-state-machine';
 import { CheckoutResponse, FullCheckoutResponse } from '../types/api-responses';
-import { getGrillzMaterials } from '../utils/grillz-utils';
-import {
-  convertGrillzToLineItem,
-  getGrillzFromMetadata,
-  STRIPE_API_VERSION,
-  STRIPE_SECRET_KEY,
-} from '../utils/stripe-helpers';
+import { STRIPE_API_VERSION, STRIPE_SECRET_KEY } from '../utils/stripe-helpers';
 import { handleApiError } from './error';
 
 export const handleCheckout = async (
   req: NextApiRequest,
   res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
-  orderType: OrderType,
 ) => {
   const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: STRIPE_API_VERSION });
 
@@ -25,124 +19,13 @@ export const handleCheckout = async (
     case 'GET':
       await handleGetCheckout(req, res, stripe);
       break;
-    case 'POST':
-      await handlePostCheckout(req, res, stripe, orderType);
-      break;
     default:
-      res.setHeader('Allow', 'POST, GET');
+      res.setHeader('Allow', 'GET');
       res.status(405).end('Method Not Allowed');
   }
 };
 
-const handlePostCheckout = async (
-  req: NextApiRequest,
-  res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
-  stripe: Stripe,
-  orderType: OrderType,
-) => {
-  const order = req.body as FullOrder;
-
-  try {
-    let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-
-    let couponId;
-    if (order.couponCode) {
-      const promotionCodes = await stripe.promotionCodes.list({
-        code: order.couponCode,
-        limit: 1,
-      });
-      if (!promotionCodes.data.length)
-        return res.status(200).json({ data: null, error: 'Invalid coupon code.' });
-      couponId = promotionCodes.data[0].coupon.id;
-    }
-
-    const materials = await getGrillzMaterials();
-
-    if (orderType === 'GRILLZ') {
-      lineItems = order.items.map((item) => {
-        const metadata = item.metadata as Record<string, string | number | boolean>;
-        return convertGrillzToLineItem(getGrillzFromMetadata(metadata, materials));
-      });
-    }
-    if (orderType === 'RING') {
-      // TODO: Implement ring line item conversion
-    }
-
-    const params: Stripe.Checkout.SessionCreateParams = {
-      customer_email: order.email,
-      client_reference_id: order.id,
-      expand: ['customer_details', 'line_items'],
-      shipping_address_collection: { allowed_countries: ['AU'] },
-      mode: 'payment',
-      payment_method_types: ['card', 'afterpay_clearpay'],
-      discounts: couponId ? [{ coupon: couponId }] : undefined,
-      line_items: lineItems,
-      custom_text: {
-        shipping_address: {
-          message: `Express postage is included with every order.`,
-        },
-        submit: {
-          message: `We'll email you instructions on how to get started.`,
-        },
-      },
-      customer_creation: 'always',
-      phone_number_collection: {
-        enabled: true,
-      },
-      success_url: `${req.headers.origin}/receipt?order_id=${order.id}`,
-      cancel_url: `${req.headers.origin}/receipt?order_id=${order.id}`,
-      consent_collection: {
-        terms_of_service: 'required',
-      },
-    };
-
-    const checkoutSession = await stripe.checkout.sessions.create(params);
-
-    if (!checkoutSession) {
-      await handleApiError(res, new Error('Failed to create checkout session.'));
-    }
-
-    const customer = checkoutSession?.customer_details;
-
-    await prisma.order.update({
-      where: {
-        id: order.id,
-      },
-      data: {
-        user: customer?.email
-          ? {
-              connectOrCreate: {
-                where: {
-                  email: customer.email,
-                },
-                create: {
-                  email: customer.email,
-                  stripeId: checkoutSession.customer?.toString(),
-                },
-              },
-            }
-          : undefined,
-        status:
-          checkoutSession?.status === 'complete'
-            ? 'PAID'
-            : checkoutSession?.status === 'expired'
-              ? 'CANCELED'
-              : 'PENDING',
-        paymentType: order.paymentType ?? 'FULL_PAYMENT',
-        stripeId: checkoutSession?.id,
-      },
-    });
-    if (checkoutSession.url) {
-      res.status(200).json({ data: { url: checkoutSession.url } });
-    } else {
-      throw new Error('Failed to create checkout session.');
-    }
-  } catch (error) {
-    if (error instanceof Error || typeof error === 'string') await handleApiError(res, error);
-  }
-};
-
-const handleGetCheckout = async (
+export const handleGetCheckout = async (
   req: NextApiRequest,
   res: NextApiResponse<CheckoutResponse | FullCheckoutResponse>,
   stripe: Stripe,
@@ -159,5 +42,39 @@ const handleGetCheckout = async (
     res.status(200).json({ data: session });
   } catch (error) {
     if (error instanceof Error || typeof error === 'string') await handleApiError(res, error);
+  }
+};
+
+export const handleCheckoutWebhook = async (req: NextApiRequest, res: NextApiResponse) => {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: STRIPE_API_VERSION,
+  });
+
+  const buf = await buffer(req);
+  const sig = req.headers['stripe-signature']!;
+
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET!);
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error('Webhook signature verification failed:', err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    console.error('Webhook signature verification failed:', err);
+    return res.status(400).send(`Webhook Error: ${err}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const order = await prisma.order.findFirst({ where: { stripeId: session.id } });
+
+    if (order) {
+      const newStatus = await transitionOrderStatus(order.id, 'PAYMENT_SUCCEEDED');
+      if (newStatus === 'PAID') {
+        await sendOrderConfirmationEmails(order.id);
+      }
+    }
   }
 };

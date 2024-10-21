@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { UpdateUser } from '../components/Account/UserInfo';
-import { CreateCoupon } from '../components/Admin/Coupons/CreateCoupon';
-import { CreateOrder, FullOrder, UpdateOrder } from '../types';
+import { CreateCoupon } from '../components/admin-only/coupon/create-coupon/use-create-coupon';
+import { UpdateUser } from '../components/my-account/edit-profile/use-edit-profile';
+import { CreateOrder, UpdateOrder } from '../types';
 import {
   ApiResponse,
   CouponResponse,
@@ -90,9 +90,9 @@ export const api = createApi({
       query: (id) => `checkout/${id}`,
       providesTags: (result, error, id) => [{ type: 'Checkout', id }],
     }),
-    createCheckoutSession: builder.mutation<FullCheckoutResponse, FullOrder>({
+    createCheckoutSession: builder.mutation<{ sessionUrl: string | null }, { orderId: string }>({
       query: (data) => ({
-        url: `checkout`,
+        url: `checkout/process`,
         method: 'POST',
         body: data,
       }),
